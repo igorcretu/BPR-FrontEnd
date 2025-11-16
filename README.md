@@ -1,7 +1,9 @@
 # Car Price Prediction Platform for the Danish Market
 
 [![CI/CD Pipeline](https://github.com/igorcretu/BPR-FrontEnd/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/igorcretu/BPR-FrontEnd/actions)
-[![Netlify Status](https://api.netlify.com/api/v1/badges/YOUR-BADGE-ID/deploy-status)](https://app.netlify.com/sites/YOUR-SITE-NAME/deploys)
+[![Netlify Status](https://api.netlify.com/api/v1/badges/28a2d6de-2a4c-4463-9e99-4d85707d6c48/deploy-status)](https://app.netlify.com/projects/bpr-g26/deploys)
+
+
 
 > Bachelor Thesis Project - Group 26 | VIA University College
 
