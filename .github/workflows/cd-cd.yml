@@ -1,15 +1,21 @@
 name: CI/CD Pipeline
 
 on:
-  push:
-    branches: [ main ]
   pull_request:
+    branches: [ main ]
+    # Optional: Only trigger from dev branch
+    types: [opened, synchronize, reopened]
+  push:
     branches: [ main ]
 
 jobs:
-  # Test and Build on Pull Requests
+  # Test and Build on Pull Requests from dev to main
   test-and-build:
     runs-on: ubuntu-latest
+    # Only run if it's a PR from dev to main, or a push to main
+    if: |
+      (github.event_name == 'pull_request' && github.head_ref == 'dev' && github.base_ref == 'main') ||
+      (github.event_name == 'push' && github.ref == 'refs/heads/main')
     
     steps:
     - name: Checkout code
@@ -37,7 +43,7 @@ jobs:
         name: build
         path: dist/
 
-  # Deploy only when merged to main
+  # Deploy only when merged to main (from dev)
   deploy:
     needs: test-and-build
     runs-on: ubuntu-latest
