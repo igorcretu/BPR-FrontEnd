@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { ArrowLeft, Calendar, Fuel, Gauge, MapPin, Car as CarIcon, TrendingUp, Loader } from 'lucide-react';
+import { ArrowLeft, Fuel, Gauge, Car as CarIcon, TrendingUp, Loader } from 'lucide-react';
 import api from '../api/client';
 
 interface CarDetail {
