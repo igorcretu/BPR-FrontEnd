@@ -5,7 +5,7 @@
 # API proxy — must come FIRST
 [[redirects]]
   from = "/api/*"
-  to = "https://test.bachelorproject26.site/:splat"
+  to = "https://test.bachelorproject26.site/api/:splat"
   status = 200
   force = true
 
