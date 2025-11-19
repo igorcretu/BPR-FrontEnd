@@ -2,6 +2,14 @@
   publish = "dist"
   command = "npm run build"
 
+# API proxy — must come FIRST
+[[redirects]]
+  from = "/api/*"
+  to = "https://test.bachelorproject26.site/:splat"
+  status = 200
+  force = true
+
+# React Router SPA fallback
 [[redirects]]
   from = "/*"
   to = "/index.html"
