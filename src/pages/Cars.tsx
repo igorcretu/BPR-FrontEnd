@@ -45,7 +45,7 @@ export default function Cars() {
       Object.entries(filters).forEach(([key, value]) => {
         if (value) params[key] = value;
       });
-      const response = await api.get('/api/cars', { params });
+      const response = await api.get('/cars', { params });
       setCars(response.data.cars || []);
     } catch (error) {
       console.error('Error fetching cars:', error);

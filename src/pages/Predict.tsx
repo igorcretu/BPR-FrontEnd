@@ -27,7 +27,7 @@ export default function Predict() {
     setError('');
     
     try {
-      const response = await api.post('/api/predict', formData);
+      const response = await api.post('/predict', formData);
       setPrediction(response.data);
     } catch (err: any) {
       setError(err.response?.data?.error || 'Failed to get prediction');

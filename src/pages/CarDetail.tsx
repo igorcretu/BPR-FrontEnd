@@ -42,7 +42,7 @@ export default function CarDetail() {
 
   const fetchCar = async () => {
     try {
-      const response = await api.get(`/api/cars/${id}`);
+      const response = await api.get(`/cars/${id}`);
       setCar(response.data.car);
     } catch (error) {
       console.error('Error fetching car:', error);
@@ -55,7 +55,7 @@ export default function CarDetail() {
     if (!car) return;
     setPredicting(true);
     try {
-      const response = await api.post('/api/predict', {
+      const response = await api.post('/predict', {
         brand: car.brand,
         model: car.model,
         year: car.year,
