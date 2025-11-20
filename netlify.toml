@@ -2,8 +2,14 @@
   publish = "dist"
   command = "npm run build"
 
+[build.environment]
+  VITE_API_URL = "https://test.bachelorproject26.site"
+
 [functions]
   node_bundler = "esbuild"
+
+[functions.environment]
+  API_BASE_URL = "https://test.bachelorproject26.site"
 
 # API proxy — must come FIRST
 [[redirects]]
