@@ -6,6 +6,7 @@
   VITE_API_URL = "https://test.bachelorproject26.site"
 
 [functions]
+  directory = "netlify/functions"
   node_bundler = "esbuild"
 
 [functions.environment]
