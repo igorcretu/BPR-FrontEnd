@@ -1,0 +1,5 @@
+# API proxy — must come FIRST
+/api/* https://test.bachelorproject26.site/api/:splat 200!
+
+# React Router SPA fallback
+/* /index.html 200
