@@ -2,10 +2,13 @@
   publish = "dist"
   command = "npm run build"
 
+[functions]
+  node_bundler = "esbuild"
+
 # API proxy — must come FIRST
 [[redirects]]
   from = "/api/*"
-  to = "https://test.bachelorproject26.site/api/:splat"
+  to = "/.netlify/functions/api-proxy/:splat"
   status = 200
   force = true
 
