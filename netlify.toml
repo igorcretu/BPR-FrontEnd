@@ -2,23 +2,6 @@
   publish = "dist"
   command = "npm run build"
 
-[build.environment]
-  VITE_API_URL = "https://test.bachelorproject26.site"
-
-[functions]
-  directory = "netlify/functions"
-  node_bundler = "esbuild"
-
-[functions.environment]
-  API_BASE_URL = "https://test.bachelorproject26.site"
-
-# API proxy — must come FIRST
-[[redirects]]
-  from = "/api/*"
-  to = "/.netlify/functions/api-proxy/:splat"
-  status = 200
-  force = true
-
 # React Router SPA fallback
 [[redirects]]
   from = "/*"

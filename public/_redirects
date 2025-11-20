@@ -1,5 +1,2 @@
-# API proxy — must come FIRST
-/api/* /.netlify/functions/api-proxy/:splat 200!
-
 # React Router SPA fallback
 /* /index.html 200
