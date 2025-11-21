@@ -268,10 +268,20 @@ export default function Cars() {
 
       {/* Cars Grid */}
       <div className="max-w-7xl mx-auto px-4 py-8">
-        <div className="mb-6">
+        <div className="mb-6 flex items-center justify-between">
           <p className="text-gray-600">
             Found <span className="font-semibold text-gray-900">{filteredCars.length}</span> cars
           </p>
+          
+          {/* Page Counter at Top */}
+          {!loading && totalPages > 1 && (
+            <div className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl border border-gray-200">
+              <span className="text-sm text-gray-600">Page</span>
+              <span className="text-lg font-bold text-blue-600">{currentPage}</span>
+              <span className="text-sm text-gray-400">of</span>
+              <span className="text-lg font-bold text-gray-700">{totalPages}</span>
+            </div>
+          )}
         </div>
 
         {loading ? (
