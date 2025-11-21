@@ -1,60 +1,88 @@
-const imageCache = new Map<string, string | null>()
-
-const buildKey = (brand: string, model: string, year: number): string =>
-  `${brand.trim().toLowerCase()}|${model.trim().toLowerCase()}|${year}`
-
-const buildQueries = (brand: string, model: string, year: number): string[] => [
-  `${year} ${brand} ${model}`,
-  `${brand} ${model}`,
-  `${model}`,
-]
-
-const fetchImageFromWikimedia = async (query: string): Promise<string | null> => {
-  const url =
-    'https://commons.wikimedia.org/w/api.php?action=query' +
-    `&generator=search&gsrsearch=${encodeURIComponent(query)}` +
-    '&gsrnamespace=6' +
-    '&gsrlimit=1&prop=imageinfo&iiprop=url&format=json&origin=*'
-
-  const response = await fetch(url)
-  if (!response.ok) {
-    throw new Error(`Wikimedia responded with ${response.status}`)
-  }
-
-  const data = await response.json()
-  const page = data?.query?.pages && Object.values(data.query.pages)[0]
-  const imageURL = page?.imageinfo?.[0]?.url
-  return (typeof imageURL === 'string' && imageURL.length > 0) ? imageURL : null
+type CarImageDescriptor = {
+  id?: string
+  brand: string
+  model: string
+  year: number
 }
 
-export const getCachedCarImage = (brand: string, model: string, year: number): string | null | undefined => {
-  const key = buildKey(brand, model, year)
-  return imageCache.has(key) ? imageCache.get(key) ?? null : undefined
+const memoryCache = new Map<string, string | null>()
+const STORAGE_PREFIX = 'car-image:'
+const NULL_SENTINEL = '__NULL__'
+
+const getCacheKey = ({ id, brand, model, year }: CarImageDescriptor) =>
+  (id ?? `${brand}-${model}-${year}`).toLowerCase()
+
+const readFromSession = (key: string): string | null | undefined => {
+  if (typeof window === 'undefined' || typeof window.sessionStorage === 'undefined') return undefined
+  try {
+    const raw = window.sessionStorage.getItem(`${STORAGE_PREFIX}${key}`)
+    if (raw === null) return undefined
+    if (raw === NULL_SENTINEL) return null
+    return raw
+  } catch {
+    return undefined
+  }
 }
 
-export const fetchCarImage = async (brand: string, model: string, year: number): Promise<string | null> => {
-  const key = buildKey(brand, model, year)
-  if (imageCache.has(key)) {
-    const cached = imageCache.get(key) ?? null
-    return cached
+const writeToSession = (key: string, value: string | null) => {
+  if (typeof window === 'undefined' || typeof window.sessionStorage === 'undefined') return
+  try {
+    window.sessionStorage.setItem(`${STORAGE_PREFIX}${key}`, value ?? NULL_SENTINEL)
+  } catch {
+    /* ignore session storage quota issues */
   }
+}
 
-  const queries = buildQueries(brand, model, year)
+const lookupCarImage = async (brand: string, model: string, year: number): Promise<string | null> => {
+  const queries = [`${year} ${brand} ${model}`, `${brand} ${model}`, `${model}`]
 
   for (const query of queries) {
+    const url =
+      'https://commons.wikimedia.org/w/api.php?action=query' +
+      `&generator=search&gsrsearch=${encodeURIComponent(query)}` +
+      '&gsrnamespace=6' +
+      '&gsrlimit=1&prop=imageinfo&iiprop=url&format=json&origin=*'
+
     try {
-      const image = await fetchImageFromWikimedia(query)
-      if (image) {
-        imageCache.set(key, image)
-        return image
+      const response = await fetch(url)
+      if (!response.ok) continue
+      const data = (await response.json()) as {
+        query?: {
+          pages?: Record<string, {
+            imageinfo?: Array<{ url?: string }>
+          }>
+        }
       }
-    } catch (error) {
-      console.warn('Failed fetching car image', { brand, model, year, error })
+      const firstPage = data.query?.pages && Object.values(data.query.pages)[0]
+      const imageURL = firstPage?.imageinfo?.[0]?.url
+      if (imageURL) return imageURL
+    } catch {
+      // Ignore network errors and continue with next query variant
     }
   }
 
-  imageCache.set(key, null)
   return null
 }
 
-export const clearCarImageCache = () => imageCache.clear()
+export const getCarImage = async (descriptor: CarImageDescriptor): Promise<string | null> => {
+  const key = getCacheKey(descriptor)
+
+  if (memoryCache.has(key)) {
+    return memoryCache.get(key) ?? null
+  }
+
+  const stored = readFromSession(key)
+  if (stored !== undefined) {
+    memoryCache.set(key, stored)
+    return stored
+  }
+
+  const image = await lookupCarImage(descriptor.brand, descriptor.model, descriptor.year)
+  memoryCache.set(key, image)
+  writeToSession(key, image)
+  return image
+}
+
+export const fetchRandomCarImage = lookupCarImage
+
+export type { CarImageDescriptor }

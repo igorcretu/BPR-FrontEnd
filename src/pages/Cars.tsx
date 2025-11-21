@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Search, Filter, Car as CarIcon, Fuel, Calendar, MapPin, TrendingUp } from 'lucide-react';
 import api from '../api/client';
+import { getCarImage } from '../utils/carImages';
 
 interface Car {
   id: string;
@@ -22,6 +23,7 @@ export default function Cars() {
   const [cars, setCars] = useState<Car[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
+  const [carImages, setCarImages] = useState<Record<string, string | null>>({});
   const [filters, setFilters] = useState({
     brand: '',
     fuel_type: '',
@@ -37,6 +39,48 @@ export default function Cars() {
   useEffect(() => {
     fetchCars();
   }, [filters]);
+
+  useEffect(() => {
+    if (!cars.length) return;
+
+    const carsWithoutImages = cars.filter((car) => carImages[car.id] === undefined);
+    if (!carsWithoutImages.length) return;
+
+    let active = true;
+
+    const loadImages = async () => {
+      const results = await Promise.all(
+        carsWithoutImages.map(async (car) => {
+          const image = await getCarImage({
+            id: car.id,
+            brand: car.brand,
+            model: car.model,
+            year: car.year,
+          });
+          return { id: car.id, image };
+        })
+      );
+
+      if (!active) return;
+
+      setCarImages((prev) => {
+        const next = { ...prev };
+        let changed = false;
+        for (const { id, image } of results) {
+          if (next[id] === undefined) {
+            next[id] = image;
+            changed = true;
+          }
+        }
+        return changed ? next : prev;
+      });
+    };
+
+    loadImages();
+    return () => {
+      active = false;
+    };
+  }, [cars, carImages]);
 
   const fetchCars = async () => {
     try {
@@ -189,14 +233,25 @@ export default function Cars() {
           </div>
         ) : (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredCars.map((car) => (
+            {filteredCars.map((car) => {
+              const imageUrl = carImages[car.id] ?? null;
+              return (
               <Link
                 key={car.id}
                 to={`/cars/${car.id}`}
                 className="bg-white rounded-xl shadow-md hover:shadow-xl transition-all overflow-hidden group"
               >
-                <div className="bg-gradient-to-br from-gray-100 to-gray-200 h-48 flex items-center justify-center relative overflow-hidden">
-                  <CarIcon className="w-20 h-20 text-gray-400" />
+                <div className="bg-gray-100 h-48 flex items-center justify-center relative overflow-hidden">
+                  {imageUrl ? (
+                    <img
+                      src={imageUrl}
+                      alt={`${car.brand} ${car.model}`}
+                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 scale-100 group-hover:scale-105"
+                      loading="lazy"
+                    />
+                  ) : (
+                    <CarIcon className="w-20 h-20 text-gray-400" />
+                  )}
                   <div className="absolute top-4 right-4 bg-blue-600 text-white px-3 py-1 rounded-full text-sm font-semibold">
                     {car.year}
                   </div>
@@ -234,7 +289,8 @@ export default function Cars() {
                   </div>
                 </div>
               </Link>
-            ))}
+            );
+            })}
           </div>
         )}
 

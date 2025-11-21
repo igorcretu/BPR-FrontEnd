@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Fuel, Gauge, Car as CarIcon, TrendingUp, Loader } from 'lucide-react';
 import api from '../api/client';
+import { getCarImage } from '../utils/carImages';
 
 interface CarDetail {
   id: string;
@@ -35,10 +36,39 @@ export default function CarDetail() {
   const [prediction, setPrediction] = useState<Prediction | null>(null);
   const [loading, setLoading] = useState(true);
   const [predicting, setPredicting] = useState(false);
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
 
   useEffect(() => {
     fetchCar();
   }, [id]);
+
+  useEffect(() => {
+    if (!car) {
+      setImageUrl(null);
+      return;
+    }
+
+    let active = true;
+
+    const loadImage = async () => {
+      try {
+        const url = await getCarImage({
+          id: car.id,
+          brand: car.brand,
+          model: car.model,
+          year: car.year,
+        });
+        if (active) setImageUrl(url);
+      } catch (error) {
+        console.error('Error fetching car image:', error);
+      }
+    };
+
+    loadImage();
+    return () => {
+      active = false;
+    };
+  }, [car]);
 
   const fetchCar = async () => {
     try {
@@ -110,8 +140,16 @@ export default function CarDetail() {
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-6">
             {/* Image */}
-            <div className="bg-gradient-to-br from-gray-200 to-gray-300 rounded-2xl h-96 flex items-center justify-center">
-              <CarIcon className="w-32 h-32 text-gray-400" />
+            <div className="bg-gray-200 rounded-2xl h-96 flex items-center justify-center overflow-hidden relative">
+              {imageUrl ? (
+                <img
+                  src={imageUrl}
+                  alt={`${car.brand} ${car.model}`}
+                  className="absolute inset-0 w-full h-full object-cover"
+                />
+              ) : (
+                <CarIcon className="w-32 h-32 text-gray-400" />
+              )}
             </div>
 
             {/* Details */}

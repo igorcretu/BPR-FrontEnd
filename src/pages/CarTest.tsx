@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { fetchCarImage } from '../utils/carImages'
+import { fetchRandomCarImage } from '../utils/carImages'
 
 const MAKES_AND_MODELS = {
     Toyota: ['Corolla', 'Camry', 'Yaris', 'RAV4'],
@@ -35,7 +35,7 @@ export default function CarImageTester() {
                 const make = getRandom(makes)
                 const model = getRandom(MAKES_AND_MODELS[make])
                 const year = 2000 + Math.floor(Math.random() * 25)
-                const image = await fetchCarImage(make, model, year)
+                const image = await fetchRandomCarImage(make, model, year)
                 generated.push({ make, model, year, image })
             }
 
