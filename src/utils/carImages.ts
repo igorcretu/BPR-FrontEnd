@@ -35,13 +35,14 @@ const writeToSession = (key: string, value: string | null) => {
 
 const lookupCarImage = async (brand: string, model: string, year: number): Promise<string | null> => {
   const queries = [`${year} ${brand} ${model}`]
+  const desiredWidth = 800
 
   for (const query of queries) {
     const url =
-      `https://commons.wikimedia.org/w/api.php?action=query` +
-          `&generator=search&gsrsearch=${encodeURIComponent(query)}` +
-          `&gsrnamespace=6&gsrlimit=1&prop=imageinfo` +
-          `&iiprop=url&iiurlwidth=300&format=json&origin=*`;
+      'https://commons.wikimedia.org/w/api.php?action=query' +
+      `&generator=search&gsrsearch=${encodeURIComponent(query)}` +
+      '&gsrnamespace=6&gsrlimit=1&prop=imageinfo' +
+      `&iiprop=url|dimensions&iiurlwidth=${desiredWidth}&format=json&origin=*`
 
     try {
       const response = await fetch(url)
@@ -49,12 +50,13 @@ const lookupCarImage = async (brand: string, model: string, year: number): Promi
       const data = (await response.json()) as {
         query?: {
           pages?: Record<string, {
-            imageinfo?: Array<{ url?: string }>
+            imageinfo?: Array<{ url?: string; thumburl?: string }>
           }>
         }
       }
       const firstPage = data.query?.pages && Object.values(data.query.pages)[0]
-      const imageURL = firstPage?.imageinfo?.[0]?.url
+      const info = firstPage?.imageinfo?.[0]
+      const imageURL = info?.thumburl ?? info?.url
       if (imageURL) return imageURL
     } catch {
       // Ignore network errors and continue with next query variant
