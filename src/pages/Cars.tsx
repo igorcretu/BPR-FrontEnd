@@ -100,12 +100,18 @@ export default function Cars() {
 
   const fetchFilterOptions = async () => {
     try {
-      const response = await api.get('/cars/filters');
+      // Fetch filters and brands from backend endpoints
+      const [filtersRes, brandsRes] = await Promise.all([
+        api.get('/filters'),
+        api.get('/brands'),
+      ]);
+      const filtersData = filtersRes.data.filters || {};
+      const brandsData = brandsRes.data.brands || [];
       setFilterOptions({
-        brands: response.data.brands || [],
-        fuelTypes: response.data.fuel_types || [],
-        transmissions: response.data.transmissions || [],
-        bodyTypes: response.data.body_types || [],
+        brands: brandsData.map((b: any) => b.name).filter(Boolean),
+        fuelTypes: (filtersData.fuel_types || []).map((f: any) => f.value).filter(Boolean),
+        transmissions: (filtersData.transmissions || []).map((t: any) => t.value).filter(Boolean),
+        bodyTypes: (filtersData.body_types || []).map((bt: any) => bt.value).filter(Boolean),
       });
     } catch (error) {
       console.error('Error fetching filter options:', error);
@@ -115,13 +121,14 @@ export default function Cars() {
   const fetchCars = async () => {
     try {
       setLoading(true);
-      const params: any = { per_page: 50, page: currentPage };
+      const params: any = { per_page: 51, page: currentPage };
       Object.entries(filters).forEach(([key, value]) => {
         if (value) params[key] = value;
       });
       const response = await api.get('/cars', { params });
       setCars(response.data.cars || []);
-      setTotalPages(response.data.total_pages || 1);
+      const pages = response.data.pagination?.pages || 1;
+      setTotalPages(pages);
     } catch (error) {
       console.error('Error fetching cars:', error);
     } finally {
@@ -339,51 +346,85 @@ export default function Cars() {
 
         {/* Pagination */}
         {!loading && filteredCars.length > 0 && totalPages > 1 && (
-          <div className="mt-12 flex items-center justify-center gap-2">
-            <button
-              onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
-              disabled={currentPage === 1}
-              className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
-            >
-              Previous
-            </button>
-            
-            <div className="flex items-center gap-2">
-              {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-                let pageNumber;
-                if (totalPages <= 5) {
-                  pageNumber = i + 1;
-                } else if (currentPage <= 3) {
-                  pageNumber = i + 1;
-                } else if (currentPage >= totalPages - 2) {
-                  pageNumber = totalPages - 4 + i;
-                } else {
-                  pageNumber = currentPage - 2 + i;
-                }
-                
-                return (
-                  <button
-                    key={pageNumber}
-                    onClick={() => setCurrentPage(pageNumber)}
-                    className={`w-10 h-10 rounded-lg font-medium transition-colors ${
-                      currentPage === pageNumber
-                        ? 'bg-blue-600 text-white'
-                        : 'border border-gray-300 hover:bg-gray-50'
-                    }`}
-                  >
-                    {pageNumber}
-                  </button>
-                );
-              })}
-            </div>
+          <div className="mt-12 bg-white rounded-2xl shadow-md p-6">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+              {/* Previous Button */}
+              <button
+                onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+                disabled={currentPage === 1}
+                className="group flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl hover:from-blue-700 hover:to-blue-800 disabled:from-gray-300 disabled:to-gray-400 disabled:cursor-not-allowed transition-all duration-300 shadow-lg hover:shadow-xl disabled:shadow-none font-semibold min-w-[140px] justify-center"
+              >
+                <svg className="w-5 h-5 transition-transform group-hover:-translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                </svg>
+                Previous
+              </button>
 
-            <button
-              onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
-              disabled={currentPage === totalPages}
-              className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
-            >
-              Next
-            </button>
+              {/* Page Indicators */}
+              <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2">
+                  {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                    let pageNumber;
+                    if (totalPages <= 5) {
+                      pageNumber = i + 1;
+                    } else if (currentPage <= 3) {
+                      pageNumber = i + 1;
+                    } else if (currentPage >= totalPages - 2) {
+                      pageNumber = totalPages - 4 + i;
+                    } else {
+                      pageNumber = currentPage - 2 + i;
+                    }
+                    
+                    const isActive = currentPage === pageNumber;
+                    
+                    return (
+                      <button
+                        key={pageNumber}
+                        onClick={() => setCurrentPage(pageNumber)}
+                        className={`relative w-12 h-12 rounded-xl font-bold transition-all duration-300 ${
+                          isActive
+                            ? 'bg-gradient-to-br from-blue-600 to-blue-700 text-white shadow-lg scale-110 ring-4 ring-blue-200'
+                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200 hover:scale-105 hover:shadow-md'
+                        }`}
+                      >
+                        {pageNumber}
+                        {isActive && (
+                          <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-2 h-2 bg-blue-600 rounded-full"></span>
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+                
+                {/* Page Counter */}
+                <div className="hidden sm:flex items-center gap-2 ml-4 px-4 py-2 bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl border border-gray-200">
+                  <span className="text-sm text-gray-600">Page</span>
+                  <span className="text-lg font-bold text-blue-600">{currentPage}</span>
+                  <span className="text-sm text-gray-400">of</span>
+                  <span className="text-lg font-bold text-gray-700">{totalPages}</span>
+                </div>
+              </div>
+
+              {/* Next Button */}
+              <button
+                onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
+                disabled={currentPage === totalPages}
+                className="group flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl hover:from-blue-700 hover:to-blue-800 disabled:from-gray-300 disabled:to-gray-400 disabled:cursor-not-allowed transition-all duration-300 shadow-lg hover:shadow-xl disabled:shadow-none font-semibold min-w-[140px] justify-center"
+              >
+                Next
+                <svg className="w-5 h-5 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
+            </div>
+            
+            {/* Mobile Page Counter */}
+            <div className="sm:hidden flex items-center justify-center gap-2 mt-4 px-4 py-2 bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl border border-gray-200">
+              <span className="text-sm text-gray-600">Page</span>
+              <span className="text-lg font-bold text-blue-600">{currentPage}</span>
+              <span className="text-sm text-gray-400">of</span>
+              <span className="text-lg font-bold text-gray-700">{totalPages}</span>
+            </div>
           </div>
         )}
       </div>
