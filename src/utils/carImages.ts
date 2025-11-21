@@ -5,8 +5,9 @@ type CarImageDescriptor = {
   year: number
 }
 
+const CACHE_VERSION = 'v2'
 const memoryCache = new Map<string, string | null>()
-const STORAGE_PREFIX = 'car-image:'
+const STORAGE_PREFIX = `car-image:${CACHE_VERSION}:`
 const NULL_SENTINEL = '__NULL__'
 
 const getCacheKey = ({ id, brand, model, year }: CarImageDescriptor) =>
