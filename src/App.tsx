@@ -4,7 +4,7 @@ import Home from './pages/Home';
 import Cars from './pages/Cars';
 import CarDetail from './pages/CarDetail';
 import Predict from './pages/Predict';
-import CarTest from './pages/CarTest';
+
 
 export default function App() {
   return (
@@ -29,9 +29,7 @@ export default function App() {
                 <Link to="/cars" className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors font-medium">
                   Get Started
                 </Link>
-                <Link to="/car-test" className="text-gray-700 hover:text-blue-600 transition-colors font-medium">
-                  Car Test
-                </Link>
+                
               </div>
             </div>
           </div>
@@ -42,7 +40,7 @@ export default function App() {
           <Route path="/cars" element={<Cars />} />
           <Route path="/cars/:id" element={<CarDetail />} />
           <Route path="/predict" element={<Predict />} />
-          <Route path="/car-test" element={<CarTest />} />
+          
         </Routes>
 
         {/* Footer */}

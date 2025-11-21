@@ -34,14 +34,14 @@ const writeToSession = (key: string, value: string | null) => {
 }
 
 const lookupCarImage = async (brand: string, model: string, year: number): Promise<string | null> => {
-  const queries = [`${year} ${brand} ${model}`, `${brand} ${model}`, `${model}`]
+  const queries = [`${year} ${brand} ${model}`]
 
   for (const query of queries) {
     const url =
-      'https://commons.wikimedia.org/w/api.php?action=query' +
-      `&generator=search&gsrsearch=${encodeURIComponent(query)}` +
-      '&gsrnamespace=6' +
-      '&gsrlimit=1&prop=imageinfo&iiprop=url&format=json&origin=*'
+      `https://commons.wikimedia.org/w/api.php?action=query` +
+          `&generator=search&gsrsearch=${encodeURIComponent(query)}` +
+          `&gsrnamespace=6&gsrlimit=1&prop=imageinfo` +
+          `&iiprop=url&iiurlwidth=300&format=json&origin=*`;
 
     try {
       const response = await fetch(url)
