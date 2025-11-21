@@ -588,17 +588,24 @@ export default function CarDetail() {
             </div>
 
             {/* Contact */}
-            <div className="bg-blue-600 text-white rounded-2xl p-6">
-              <h3 className="text-xl font-bold mb-4">Interested?</h3>
-              {car.source_url && (
+            <div className="bg-gradient-to-br from-blue-600 to-blue-700 text-white rounded-2xl p-6 shadow-lg">
+              <h3 className="text-xl font-bold mb-4">Interested in this car?</h3>
+              <p className="text-blue-100 text-sm mb-4">
+                View the complete listing with all details and contact information
+              </p>
+              {car.source_url ? (
                 <a
                   href={car.source_url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="block w-full bg-white text-blue-600 py-3 rounded-lg font-semibold text-center hover:bg-blue-50 transition-colors"
+                  className="block w-full bg-white text-blue-600 py-3 rounded-lg font-semibold text-center hover:bg-blue-50 transition-all hover:shadow-md"
                 >
-                  View Original Listing
+                  🔗 View Original Listing
                 </a>
+              ) : (
+                <div className="bg-blue-500 bg-opacity-30 rounded-lg p-3 text-center text-sm">
+                  Original listing link not available
+                </div>
               )}
             </div>
           </div>

@@ -50,11 +50,11 @@ export default function Cars() {
 
   useEffect(() => {
     setCurrentPage(1);
-  }, [filters]);
+  }, [filters, searchQuery]);
 
   useEffect(() => {
     fetchCars();
-  }, [currentPage, filters]);
+  }, [currentPage, filters, searchQuery]);
 
   useEffect(() => {
     if (!cars.length) return;
@@ -121,10 +121,18 @@ export default function Cars() {
   const fetchCars = async () => {
     try {
       setLoading(true);
-      const params: any = { per_page: 51, page: currentPage };
+      const params: any = { per_page: 50, page: currentPage };
+      
+      // Add search query to API params
+      if (searchQuery) {
+        params.q = searchQuery;
+      }
+      
+      // Add filter params
       Object.entries(filters).forEach(([key, value]) => {
         if (value) params[key] = value;
       });
+      
       const response = await api.get('/cars', { params });
       setCars(response.data.cars || []);
       const pages = response.data.pagination?.pages || 1;
@@ -136,11 +144,8 @@ export default function Cars() {
     }
   };
 
-  const filteredCars = cars.filter(car =>
-    searchQuery === '' ||
-    car.brand.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    car.model.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  // No client-side filtering needed - backend handles it
+  const filteredCars = cars;
 
   const formatPrice = (price: number) =>
     new Intl.NumberFormat('da-DK', { style: 'currency', currency: 'DKK', maximumFractionDigits: 0 }).format(price);
