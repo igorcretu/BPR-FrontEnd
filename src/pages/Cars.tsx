@@ -24,6 +24,8 @@ export default function Cars() {
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [carImages, setCarImages] = useState<Record<string, string | null>>({});
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   const [filters, setFilters] = useState({
     brand: '',
     fuel_type: '',
@@ -35,10 +37,24 @@ export default function Cars() {
     price_max: '',
   });
   const [showFilters, setShowFilters] = useState(false);
+  const [filterOptions, setFilterOptions] = useState({
+    brands: [] as string[],
+    fuelTypes: [] as string[],
+    transmissions: [] as string[],
+    bodyTypes: [] as string[],
+  });
+
+  useEffect(() => {
+    fetchFilterOptions();
+  }, []);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [filters]);
 
   useEffect(() => {
     fetchCars();
-  }, [filters]);
+  }, [currentPage, filters]);
 
   useEffect(() => {
     if (!cars.length) return;
@@ -82,15 +98,30 @@ export default function Cars() {
     };
   }, [cars, carImages]);
 
+  const fetchFilterOptions = async () => {
+    try {
+      const response = await api.get('/cars/filters');
+      setFilterOptions({
+        brands: response.data.brands || [],
+        fuelTypes: response.data.fuel_types || [],
+        transmissions: response.data.transmissions || [],
+        bodyTypes: response.data.body_types || [],
+      });
+    } catch (error) {
+      console.error('Error fetching filter options:', error);
+    }
+  };
+
   const fetchCars = async () => {
     try {
       setLoading(true);
-      const params: any = { per_page: 50 };
+      const params: any = { per_page: 50, page: currentPage };
       Object.entries(filters).forEach(([key, value]) => {
         if (value) params[key] = value;
       });
       const response = await api.get('/cars', { params });
       setCars(response.data.cars || []);
+      setTotalPages(response.data.total_pages || 1);
     } catch (error) {
       console.error('Error fetching cars:', error);
     } finally {
@@ -141,12 +172,11 @@ export default function Cars() {
                 className="px-3 py-2 border rounded-lg"
               >
                 <option value="">All Brands</option>
-                <option value="Toyota">Toyota</option>
-                <option value="Volkswagen">Volkswagen</option>
-                <option value="BMW">BMW</option>
-                <option value="Tesla">Tesla</option>
-                <option value="Mercedes-Benz">Mercedes-Benz</option>
-                <option value="Audi">Audi</option>
+                {filterOptions.brands.map((brand) => (
+                  <option key={brand} value={brand}>
+                    {brand}
+                  </option>
+                ))}
               </select>
 
               <select
@@ -155,10 +185,11 @@ export default function Cars() {
                 className="px-3 py-2 border rounded-lg"
               >
                 <option value="">All Fuel Types</option>
-                <option value="Petrol">Petrol</option>
-                <option value="Diesel">Diesel</option>
-                <option value="Electric">Electric</option>
-                <option value="Hybrid">Hybrid</option>
+                {filterOptions.fuelTypes.map((fuelType) => (
+                  <option key={fuelType} value={fuelType}>
+                    {fuelType}
+                  </option>
+                ))}
               </select>
 
               <select
@@ -167,10 +198,11 @@ export default function Cars() {
                 className="px-3 py-2 border rounded-lg"
               >
                 <option value="">All Body Types</option>
-                <option value="Sedan">Sedan</option>
-                <option value="SUV">SUV</option>
-                <option value="Hatchback">Hatchback</option>
-                <option value="Wagon">Wagon</option>
+                {filterOptions.bodyTypes.map((bodyType) => (
+                  <option key={bodyType} value={bodyType}>
+                    {bodyType}
+                  </option>
+                ))}
               </select>
 
               <select
@@ -179,8 +211,11 @@ export default function Cars() {
                 className="px-3 py-2 border rounded-lg"
               >
                 <option value="">All Transmissions</option>
-                <option value="Automatic">Automatic</option>
-                <option value="Manual">Manual</option>
+                {filterOptions.transmissions.map((transmission) => (
+                  <option key={transmission} value={transmission}>
+                    {transmission}
+                  </option>
+                ))}
               </select>
 
               <input
@@ -299,6 +334,56 @@ export default function Cars() {
             <CarIcon className="w-16 h-16 text-gray-300 mx-auto mb-4" />
             <h3 className="text-xl font-semibold text-gray-900 mb-2">No cars found</h3>
             <p className="text-gray-600">Try adjusting your filters or search query</p>
+          </div>
+        )}
+
+        {/* Pagination */}
+        {!loading && filteredCars.length > 0 && totalPages > 1 && (
+          <div className="mt-12 flex items-center justify-center gap-2">
+            <button
+              onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+              disabled={currentPage === 1}
+              className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
+            >
+              Previous
+            </button>
+            
+            <div className="flex items-center gap-2">
+              {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                let pageNumber;
+                if (totalPages <= 5) {
+                  pageNumber = i + 1;
+                } else if (currentPage <= 3) {
+                  pageNumber = i + 1;
+                } else if (currentPage >= totalPages - 2) {
+                  pageNumber = totalPages - 4 + i;
+                } else {
+                  pageNumber = currentPage - 2 + i;
+                }
+                
+                return (
+                  <button
+                    key={pageNumber}
+                    onClick={() => setCurrentPage(pageNumber)}
+                    className={`w-10 h-10 rounded-lg font-medium transition-colors ${
+                      currentPage === pageNumber
+                        ? 'bg-blue-600 text-white'
+                        : 'border border-gray-300 hover:bg-gray-50'
+                    }`}
+                  >
+                    {pageNumber}
+                  </button>
+                );
+              })}
+            </div>
+
+            <button
+              onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
+              disabled={currentPage === totalPages}
+              className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
+            >
+              Next
+            </button>
           </div>
         )}
       </div>
