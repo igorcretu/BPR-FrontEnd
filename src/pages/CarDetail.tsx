@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { ArrowLeft, Fuel, Gauge, Car as CarIcon, TrendingUp, Loader } from 'lucide-react';
+import { ArrowLeft, Fuel, Gauge, Car as CarIcon, TrendingUp, Loader, Zap, Settings, MapPin, Calendar, Activity } from 'lucide-react';
 import api from '../api/client';
 import { getCarImage } from '../utils/carImages';
 
@@ -8,20 +8,34 @@ interface CarDetail {
   id: string;
   brand: string;
   model: string;
+  variant?: string;
+  title?: string;
+  description?: string;
   year: number;
   mileage: number;
   fuel_type: string;
   transmission: string;
   body_type: string;
-  engine_size: number;
-  horsepower: number;
-  doors: number;
-  seats: number;
-  color: string;
+  engine_size?: number;
+  horsepower?: number;
+  torque_nm?: number;
+  acceleration?: number;
+  top_speed?: number;
+  range_km?: number;
+  battery_capacity?: number;
+  doors?: number;
+  seats?: number;
+  color?: string;
+  weight?: number;
+  trunk_size?: number;
+  drive_type?: string;
   price: number;
-  location: string;
-  dealer_name: string;
-  source_url: string;
+  new_price?: number;
+  location?: string;
+  dealer_name?: string;
+  source_url?: string;
+  periodic_tax?: string;
+  equipment?: string;
 }
 
 interface Prediction {
@@ -47,27 +61,17 @@ export default function CarDetail() {
       setImageUrl(null);
       return;
     }
-
     let active = true;
-
     const loadImage = async () => {
       try {
-        const url = await getCarImage({
-          id: car.id,
-          brand: car.brand,
-          model: car.model,
-          year: car.year,
-        });
+        const url = await getCarImage({ id: car.id, brand: car.brand, model: car.model, year: car.year });
         if (active) setImageUrl(url);
       } catch (error) {
         console.error('Error fetching car image:', error);
       }
     };
-
     loadImage();
-    return () => {
-      active = false;
-    };
+    return () => { active = false; };
   }, [car]);
 
   const fetchCar = async () => {
@@ -96,7 +100,8 @@ export default function CarDetail() {
         horsepower: car.horsepower,
         engine_size: car.engine_size,
         doors: car.doors,
-        seats: car.seats,
+        color: car.color,
+        drive_type: car.drive_type,
       });
       setPrediction(response.data);
     } catch (error) {
@@ -108,6 +113,8 @@ export default function CarDetail() {
 
   const formatPrice = (price: number) =>
     new Intl.NumberFormat('da-DK', { style: 'currency', currency: 'DKK', maximumFractionDigits: 0 }).format(price);
+
+  const formatNumber = (n?: number) => n ? n.toLocaleString('da-DK') : 'N/A';
 
   if (loading) {
     return (
@@ -127,6 +134,8 @@ export default function CarDetail() {
   }
 
   const priceDiff = prediction ? ((car.price - prediction.predicted_price) / prediction.predicted_price * 100) : 0;
+  const isElectric = car.fuel_type?.toLowerCase().includes('electric') || car.fuel_type === 'El';
+  const depreciation = car.new_price ? ((car.new_price - car.price) / car.new_price * 100) : null;
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
@@ -140,97 +149,215 @@ export default function CarDetail() {
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-6">
             {/* Image */}
-            <div className="bg-gray-200 rounded-2xl h-96 flex items-center justify-center overflow-hidden relative">
+            <div className="bg-gray-200 rounded-2xl h-80 md:h-96 flex items-center justify-center overflow-hidden relative">
               {imageUrl ? (
-                <img
-                  src={imageUrl}
-                  alt={`${car.brand} ${car.model}`}
-                  className="absolute inset-0 w-full h-full object-cover"
-                />
+                <img src={imageUrl} alt={`${car.brand} ${car.model}`} className="absolute inset-0 w-full h-full object-cover" />
               ) : (
                 <CarIcon className="w-32 h-32 text-gray-400" />
               )}
             </div>
 
-            {/* Details */}
-            <div className="bg-white rounded-2xl p-8 shadow-md">
-              <div className="flex items-start justify-between mb-6">
+            {/* Header */}
+            <div className="bg-white rounded-2xl p-6 shadow-md">
+              <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
                 <div>
-                  <h1 className="text-4xl font-bold text-gray-900 mb-2">
+                  <h1 className="text-3xl font-bold text-gray-900">
                     {car.brand} {car.model}
                   </h1>
-                  <p className="text-gray-600">{car.dealer_name} • {car.location}</p>
+                  {car.variant && <p className="text-lg text-gray-600 mt-1">{car.variant}</p>}
+                  <div className="flex items-center gap-4 mt-2 text-sm text-gray-500">
+                    {car.dealer_name && <span>{car.dealer_name}</span>}
+                    {car.location && (
+                      <span className="flex items-center gap-1">
+                        <MapPin className="w-4 h-4" /> {car.location}
+                      </span>
+                    )}
+                  </div>
                 </div>
                 <div className="text-right">
-                  <div className="text-4xl font-bold text-blue-600">{formatPrice(car.price)}</div>
+                  <div className="text-3xl font-bold text-blue-600">{formatPrice(car.price)}</div>
+                  {car.new_price && (
+                    <div className="text-sm text-gray-500">
+                      New: {formatPrice(car.new_price)} ({depreciation?.toFixed(0)}% off)
+                    </div>
+                  )}
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-6 py-6 border-y">
-                <div>
-                  <div className="text-gray-500 text-sm mb-1">Year</div>
-                  <div className="font-semibold text-lg">{car.year}</div>
+              {/* Quick Stats */}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6 pt-6 border-t">
+                <div className="text-center p-3 bg-gray-50 rounded-lg">
+                  <Calendar className="w-5 h-5 mx-auto text-gray-400 mb-1" />
+                  <div className="font-semibold">{car.year}</div>
+                  <div className="text-xs text-gray-500">Year</div>
                 </div>
-                <div>
-                  <div className="text-gray-500 text-sm mb-1">Mileage</div>
-                  <div className="font-semibold text-lg">{car.mileage.toLocaleString()} km</div>
+                <div className="text-center p-3 bg-gray-50 rounded-lg">
+                  <Activity className="w-5 h-5 mx-auto text-gray-400 mb-1" />
+                  <div className="font-semibold">{formatNumber(car.mileage)} km</div>
+                  <div className="text-xs text-gray-500">Mileage</div>
                 </div>
-                <div>
-                  <div className="text-gray-500 text-sm mb-1">Fuel</div>
-                  <div className="font-semibold text-lg">{car.fuel_type}</div>
+                <div className="text-center p-3 bg-gray-50 rounded-lg">
+                  {isElectric ? <Zap className="w-5 h-5 mx-auto text-green-500 mb-1" /> : <Fuel className="w-5 h-5 mx-auto text-orange-500 mb-1" />}
+                  <div className="font-semibold">{car.fuel_type}</div>
+                  <div className="text-xs text-gray-500">Fuel</div>
                 </div>
-                <div>
-                  <div className="text-gray-500 text-sm mb-1">Transmission</div>
-                  <div className="font-semibold text-lg">{car.transmission}</div>
-                </div>
-              </div>
-
-              <div className="mt-6 space-y-4">
-                <h3 className="text-xl font-bold">Specifications</h3>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="flex items-center gap-3">
-                    <div className="bg-blue-100 p-2 rounded-lg">
-                      <Gauge className="w-5 h-5 text-blue-600" />
-                    </div>
-                    <div>
-                      <div className="text-sm text-gray-500">Horsepower</div>
-                      <div className="font-semibold">{car.horsepower} HP</div>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <div className="bg-green-100 p-2 rounded-lg">
-                      <Fuel className="w-5 h-5 text-green-600" />
-                    </div>
-                    <div>
-                      <div className="text-sm text-gray-500">Engine Size</div>
-                      <div className="font-semibold">{car.engine_size}L</div>
-                    </div>
-                  </div>
-                  <div>
-                    <div className="text-sm text-gray-500">Body Type</div>
-                    <div className="font-semibold">{car.body_type}</div>
-                  </div>
-                  <div>
-                    <div className="text-sm text-gray-500">Color</div>
-                    <div className="font-semibold">{car.color}</div>
-                  </div>
-                  <div>
-                    <div className="text-sm text-gray-500">Doors</div>
-                    <div className="font-semibold">{car.doors}</div>
-                  </div>
-                  <div>
-                    <div className="text-sm text-gray-500">Seats</div>
-                    <div className="font-semibold">{car.seats}</div>
-                  </div>
+                <div className="text-center p-3 bg-gray-50 rounded-lg">
+                  <Settings className="w-5 h-5 mx-auto text-gray-400 mb-1" />
+                  <div className="font-semibold">{car.transmission}</div>
+                  <div className="text-xs text-gray-500">Transmission</div>
                 </div>
               </div>
             </div>
+
+            {/* Specifications */}
+            <div className="bg-white rounded-2xl p-6 shadow-md">
+              <h3 className="text-xl font-bold mb-4">Specifications</h3>
+              <div className="grid md:grid-cols-2 gap-x-8 gap-y-4">
+                {/* Performance */}
+                <div>
+                  <h4 className="font-semibold text-gray-700 mb-3 flex items-center gap-2">
+                    <Gauge className="w-4 h-4 text-blue-600" /> Performance
+                  </h4>
+                  <dl className="space-y-2 text-sm">
+                    {car.horsepower && (
+                      <div className="flex justify-between">
+                        <dt className="text-gray-500">Horsepower</dt>
+                        <dd className="font-medium">{car.horsepower} HP</dd>
+                      </div>
+                    )}
+                    {car.torque_nm && (
+                      <div className="flex justify-between">
+                        <dt className="text-gray-500">Torque</dt>
+                        <dd className="font-medium">{car.torque_nm} Nm</dd>
+                      </div>
+                    )}
+                    {car.acceleration && (
+                      <div className="flex justify-between">
+                        <dt className="text-gray-500">0-100 km/h</dt>
+                        <dd className="font-medium">{car.acceleration} sec</dd>
+                      </div>
+                    )}
+                    {car.top_speed && (
+                      <div className="flex justify-between">
+                        <dt className="text-gray-500">Top Speed</dt>
+                        <dd className="font-medium">{car.top_speed} km/h</dd>
+                      </div>
+                    )}
+                    {!isElectric && car.engine_size && (
+                      <div className="flex justify-between">
+                        <dt className="text-gray-500">Engine Size</dt>
+                        <dd className="font-medium">{car.engine_size} L</dd>
+                      </div>
+                    )}
+                  </dl>
+                </div>
+
+                {/* Electric/Range */}
+                {isElectric && (
+                  <div>
+                    <h4 className="font-semibold text-gray-700 mb-3 flex items-center gap-2">
+                      <Zap className="w-4 h-4 text-green-600" /> Electric
+                    </h4>
+                    <dl className="space-y-2 text-sm">
+                      {car.range_km && (
+                        <div className="flex justify-between">
+                          <dt className="text-gray-500">Range (WLTP)</dt>
+                          <dd className="font-medium">{car.range_km} km</dd>
+                        </div>
+                      )}
+                      {car.battery_capacity && (
+                        <div className="flex justify-between">
+                          <dt className="text-gray-500">Battery</dt>
+                          <dd className="font-medium">{car.battery_capacity} kWh</dd>
+                        </div>
+                      )}
+                    </dl>
+                  </div>
+                )}
+
+                {/* Dimensions */}
+                <div>
+                  <h4 className="font-semibold text-gray-700 mb-3 flex items-center gap-2">
+                    <CarIcon className="w-4 h-4 text-purple-600" /> Body
+                  </h4>
+                  <dl className="space-y-2 text-sm">
+                    <div className="flex justify-between">
+                      <dt className="text-gray-500">Body Type</dt>
+                      <dd className="font-medium">{car.body_type}</dd>
+                    </div>
+                    {car.doors && (
+                      <div className="flex justify-between">
+                        <dt className="text-gray-500">Doors</dt>
+                        <dd className="font-medium">{car.doors}</dd>
+                      </div>
+                    )}
+                    {car.seats && (
+                      <div className="flex justify-between">
+                        <dt className="text-gray-500">Seats</dt>
+                        <dd className="font-medium">{car.seats}</dd>
+                      </div>
+                    )}
+                    {car.color && (
+                      <div className="flex justify-between">
+                        <dt className="text-gray-500">Color</dt>
+                        <dd className="font-medium">{car.color}</dd>
+                      </div>
+                    )}
+                    {car.drive_type && (
+                      <div className="flex justify-between">
+                        <dt className="text-gray-500">Drive Type</dt>
+                        <dd className="font-medium">{car.drive_type}</dd>
+                      </div>
+                    )}
+                  </dl>
+                </div>
+
+                {/* Practical */}
+                <div>
+                  <h4 className="font-semibold text-gray-700 mb-3">Practical</h4>
+                  <dl className="space-y-2 text-sm">
+                    {car.weight && (
+                      <div className="flex justify-between">
+                        <dt className="text-gray-500">Weight</dt>
+                        <dd className="font-medium">{formatNumber(car.weight)} kg</dd>
+                      </div>
+                    )}
+                    {car.trunk_size && (
+                      <div className="flex justify-between">
+                        <dt className="text-gray-500">Trunk Size</dt>
+                        <dd className="font-medium">{car.trunk_size} L</dd>
+                      </div>
+                    )}
+                    {car.periodic_tax && (
+                      <div className="flex justify-between">
+                        <dt className="text-gray-500">Tax</dt>
+                        <dd className="font-medium">{car.periodic_tax}</dd>
+                      </div>
+                    )}
+                  </dl>
+                </div>
+              </div>
+            </div>
+
+            {/* Equipment */}
+            {car.equipment && (
+              <div className="bg-white rounded-2xl p-6 shadow-md">
+                <h3 className="text-xl font-bold mb-4">Equipment</h3>
+                <div className="flex flex-wrap gap-2">
+                  {car.equipment.split('|').slice(0, 20).map((item, i) => (
+                    <span key={i} className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm">
+                      {item.trim()}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Sidebar */}
           <div className="space-y-6">
             {/* Price Prediction */}
-            <div className="bg-white rounded-2xl p-6 shadow-md">
+            <div className="bg-white rounded-2xl p-6 shadow-md sticky top-8">
               <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
                 <TrendingUp className="w-5 h-5 text-blue-600" />
                 AI Price Analysis
@@ -240,7 +367,7 @@ export default function CarDetail() {
                 <button
                   onClick={getPrediction}
                   disabled={predicting}
-                  className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                  className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
                 >
                   {predicting ? (
                     <>
@@ -262,7 +389,7 @@ export default function CarDetail() {
 
                   <div className={`p-4 rounded-lg ${priceDiff > 5 ? 'bg-red-50' : priceDiff < -5 ? 'bg-green-50' : 'bg-blue-50'}`}>
                     <div className="text-sm font-medium mb-1">
-                      {priceDiff > 5 ? 'Overpriced' : priceDiff < -5 ? 'Good Deal' : 'Fair Price'}
+                      {priceDiff > 5 ? '⚠️ Overpriced' : priceDiff < -5 ? '✅ Good Deal' : '👍 Fair Price'}
                     </div>
                     <div className={`text-lg font-bold ${priceDiff > 5 ? 'text-red-600' : priceDiff < -5 ? 'text-green-600' : 'text-blue-600'}`}>
                       {priceDiff > 0 ? '+' : ''}{priceDiff.toFixed(1)}% vs market
@@ -270,19 +397,21 @@ export default function CarDetail() {
                   </div>
 
                   <div>
-                    <div className="text-sm text-gray-500 mb-2">Expected Price Range</div>
+                    <div className="text-sm text-gray-500 mb-2">Price Range</div>
                     <div className="flex justify-between text-sm">
                       <span>{formatPrice(prediction.price_range.min)}</span>
                       <span>{formatPrice(prediction.price_range.max)}</span>
                     </div>
-                    <div className="h-2 bg-gray-200 rounded-full mt-2 relative">
-                      <div className="absolute h-full bg-blue-600 rounded-full" style={{ width: '100%' }}></div>
+                    <div className="h-2 bg-gray-200 rounded-full mt-2">
+                      <div className="h-full bg-blue-600 rounded-full" style={{ width: '100%' }}></div>
                     </div>
                   </div>
 
-                  <div className="pt-4 border-t">
-                    <div className="text-sm text-gray-500">Confidence</div>
-                    <div className="text-xl font-bold text-gray-900">{prediction.confidence.toFixed(1)}%</div>
+                  <div className="pt-4 border-t text-sm">
+                    <div className="flex justify-between text-gray-500">
+                      <span>Confidence</span>
+                      <span className="font-semibold text-gray-700">{prediction.confidence.toFixed(1)}%</span>
+                    </div>
                   </div>
                 </div>
               )}
@@ -291,14 +420,16 @@ export default function CarDetail() {
             {/* Contact */}
             <div className="bg-blue-600 text-white rounded-2xl p-6">
               <h3 className="text-xl font-bold mb-4">Interested?</h3>
-              <a
-                href={car.source_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block w-full bg-white text-blue-600 py-3 rounded-lg font-semibold text-center hover:bg-blue-50 transition-colors"
-              >
-                View Original Listing
-              </a>
+              {car.source_url && (
+                <a
+                  href={car.source_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block w-full bg-white text-blue-600 py-3 rounded-lg font-semibold text-center hover:bg-blue-50 transition-colors"
+                >
+                  View Original Listing
+                </a>
+              )}
             </div>
           </div>
         </div>
