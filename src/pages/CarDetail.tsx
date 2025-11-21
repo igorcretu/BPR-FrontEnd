@@ -23,11 +23,21 @@ interface CarDetail {
   top_speed?: number;
   range_km?: number;
   battery_capacity?: number;
+  energy_consumption?: number;
+  home_charging_ac?: string;
+  fast_charging_dc?: string;
+  charging_time_dc?: string;
   doors?: number;
   seats?: number;
   color?: string;
   weight?: number;
+  width?: number;
+  length?: number;
+  height?: number;
   trunk_size?: number;
+  load_capacity?: number;
+  towing_capacity?: number;
+  max_towing_weight?: number;
   drive_type?: string;
   price: number;
   new_price?: number;
@@ -36,6 +46,15 @@ interface CarDetail {
   source_url?: string;
   periodic_tax?: string;
   equipment?: string;
+  fuel_consumption?: string;
+  co2_emission?: string;
+  euro_norm?: string;
+  gear_count?: number;
+  cylinders?: number;
+  tank_capacity?: number;
+  abs_brakes?: boolean;
+  esp?: boolean;
+  airbags?: number;
 }
 
 interface Prediction {
@@ -271,6 +290,65 @@ export default function CarDetail() {
                           <dd className="font-medium">{car.battery_capacity} kWh</dd>
                         </div>
                       )}
+                      {car.energy_consumption && (
+                        <div className="flex justify-between">
+                          <dt className="text-gray-500">Consumption</dt>
+                          <dd className="font-medium">{car.energy_consumption} Wh/km</dd>
+                        </div>
+                      )}
+                      {car.home_charging_ac && (
+                        <div className="flex justify-between">
+                          <dt className="text-gray-500">AC Charging</dt>
+                          <dd className="font-medium">{car.home_charging_ac}</dd>
+                        </div>
+                      )}
+                      {car.fast_charging_dc && (
+                        <div className="flex justify-between">
+                          <dt className="text-gray-500">DC Charging</dt>
+                          <dd className="font-medium">{car.fast_charging_dc}</dd>
+                        </div>
+                      )}
+                      {car.charging_time_dc && (
+                        <div className="flex justify-between">
+                          <dt className="text-gray-500">DC Time (10-80%)</dt>
+                          <dd className="font-medium">{car.charging_time_dc}</dd>
+                        </div>
+                      )}
+                    </dl>
+                  </div>
+                )}
+
+                {/* Fuel Efficiency & Emissions */}
+                {!isElectric && (car.fuel_consumption || car.co2_emission || car.euro_norm) && (
+                  <div>
+                    <h4 className="font-semibold text-gray-700 mb-3 flex items-center gap-2">
+                      <Fuel className="w-4 h-4 text-orange-600" /> Efficiency
+                    </h4>
+                    <dl className="space-y-2 text-sm">
+                      {car.fuel_consumption && (
+                        <div className="flex justify-between">
+                          <dt className="text-gray-500">Consumption</dt>
+                          <dd className="font-medium">{car.fuel_consumption}</dd>
+                        </div>
+                      )}
+                      {car.co2_emission && (
+                        <div className="flex justify-between">
+                          <dt className="text-gray-500">CO₂ Emission</dt>
+                          <dd className="font-medium">{car.co2_emission}</dd>
+                        </div>
+                      )}
+                      {car.euro_norm && (
+                        <div className="flex justify-between">
+                          <dt className="text-gray-500">Euro Norm</dt>
+                          <dd className="font-medium">{car.euro_norm}</dd>
+                        </div>
+                      )}
+                      {car.tank_capacity && (
+                        <div className="flex justify-between">
+                          <dt className="text-gray-500">Tank Capacity</dt>
+                          <dd className="font-medium">{car.tank_capacity} L</dd>
+                        </div>
+                      )}
                     </dl>
                   </div>
                 )}
@@ -309,6 +387,18 @@ export default function CarDetail() {
                         <dd className="font-medium">{car.drive_type}</dd>
                       </div>
                     )}
+                    {car.gear_count && (
+                      <div className="flex justify-between">
+                        <dt className="text-gray-500">Gears</dt>
+                        <dd className="font-medium">{car.gear_count}</dd>
+                      </div>
+                    )}
+                    {car.cylinders && (
+                      <div className="flex justify-between">
+                        <dt className="text-gray-500">Cylinders</dt>
+                        <dd className="font-medium">{car.cylinders}</dd>
+                      </div>
+                    )}
                   </dl>
                 </div>
 
@@ -328,6 +418,24 @@ export default function CarDetail() {
                         <dd className="font-medium">{car.trunk_size} L</dd>
                       </div>
                     )}
+                    {car.load_capacity && (
+                      <div className="flex justify-between">
+                        <dt className="text-gray-500">Load Capacity</dt>
+                        <dd className="font-medium">{formatNumber(car.load_capacity)} kg</dd>
+                      </div>
+                    )}
+                    {car.towing_capacity && (
+                      <div className="flex justify-between">
+                        <dt className="text-gray-500">Towing Capacity</dt>
+                        <dd className="font-medium">{formatNumber(car.towing_capacity)} kg</dd>
+                      </div>
+                    )}
+                    {car.max_towing_weight && (
+                      <div className="flex justify-between">
+                        <dt className="text-gray-500">Max Towing (Brakes)</dt>
+                        <dd className="font-medium">{formatNumber(car.max_towing_weight)} kg</dd>
+                      </div>
+                    )}
                     {car.periodic_tax && (
                       <div className="flex justify-between">
                         <dt className="text-gray-500">Tax</dt>
@@ -336,8 +444,70 @@ export default function CarDetail() {
                     )}
                   </dl>
                 </div>
+
+                {/* Dimensions */}
+                {(car.width || car.length || car.height) && (
+                  <div>
+                    <h4 className="font-semibold text-gray-700 mb-3">Dimensions</h4>
+                    <dl className="space-y-2 text-sm">
+                      {car.length && (
+                        <div className="flex justify-between">
+                          <dt className="text-gray-500">Length</dt>
+                          <dd className="font-medium">{car.length} cm</dd>
+                        </div>
+                      )}
+                      {car.width && (
+                        <div className="flex justify-between">
+                          <dt className="text-gray-500">Width</dt>
+                          <dd className="font-medium">{car.width} cm</dd>
+                        </div>
+                      )}
+                      {car.height && (
+                        <div className="flex justify-between">
+                          <dt className="text-gray-500">Height</dt>
+                          <dd className="font-medium">{car.height} cm</dd>
+                        </div>
+                      )}
+                    </dl>
+                  </div>
+                )}
+
+                {/* Safety */}
+                {(car.abs_brakes !== undefined || car.esp !== undefined || car.airbags) && (
+                  <div>
+                    <h4 className="font-semibold text-gray-700 mb-3">Safety</h4>
+                    <dl className="space-y-2 text-sm">
+                      {car.abs_brakes !== undefined && (
+                        <div className="flex justify-between">
+                          <dt className="text-gray-500">ABS Brakes</dt>
+                          <dd className="font-medium">{car.abs_brakes ? '✓ Yes' : '✗ No'}</dd>
+                        </div>
+                      )}
+                      {car.esp !== undefined && (
+                        <div className="flex justify-between">
+                          <dt className="text-gray-500">ESP</dt>
+                          <dd className="font-medium">{car.esp ? '✓ Yes' : '✗ No'}</dd>
+                        </div>
+                      )}
+                      {car.airbags && (
+                        <div className="flex justify-between">
+                          <dt className="text-gray-500">Airbags</dt>
+                          <dd className="font-medium">{car.airbags}</dd>
+                        </div>
+                      )}
+                    </dl>
+                  </div>
+                )}
               </div>
             </div>
+
+            {/* Description */}
+            {car.description && (
+              <div className="bg-white rounded-2xl p-6 shadow-md">
+                <h3 className="text-xl font-bold mb-4">Description</h3>
+                <p className="text-gray-700 whitespace-pre-line leading-relaxed">{car.description}</p>
+              </div>
+            )}
 
             {/* Equipment */}
             {car.equipment && (
