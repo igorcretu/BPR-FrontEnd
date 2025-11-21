@@ -5,6 +5,9 @@ type CarImageDescriptor = {
   year: number
 }
 
+const IMAGIN_BASE_URL = 'https://cdn.imagin.studio/getimage'
+const IMAGIN_CUSTOMER = 'hrjavascript-mastery'
+const DEFAULT_ANGLE = 'front'
 const CACHE_VERSION = 'v2'
 const memoryCache = new Map<string, string | null>()
 const STORAGE_PREFIX = `car-image:${CACHE_VERSION}:`
@@ -34,7 +37,22 @@ const writeToSession = (key: string, value: string | null) => {
   }
 }
 
-const lookupCarImage = async (brand: string, model: string, year: number): Promise<string | null> => {
+export const generateCarImageUrl = (car: CarImageDescriptor, angle: string = DEFAULT_ANGLE): string | null => {
+  const { brand, model, year } = car
+  if (!brand?.trim() || !model?.trim() || !year) return null
+
+  const url = new URL(IMAGIN_BASE_URL)
+  url.searchParams.append('customer', IMAGIN_CUSTOMER)
+  url.searchParams.append('make', brand.trim())
+  url.searchParams.append('modelFamily', model.trim().split(/\s+/)[0])
+  url.searchParams.append('zoomType', 'fullscreen')
+  url.searchParams.append('modelYear', `${year}`)
+  if (angle) url.searchParams.append('angle', angle)
+
+  return url.toString()
+}
+
+const lookupWikimediaImage = async (brand: string, model: string, year: number): Promise<string | null> => {
   const queries = [`${year} ${brand} ${model}`]
   const desiredWidth = 800
 
@@ -80,12 +98,19 @@ export const getCarImage = async (descriptor: CarImageDescriptor): Promise<strin
     return stored
   }
 
-  const image = await lookupCarImage(descriptor.brand, descriptor.model, descriptor.year)
+  const generated = generateCarImageUrl(descriptor)
+  if (generated) {
+    memoryCache.set(key, generated)
+    writeToSession(key, generated)
+    return generated
+  }
+
+  const image = await lookupWikimediaImage(descriptor.brand, descriptor.model, descriptor.year)
   memoryCache.set(key, image)
   writeToSession(key, image)
   return image
 }
 
-export const fetchRandomCarImage = lookupCarImage
+export const fetchRandomCarImage = lookupWikimediaImage
 
 export type { CarImageDescriptor }
