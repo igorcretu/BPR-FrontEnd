@@ -9,10 +9,21 @@ interface HealthStatus {
   responseTime?: number;
 }
 
+interface MLModelInfo {
+  version?: string;
+  loaded?: boolean;
+  type?: string;
+  model_name?: string;
+  test_r2?: number | string;
+  test_mae?: number | string;
+  features_count?: number;
+}
+
 interface ServiceHealth {
   api: HealthStatus;
   database?: HealthStatus;
   cache?: HealthStatus;
+  mlModel?: MLModelInfo;
 }
 
 export default function BackendHealth() {
@@ -30,31 +41,35 @@ export default function BackendHealth() {
     }));
 
     try {
-      const response = await api.get('/health');
+      // Use fetch directly to avoid the /api prefix from the client
+      const apiHost = (import.meta.env.VITE_API_URL || 'https://test.bachelorproject26.site').replace(/\/$/, '');
+      const response = await fetch(`${apiHost}/health`);
       const responseTime = Date.now() - startTime;
 
-      if (response.status === 200) {
+      if (response.ok) {
+        const data = await response.json();
         setHealth({
           api: {
             status: 'healthy',
-            message: response.data.message || 'API is healthy',
+            message: data.message || 'API is healthy',
             timestamp: new Date().toISOString(),
             responseTime,
           },
-          database: response.data.database
+          database: data.database
             ? {
-                status: response.data.database.status === 'connected' ? 'healthy' : 'unhealthy',
-                message: response.data.database.message || 'Database is connected',
+                status: data.database.status === 'connected' ? 'healthy' : 'unhealthy',
+                message: data.database.message || 'Database is connected',
                 timestamp: new Date().toISOString(),
               }
             : undefined,
-          cache: response.data.cache
+          cache: data.cache
             ? {
-                status: response.data.cache.status === 'connected' ? 'healthy' : 'unhealthy',
-                message: response.data.cache.message || 'Cache is connected',
+                status: data.cache.status === 'connected' ? 'healthy' : 'unhealthy',
+                message: data.cache.message || 'Cache is connected',
                 timestamp: new Date().toISOString(),
               }
             : undefined,
+          mlModel: data.ml_model || undefined,
         });
       }
     } catch (error: any) {
@@ -62,7 +77,7 @@ export default function BackendHealth() {
       setHealth({
         api: {
           status: 'unhealthy',
-          message: error.response?.data?.message || error.message || 'Failed to connect to API',
+          message: error.message || 'Failed to connect to API',
           timestamp: new Date().toISOString(),
           responseTime,
         },
@@ -235,6 +250,49 @@ export default function BackendHealth() {
                 <div className="flex flex-wrap gap-4 text-sm text-gray-600">
                   <span>Status: <span className="font-semibold">{health.cache.status}</span></span>
                   <span>Updated: {formatTimestamp(health.cache.timestamp)}</span>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ML Model / Predictor Health */}
+          {health.mlModel && (
+            <div
+              className={`rounded-lg shadow-md border-2 p-6 transition-all ${health.mlModel.loaded ? 'bg-green-50 border-green-200' : 'bg-yellow-50 border-yellow-200'}`}
+            >
+              <div className="flex items-start justify-between mb-4">
+                <div className="flex items-center gap-3">
+                  <Cpu className="w-8 h-8 text-indigo-600" />
+                  <div>
+                    <h3 className="text-xl font-bold text-gray-900">ML Price Predictor</h3>
+                    <p className="text-sm text-gray-600">Machine learning model</p>
+                  </div>
+                </div>
+                {health.mlModel.loaded ? (
+                  <CheckCircle className="w-6 h-6 text-green-500" />
+                ) : (
+                  <AlertTriangle className="w-6 h-6 text-yellow-500" />
+                )}
+              </div>
+              <div className="space-y-2">
+                <p className="text-gray-700">
+                  {health.mlModel.loaded ? 'Model loaded and ready' : 'Using heuristic fallback'}
+                </p>
+                <div className="grid grid-cols-2 gap-3 text-sm text-gray-600">
+                  <span>Type: <span className="font-semibold">{health.mlModel.type || 'N/A'}</span></span>
+                  <span>Version: <span className="font-semibold">{health.mlModel.version || 'N/A'}</span></span>
+                  {health.mlModel.model_name && health.mlModel.model_name !== 'N/A' && (
+                    <span>Model: <span className="font-semibold">{health.mlModel.model_name}</span></span>
+                  )}
+                  {health.mlModel.features_count && (
+                    <span>Features: <span className="font-semibold">{health.mlModel.features_count}</span></span>
+                  )}
+                  {health.mlModel.test_r2 && health.mlModel.test_r2 !== 'N/A' && (
+                    <span>R² Score: <span className="font-semibold">{typeof health.mlModel.test_r2 === 'number' ? health.mlModel.test_r2.toFixed(4) : health.mlModel.test_r2}</span></span>
+                  )}
+                  {health.mlModel.test_mae && health.mlModel.test_mae !== 'N/A' && (
+                    <span>MAE: <span className="font-semibold">{typeof health.mlModel.test_mae === 'number' ? health.mlModel.test_mae.toFixed(0) : health.mlModel.test_mae}</span></span>
+                  )}
                 </div>
               </div>
             </div>

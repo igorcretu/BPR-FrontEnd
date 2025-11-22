@@ -7,10 +7,14 @@ import api from '../../api/client';
 jest.mock('../../api/client');
 const mockedApi = api as jest.Mocked<typeof api>;
 
+// Mock fetch globally
+global.fetch = jest.fn();
+
 describe('BackendHealth', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     jest.useFakeTimers();
+    (global.fetch as jest.Mock).mockReset();
   });
 
   afterEach(() => {
@@ -19,9 +23,9 @@ describe('BackendHealth', () => {
   });
 
   it('renders the health check page', () => {
-    mockedApi.get.mockResolvedValue({
-      status: 200,
-      data: { message: 'API is healthy' },
+    (global.fetch as jest.Mock).mockResolvedValue({
+      ok: true,
+      json: async () => ({ message: 'API is healthy' }),
     });
 
     render(
@@ -35,9 +39,9 @@ describe('BackendHealth', () => {
   });
 
   it('displays healthy status when API responds successfully', async () => {
-    mockedApi.get.mockResolvedValue({
-      status: 200,
-      data: { message: 'API is healthy' },
+    (global.fetch as jest.Mock).mockResolvedValue({
+      ok: true,
+      json: async () => ({ message: 'API is healthy' }),
     });
 
     render(
@@ -52,7 +56,7 @@ describe('BackendHealth', () => {
   });
 
   it('displays unhealthy status when API fails', async () => {
-    mockedApi.get.mockRejectedValue(new Error('Connection failed'));
+    (global.fetch as jest.Mock).mockRejectedValue(new Error('Connection failed'));
 
     render(
       <BrowserRouter>
@@ -67,9 +71,9 @@ describe('BackendHealth', () => {
 
   it('refreshes health status when refresh button is clicked', async () => {
     const user = userEvent.setup({ delay: null });
-    mockedApi.get.mockResolvedValue({
-      status: 200,
-      data: { message: 'API is healthy' },
+    (global.fetch as jest.Mock).mockResolvedValue({
+      ok: true,
+      json: async () => ({ message: 'API is healthy' }),
     });
 
     render(
@@ -85,14 +89,14 @@ describe('BackendHealth', () => {
     const refreshButton = screen.getByRole('button', { name: /Refresh Now/i });
     await user.click(refreshButton);
 
-    expect(mockedApi.get).toHaveBeenCalledTimes(2);
+    expect(global.fetch).toHaveBeenCalledTimes(2);
   });
 
   it('toggles auto-refresh', async () => {
     const user = userEvent.setup({ delay: null });
-    mockedApi.get.mockResolvedValue({
-      status: 200,
-      data: { message: 'API is healthy' },
+    (global.fetch as jest.Mock).mockResolvedValue({
+      ok: true,
+      json: async () => ({ message: 'API is healthy' }),
     });
 
     render(
@@ -109,15 +113,15 @@ describe('BackendHealth', () => {
   });
 
   it('displays database health when provided', async () => {
-    mockedApi.get.mockResolvedValue({
-      status: 200,
-      data: {
+    (global.fetch as jest.Mock).mockResolvedValue({
+      ok: true,
+      json: async () => ({
         message: 'API is healthy',
         database: {
           status: 'connected',
           message: 'Database is connected',
         },
-      },
+      }),
     });
 
     render(
@@ -133,9 +137,9 @@ describe('BackendHealth', () => {
   });
 
   it('displays response time', async () => {
-    mockedApi.get.mockResolvedValue({
-      status: 200,
-      data: { message: 'API is healthy' },
+    (global.fetch as jest.Mock).mockResolvedValue({
+      ok: true,
+      json: async () => ({ message: 'API is healthy' }),
     });
 
     render(
