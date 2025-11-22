@@ -4,11 +4,15 @@ import Home from './pages/Home';
 import Cars from './pages/Cars';
 import CarDetail from './pages/CarDetail';
 import Predict from './pages/Predict';
+import HowItWorks from './pages/HowItWorks';
+import AboutUs from './pages/AboutUs';
+import ScrollToTop from './components/ScrollToTop';
 
 
 export default function App() {
   return (
     <BrowserRouter>
+      <ScrollToTop />
       <div className="min-h-screen bg-gray-50">
         {/* Navigation */}
         <nav className="bg-white border-b sticky top-0 z-50 shadow-sm">
@@ -40,7 +44,8 @@ export default function App() {
           <Route path="/cars" element={<Cars />} />
           <Route path="/cars/:id" element={<CarDetail />} />
           <Route path="/predict" element={<Predict />} />
-          
+          <Route path="/how-it-works" element={<HowItWorks />} />
+          <Route path="/about-us" element={<AboutUs />} />
         </Routes>
 
         {/* Footer */}
@@ -64,8 +69,8 @@ export default function App() {
               <div>
                 <h4 className="font-semibold mb-4">About</h4>
                 <ul className="space-y-2 text-gray-400">
-                  <li><a href="#" className="hover:text-white">About Us</a></li>
-                  <li><a href="#" className="hover:text-white">How It Works</a></li>
+                  <li><Link to="/about-us" className="hover:text-white">About Us</Link></li>
+                  <li><Link to="/how-it-works" className="hover:text-white">How It Works</Link></li>
                 </ul>
               </div>
               <div>

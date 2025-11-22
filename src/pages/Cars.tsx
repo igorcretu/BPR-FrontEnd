@@ -366,84 +366,64 @@ export default function Cars() {
 
         {/* Pagination */}
         {!loading && filteredCars.length > 0 && totalPages > 1 && (
-          <div className="mt-12 bg-white rounded-2xl shadow-md p-6">
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="mt-12 flex flex-col items-center gap-4">
+            <div className="flex items-center gap-2">
               {/* Previous Button */}
               <button
                 onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
                 disabled={currentPage === 1}
-                className="group flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl hover:from-blue-700 hover:to-blue-800 disabled:from-gray-300 disabled:to-gray-400 disabled:cursor-not-allowed transition-all duration-300 shadow-lg hover:shadow-xl disabled:shadow-none font-semibold min-w-[140px] justify-center"
+                className="group w-10 h-10 flex items-center justify-center bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
               >
-                <svg className="w-5 h-5 transition-transform group-hover:-translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className="w-5 h-5 transition-transform group-hover:-translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                 </svg>
-                Previous
               </button>
 
-              {/* Page Indicators */}
-              <div className="flex items-center gap-3">
-                <div className="flex items-center gap-2">
-                  {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-                    let pageNumber;
-                    if (totalPages <= 5) {
-                      pageNumber = i + 1;
-                    } else if (currentPage <= 3) {
-                      pageNumber = i + 1;
-                    } else if (currentPage >= totalPages - 2) {
-                      pageNumber = totalPages - 4 + i;
-                    } else {
-                      pageNumber = currentPage - 2 + i;
-                    }
-                    
-                    const isActive = currentPage === pageNumber;
-                    
-                    return (
-                      <button
-                        key={pageNumber}
-                        onClick={() => setCurrentPage(pageNumber)}
-                        className={`relative w-12 h-12 rounded-xl font-bold transition-all duration-300 ${
-                          isActive
-                            ? 'bg-gradient-to-br from-blue-600 to-blue-700 text-white shadow-lg scale-110 ring-4 ring-blue-200'
-                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200 hover:scale-105 hover:shadow-md'
-                        }`}
-                      >
-                        {pageNumber}
-                        {isActive && (
-                          <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-2 h-2 bg-blue-600 rounded-full"></span>
-                        )}
-                      </button>
-                    );
-                  })}
-                </div>
+              {/* Page Numbers */}
+              {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                let pageNumber;
+                if (totalPages <= 5) {
+                  pageNumber = i + 1;
+                } else if (currentPage <= 3) {
+                  pageNumber = i + 1;
+                } else if (currentPage >= totalPages - 2) {
+                  pageNumber = totalPages - 4 + i;
+                } else {
+                  pageNumber = currentPage - 2 + i;
+                }
                 
-                {/* Page Counter */}
-                <div className="hidden sm:flex items-center gap-2 ml-4 px-4 py-2 bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl border border-gray-200">
-                  <span className="text-sm text-gray-600">Page</span>
-                  <span className="text-lg font-bold text-blue-600">{currentPage}</span>
-                  <span className="text-sm text-gray-400">of</span>
-                  <span className="text-lg font-bold text-gray-700">{totalPages}</span>
-                </div>
-              </div>
+                const isActive = currentPage === pageNumber;
+                
+                return (
+                  <button
+                    key={pageNumber}
+                    onClick={() => setCurrentPage(pageNumber)}
+                    className={`w-10 h-10 rounded-lg font-semibold transition-all ${
+                      isActive
+                        ? 'bg-blue-600 text-white shadow-md'
+                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    }`}
+                  >
+                    {pageNumber}
+                  </button>
+                );
+              })}
 
               {/* Next Button */}
               <button
                 onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
                 disabled={currentPage === totalPages}
-                className="group flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl hover:from-blue-700 hover:to-blue-800 disabled:from-gray-300 disabled:to-gray-400 disabled:cursor-not-allowed transition-all duration-300 shadow-lg hover:shadow-xl disabled:shadow-none font-semibold min-w-[140px] justify-center"
+                className="group w-10 h-10 flex items-center justify-center bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
               >
-                Next
-                <svg className="w-5 h-5 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className="w-5 h-5 transition-transform group-hover:translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                 </svg>
               </button>
             </div>
             
-            {/* Mobile Page Counter */}
-            <div className="sm:hidden flex items-center justify-center gap-2 mt-4 px-4 py-2 bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl border border-gray-200">
-              <span className="text-sm text-gray-600">Page</span>
-              <span className="text-lg font-bold text-blue-600">{currentPage}</span>
-              <span className="text-sm text-gray-400">of</span>
-              <span className="text-lg font-bold text-gray-700">{totalPages}</span>
+            {/* Page Counter */}
+            <div className="text-sm text-gray-600">
+              Page <span className="font-semibold text-blue-600">{currentPage}</span> of <span className="font-semibold text-gray-900">{totalPages}</span>
             </div>
           </div>
         )}
