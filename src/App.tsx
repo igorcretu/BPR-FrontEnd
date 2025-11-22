@@ -24,12 +24,20 @@ export default function App() {
               </Link>
 
               <div className="hidden md:flex items-center gap-8">
+                                <Link to="/about-us" className="text-gray-700 hover:text-blue-600 transition-colors font-medium">
+                  About Us
+                </Link>
+                <Link to="/how-it-works" className="text-gray-700 hover:text-blue-600 transition-colors font-medium">
+                  How It Works
+                </Link>
+
                 <Link to="/cars" className="text-gray-700 hover:text-blue-600 transition-colors font-medium">
                   Browse Cars
                 </Link>
                 <Link to="/predict" className="text-gray-700 hover:text-blue-600 transition-colors font-medium">
                   Predict Price
                 </Link>
+                
                 <Link to="/cars" className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors font-medium">
                   Get Started
                 </Link>

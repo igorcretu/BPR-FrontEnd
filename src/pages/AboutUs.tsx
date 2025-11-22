@@ -1,4 +1,4 @@
-import { Users, Target, Lightbulb, Award, Heart, Code, Database, Sparkles } from 'lucide-react';
+import { Users, Target, Lightbulb, Award, Heart, Code, Database, Sparkles, Shield } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export default function AboutUs() {
@@ -244,6 +244,70 @@ export default function AboutUs() {
           </div>
         </div>
       </div>
+
+      {/* Disclaimer Section */}
+      <section className="py-16 px-4 bg-gradient-to-br from-gray-50 to-blue-50">
+        <div className="max-w-7xl mx-auto">
+          <div className="bg-white rounded-2xl shadow-lg p-8 md:p-12 border border-blue-100">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="bg-blue-100 p-3 rounded-xl">
+                <Shield className="w-6 h-6 text-blue-600" />
+              </div>
+              <h2 className="text-3xl font-bold text-gray-900">Academic Project Disclaimer</h2>
+            </div>
+            
+            <div className="space-y-4 text-gray-700 leading-relaxed">
+              <p className="text-lg">
+                This platform is developed as part of a Bachelor's thesis project at VIA University College, Denmark, 
+                by Group 26 for the academic year 2024-2025.
+              </p>
+              
+              <div className="bg-blue-50 border-l-4 border-blue-600 p-6 rounded-r-lg my-6">
+                <p className="font-semibold text-blue-900 mb-2">Important Notice:</p>
+                <p className="text-blue-800">
+                  This project is created solely for educational and demonstration purposes. It is not intended for 
+                  commercial use, and no commercial activities or transactions are conducted through this platform.
+                </p>
+              </div>
+
+              <p>
+                The car listings displayed on this platform are scraped from publicly available Danish car marketplaces 
+                for research and educational purposes. All data belongs to the respective original sources and dealers. 
+                We do not claim ownership of any vehicle listings, images, or pricing information.
+              </p>
+
+              <p>
+                The AI price predictions provided by this platform are generated using machine learning models trained 
+                on historical data and should be considered as <strong>educational estimates only</strong>. These predictions 
+                are not professional appraisals and should not be used as the sole basis for making purchasing decisions.
+              </p>
+
+              <p>
+                <strong>Limitation of Liability:</strong> The developers, contributors, and VIA University College 
+                assume no responsibility or liability for:
+              </p>
+
+              <ul className="list-disc list-inside ml-4 space-y-2 text-gray-700">
+                <li>The accuracy, completeness, or reliability of any information displayed on this platform</li>
+                <li>Any decisions made based on the price predictions or data provided</li>
+                <li>Any technical issues, data inconsistencies, or service interruptions</li>
+                <li>Any damages or losses arising from the use of this platform</li>
+              </ul>
+
+              <p>
+                This platform is provided <strong>"as is"</strong> without any warranties, express or implied. 
+                Users are encouraged to verify all information independently through official sources and dealerships 
+                before making any purchasing decisions.
+              </p>
+
+              <p className="text-sm text-gray-600 pt-4 border-t mt-6">
+                For educational inquiries or feedback about this project, please contact VIA University College. 
+                This platform may be taken offline after the completion of the academic assessment period.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }
