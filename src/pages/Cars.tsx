@@ -132,11 +132,9 @@ export default function Cars() {
               fuel_type: car.fuel_type,
               transmission: car.transmission,
               body_type: car.body_type,
-              horsepower: car.horsepower,
+              horsepower: car.horsepower || 150,
               engine_size: car.engine_size,
               doors: car.doors,
-              color: car.color,
-              drive_type: car.drive_type,
             });
             return { id: car.id, prediction: response.data };
           } catch (error) {
@@ -197,9 +195,24 @@ export default function Cars() {
         params.q = searchQuery;
       }
       
-      // Add filter params (including sort_by)
+      // Map frontend sort values to backend values
+      const sortMapping: Record<string, { sort_by: string; sort_order: string }> = {
+        'newest': { sort_by: 'listing_date', sort_order: 'desc' },
+        'oldest': { sort_by: 'listing_date', sort_order: 'asc' },
+        'price_low': { sort_by: 'price', sort_order: 'asc' },
+        'price_high': { sort_by: 'price', sort_order: 'desc' },
+        'mileage_low': { sort_by: 'mileage', sort_order: 'asc' },
+        'mileage_high': { sort_by: 'mileage', sort_order: 'desc' },
+      };
+      
+      // Apply sorting
+      const sortConfig = sortMapping[filters.sort_by] || sortMapping['newest'];
+      params.sort_by = sortConfig.sort_by;
+      params.sort_order = sortConfig.sort_order;
+      
+      // Add filter params (excluding sort_by since we handled it above)
       Object.entries(filters).forEach(([key, value]) => {
-        if (value) params[key] = value;
+        if (value && key !== 'sort_by') params[key] = value;
       });
       
       const response = await api.get('/cars', { params });
@@ -222,7 +235,7 @@ export default function Cars() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <div className="bg-white border-b sticky top-0 z-10">
+      <div className="bg-white border-b">
         <div className="max-w-7xl mx-auto px-4 py-4">
           {/* Search and Controls Container */}
           <div className="flex flex-col md:flex-row gap-3 md:gap-4">
@@ -361,19 +374,19 @@ export default function Cars() {
 
       {/* Disclaimer Banner */}
       <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border-b border-blue-100">
-        <div className="max-w-7xl mx-auto px-4 py-3">
-          <div className="flex items-center justify-center gap-4">
-            <p className="text-sm text-gray-600">
-              <span className="inline-flex items-center gap-1.5">
-                <svg className="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        <div className="max-w-7xl mx-auto px-4 py-2 md:py-3">
+          <div className="flex items-center justify-center gap-2 md:gap-4">
+            <p className="text-xs md:text-sm text-gray-600">
+              <span className="inline-flex items-center gap-1 md:gap-1.5">
+                <svg className="w-4 h-4 md:w-5 md:h-5 text-blue-600 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                  <path fillRule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.709 2.836.042-.02a.75.75 0 01.67 1.34l-.04.022c-1.147.573-2.438-.463-2.127-1.706l.71-2.836-.042.02a.75.75 0 11-.671-1.34l.041-.022zM12 9a.75.75 0 100-1.5.75.75 0 000 1.5z" clipRule="evenodd" />
                 </svg>
                 <span>All listings are sourced from <span className="font-medium text-gray-700">Bilbasen</span> and used exclusively for market analysis and price prediction purposes.</span>
               </span>
             </p>
             <Link
               to="/about-us#disclaimer"
-              className="text-xs px-3 py-1.5 bg-white hover:bg-blue-50 text-blue-600 hover:text-blue-700 rounded-full border border-blue-200 hover:border-blue-300 transition-all font-medium whitespace-nowrap shadow-sm hover:shadow"
+              className="text-xs px-2 md:px-3 py-1 md:py-1.5 bg-white hover:bg-blue-50 text-blue-600 hover:text-blue-700 rounded-full border border-blue-200 hover:border-blue-300 transition-all font-medium whitespace-nowrap shadow-sm hover:shadow"
             >
               Learn More
             </Link>
