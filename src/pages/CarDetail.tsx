@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { ArrowLeft, Fuel, Gauge, Car as CarIcon, TrendingUp, Loader, Zap, Settings, MapPin, Calendar, Activity } from 'lucide-react';
+import { ArrowLeft, Fuel, Gauge, Car as CarIcon, TrendingUp, Loader, Zap, Settings, MapPin, Calendar, Activity, Package, Ruler, Shield } from 'lucide-react';
 import api from '../api/client';
 import { getCarImage } from '../utils/carImages';
 
@@ -446,7 +446,9 @@ export default function CarDetail() {
 
                 {/* Practical */}
                 <div className="bg-gray-50 rounded-lg p-4">
-                  <h4 className="font-semibold text-gray-800 mb-4 text-base">Practical</h4>
+                  <h4 className="font-semibold text-gray-800 mb-4 flex items-center gap-2 text-base">
+                    <Package className="w-5 h-5 text-gray-600" /> Practical
+                  </h4>
                   <dl className="space-y-3 text-sm">
                     {car.weight && (
                       <div className="flex justify-between">
@@ -490,7 +492,9 @@ export default function CarDetail() {
                 {/* Dimensions */}
                 {(car.width || car.length || car.height) && (
                   <div className="bg-blue-50 rounded-lg p-4">
-                    <h4 className="font-semibold text-gray-800 mb-4 text-base">Dimensions</h4>
+                    <h4 className="font-semibold text-gray-800 mb-4 flex items-center gap-2 text-base">
+                      <Ruler className="w-5 h-5 text-blue-600" /> Dimensions
+                    </h4>
                     <dl className="space-y-3 text-sm">
                       {car.length && (
                         <div className="flex justify-between">
@@ -517,7 +521,9 @@ export default function CarDetail() {
                 {/* Safety */}
                 {(car.abs_brakes !== undefined || car.esp !== undefined || car.airbags) && (
                   <div className="bg-red-50 rounded-lg p-4">
-                    <h4 className="font-semibold text-gray-800 mb-4 text-base">Safety</h4>
+                    <h4 className="font-semibold text-gray-800 mb-4 flex items-center gap-2 text-base">
+                      <Shield className="w-5 h-5 text-red-600" /> Safety
+                    </h4>
                     <dl className="space-y-3 text-sm">
                       {car.abs_brakes !== undefined && (
                         <div className="flex justify-between">

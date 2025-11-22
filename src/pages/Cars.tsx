@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Search, Filter, Car as CarIcon, Fuel, Calendar, MapPin, TrendingUp } from 'lucide-react';
+import { Search, Filter, Car as CarIcon, Fuel, Calendar, TrendingUp } from 'lucide-react';
 import api from '../api/client';
 import { getCarImage } from '../utils/carImages';
 
@@ -335,15 +335,31 @@ export default function Cars() {
                       <span>{car.fuel_type || 'N/A'} • {car.transmission || 'N/A'}</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <MapPin className="w-4 h-4" />
-                      <span>{car.location || 'N/A'}</span>
+                      <CarIcon className="w-4 h-4" />
+                      <span>{car.body_type || 'N/A'}{car.color ? ` • ${car.color}` : ''}</span>
                     </div>
                   </div>
 
                   <div className="mt-4 pt-4 border-t flex items-center justify-between">
-                    <span className="text-xs font-medium px-2 py-1 bg-gray-100 rounded">
-                      {car.body_type}
-                    </span>
+                    <div className="flex items-center gap-2 flex-wrap">
+                      {car.fuel_type && (
+                        <span className="text-xs font-medium px-2 py-1 bg-green-100 text-green-700 rounded">
+                          {car.fuel_type.includes('Plug-in') && car.fuel_type.includes('Benzin') ? 'PGB' : 
+                           car.fuel_type.includes('Plug-in') && car.fuel_type.includes('Diesel') ? 'PGD' : 
+                           car.fuel_type}
+                        </span>
+                      )}
+                      {car.horsepower && (
+                        <span className="text-xs font-medium px-2 py-1 bg-blue-100 text-blue-700 rounded">
+                          {car.horsepower} HP
+                        </span>
+                      )}
+                      {car.transmission && (
+                        <span className="text-xs font-medium px-2 py-1 bg-purple-100 text-purple-700 rounded">
+                          {car.transmission}
+                        </span>
+                      )}
+                    </div>
                     <div className="flex items-center gap-1 text-green-600 text-sm font-medium">
                       <TrendingUp className="w-4 h-4" />
                       Get Price
