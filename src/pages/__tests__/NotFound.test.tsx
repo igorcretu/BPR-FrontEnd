@@ -22,7 +22,7 @@ describe('NotFound', () => {
     );
 
     expect(screen.getByText('Go to Homepage')).toBeInTheDocument();
-    expect(screen.getAllByText('Browse Cars').length).toBeGreaterThan(0);
+    expect(screen.getAllByText('Market Analysis').length).toBeGreaterThan(0);
   });
 
   it('renders helpful links section', () => {

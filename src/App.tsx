@@ -8,6 +8,7 @@ import Predict from './pages/Predict';
 import HowItWorks from './pages/HowItWorks';
 import AboutUs from './pages/AboutUs';
 import MarketStatistics from './pages/MarketStatistics';
+import BackendHealth from './pages/BackendHealth';
 import NotFound from './pages/NotFound';
 import ScrollToTop from './components/ScrollToTop';
 
@@ -125,6 +126,7 @@ export default function App() {
           <Route path="/how-it-works" element={<HowItWorks />} />
           <Route path="/about-us" element={<AboutUs />} />
           <Route path="/market-statistics" element={<MarketStatistics />} />
+          <Route path="/health" element={<BackendHealth />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
 
@@ -152,6 +154,7 @@ export default function App() {
                 <ul className="space-y-2 text-gray-400">
                   <li><Link to="/about-us" className="hover:text-white">About Us</Link></li>
                   <li><Link to="/how-it-works" className="hover:text-white">How It Works</Link></li>
+                  <li><Link to="/health" className="hover:text-white">Backend Health</Link></li>
                 </ul>
               </div>
               <div>
