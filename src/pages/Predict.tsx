@@ -1,19 +1,24 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { TrendingUp, Car, AlertCircle, CheckCircle, Zap, Fuel, Settings } from 'lucide-react';
 import api from '../api/client';
-
-const BRANDS = [
-  'Audi', 'BMW', 'Citroën', 'Cupra', 'Dacia', 'Fiat', 'Ford', 'Honda', 'Hyundai',
-  'Jaguar', 'Kia', 'Land Rover', 'Lexus', 'Mazda', 'Mercedes-Benz', 'Mini', 'Nissan',
-  'Opel', 'Peugeot', 'Polestar', 'Porsche', 'Renault', 'Seat', 'Skoda', 'Suzuki',
-  'Tesla', 'Toyota', 'Volkswagen', 'Volvo'
-].sort();
 
 const COLORS = [
   'Black', 'White', 'Silver', 'Grey', 'Blue', 'Red', 'Green', 'Brown', 'Beige', 'Orange', 'Yellow'
 ];
 
+interface ModelSpec {
+  body_types: { value: string; count: number }[];
+  fuel_types: { value: string; count: number }[];
+  transmissions: { value: string; count: number }[];
+}
+
 export default function Predict() {
+  const [brands, setBrands] = useState<string[]>([]);
+  const [models, setModels] = useState<string[]>([]);
+  const [modelSpecs, setModelSpecs] = useState<ModelSpec | null>(null);
+  const [loadingModels, setLoadingModels] = useState(false);
+  const [loadingSpecs, setLoadingSpecs] = useState(false);
+  
   const [formData, setFormData] = useState({
     brand: '',
     model: '',
@@ -32,6 +37,82 @@ export default function Predict() {
   const [prediction, setPrediction] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+
+  // Fetch brands on mount
+  useEffect(() => {
+    const fetchBrands = async () => {
+      try {
+        const response = await api.get('/brands');
+        const brandList = response.data.brands.map((b: any) => b.name).sort();
+        setBrands(brandList);
+      } catch (err) {
+        console.error('Error fetching brands:', err);
+      }
+    };
+    fetchBrands();
+  }, []);
+
+  // Fetch models when brand changes
+  useEffect(() => {
+    if (!formData.brand) {
+      setModels([]);
+      setModelSpecs(null);
+      return;
+    }
+
+    const fetchModels = async () => {
+      setLoadingModels(true);
+      try {
+        const response = await api.get(`/models/${formData.brand}`);
+        const modelList = response.data.models.map((m: any) => m.name);
+        setModels(modelList);
+      } catch (err) {
+        console.error('Error fetching models:', err);
+      } finally {
+        setLoadingModels(false);
+      }
+    };
+    fetchModels();
+  }, [formData.brand]);
+
+  // Fetch model specs when model changes
+  useEffect(() => {
+    if (!formData.brand || !formData.model) {
+      setModelSpecs(null);
+      return;
+    }
+
+    const fetchSpecs = async () => {
+      setLoadingSpecs(true);
+      try {
+        const response = await api.get(`/model-specs/${formData.brand}/${formData.model}`);
+        const specs = response.data;
+        setModelSpecs(specs);
+
+        // Auto-populate fields if there's only one option
+        const updates: any = {};
+        
+        if (specs.body_types?.length === 1) {
+          updates.body_type = specs.body_types[0].value;
+        }
+        if (specs.fuel_types?.length === 1) {
+          updates.fuel_type = specs.fuel_types[0].value;
+        }
+        if (specs.transmissions?.length === 1) {
+          updates.transmission = specs.transmissions[0].value;
+        }
+
+        if (Object.keys(updates).length > 0) {
+          setFormData(prev => ({ ...prev, ...updates }));
+        }
+      } catch (err) {
+        console.error('Error fetching model specs:', err);
+      } finally {
+        setLoadingSpecs(false);
+      }
+    };
+    fetchSpecs();
+  }, [formData.brand, formData.model]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -85,24 +166,32 @@ export default function Predict() {
                   <select
                     required
                     value={formData.brand}
-                    onChange={(e) => setFormData({ ...formData, brand: e.target.value })}
+                    onChange={(e) => {
+                      setFormData({ ...formData, brand: e.target.value, model: '', body_type: '', fuel_type: '', transmission: '' });
+                    }}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                   >
                     <option value="">Select brand</option>
-                    {BRANDS.map(brand => <option key={brand} value={brand}>{brand}</option>)}
+                    {brands.map(brand => <option key={brand} value={brand}>{brand}</option>)}
                   </select>
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Model *</label>
-                  <input
-                    type="text"
+                  <select
                     required
                     value={formData.model}
-                    onChange={(e) => setFormData({ ...formData, model: e.target.value })}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                    placeholder="e.g., Corolla, Golf, Model 3"
-                  />
+                    onChange={(e) => {
+                      setFormData({ ...formData, model: e.target.value, body_type: '', fuel_type: '', transmission: '' });
+                    }}
+                    disabled={!formData.brand || loadingModels}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
+                  >
+                    <option value="">
+                      {loadingModels ? 'Loading models...' : formData.brand ? 'Select model' : 'Select brand first'}
+                    </option>
+                    {models.map(model => <option key={model} value={model}>{model}</option>)}
+                  </select>
                 </div>
 
                 <div>
@@ -140,34 +229,60 @@ export default function Predict() {
               </h3>
               <div className="grid md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Fuel Type *</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Fuel Type *
+                    {loadingSpecs && <span className="ml-2 text-xs text-blue-600">Loading...</span>}
+                  </label>
                   <select
                     required
                     value={formData.fuel_type}
                     onChange={(e) => setFormData({ ...formData, fuel_type: e.target.value })}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                    disabled={!formData.model || loadingSpecs}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
                   >
-                    <option value="">Select</option>
-                    <option value="Petrol">Petrol</option>
-                    <option value="Diesel">Diesel</option>
-                    <option value="Electric">Electric</option>
-                    <option value="Hybrid">Hybrid</option>
-                    <option value="Plugin-Hybrid">Plugin-Hybrid</option>
+                    <option value="">{!formData.model ? 'Select model first' : 'Select fuel type'}</option>
+                    {modelSpecs?.fuel_types?.map(ft => (
+                      <option key={ft.value} value={ft.value}>
+                        {ft.value} {ft.count > 1 && `(${ft.count} variants)`}
+                      </option>
+                    ))}
+                    {!modelSpecs && formData.model && (
+                      <>
+                        <option value="Petrol">Petrol</option>
+                        <option value="Diesel">Diesel</option>
+                        <option value="Electric">Electric</option>
+                        <option value="Hybrid">Hybrid</option>
+                        <option value="Plugin-Hybrid">Plugin-Hybrid</option>
+                      </>
+                    )}
                   </select>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Transmission *</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Transmission *
+                    {loadingSpecs && <span className="ml-2 text-xs text-blue-600">Loading...</span>}
+                  </label>
                   <select
                     required
                     value={formData.transmission}
                     onChange={(e) => setFormData({ ...formData, transmission: e.target.value })}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                    disabled={!formData.model || loadingSpecs}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
                   >
-                    <option value="">Select</option>
-                    <option value="Automatic">Automatic</option>
-                    <option value="Manual">Manual</option>
-                    <option value="Semi-Automatic">Semi-Automatic</option>
+                    <option value="">{!formData.model ? 'Select model first' : 'Select transmission'}</option>
+                    {modelSpecs?.transmissions?.map(tr => (
+                      <option key={tr.value} value={tr.value}>
+                        {tr.value} {tr.count > 1 && `(${tr.count} variants)`}
+                      </option>
+                    ))}
+                    {!modelSpecs && formData.model && (
+                      <>
+                        <option value="Automatic">Automatic</option>
+                        <option value="Manual">Manual</option>
+                        <option value="Semi-Automatic">Semi-Automatic</option>
+                      </>
+                    )}
                   </select>
                 </div>
 
@@ -206,22 +321,35 @@ export default function Predict() {
               </h3>
               <div className="grid md:grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Body Type *</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Body Type *
+                    {loadingSpecs && <span className="ml-2 text-xs text-blue-600">Loading...</span>}
+                  </label>
                   <select
                     required
                     value={formData.body_type}
                     onChange={(e) => setFormData({ ...formData, body_type: e.target.value })}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                    disabled={!formData.model || loadingSpecs}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
                   >
-                    <option value="">Select</option>
-                    <option value="Sedan">Sedan</option>
-                    <option value="Hatchback">Hatchback</option>
-                    <option value="SUV">SUV</option>
-                    <option value="Wagon">Wagon (Stationcar)</option>
-                    <option value="Coupe">Coupe</option>
-                    <option value="Convertible">Convertible</option>
-                    <option value="Van">Van / MPV</option>
-                    <option value="Pickup">Pickup</option>
+                    <option value="">{!formData.model ? 'Select model first' : 'Select body type'}</option>
+                    {modelSpecs?.body_types?.map(bt => (
+                      <option key={bt.value} value={bt.value}>
+                        {bt.value} {bt.count > 1 && `(${bt.count} variants)`}
+                      </option>
+                    ))}
+                    {!modelSpecs && formData.model && (
+                      <>
+                        <option value="Sedan">Sedan</option>
+                        <option value="Hatchback">Hatchback</option>
+                        <option value="SUV">SUV</option>
+                        <option value="Wagon">Wagon (Stationcar)</option>
+                        <option value="Coupe">Coupe</option>
+                        <option value="Convertible">Convertible</option>
+                        <option value="Van">Van / MPV</option>
+                        <option value="Pickup">Pickup</option>
+                      </>
+                    )}
                   </select>
                 </div>
 

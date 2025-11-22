@@ -54,6 +54,8 @@ export default function Cars() {
 
   useEffect(() => {
     fetchCars();
+    // Scroll to top when page changes
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [currentPage, filters, searchQuery]);
 
   useEffect(() => {
@@ -121,7 +123,7 @@ export default function Cars() {
   const fetchCars = async () => {
     try {
       setLoading(true);
-      const params: any = { per_page: 50, page: currentPage };
+      const params: any = { per_page: 30, page: currentPage };
       
       // Add search query to API params
       if (searchQuery) {
@@ -159,11 +161,14 @@ export default function Cars() {
             <div className="flex-1 relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
               <input
-                type="text"
-                placeholder="Search by brand or model..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              type="text"
+              placeholder="Search by brand, model, or title..."
+              value={searchQuery}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+                setCurrentPage(1);
+              }}
+              className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               />
             </div>
             <button
@@ -323,15 +328,15 @@ export default function Cars() {
                   <div className="space-y-2 text-sm text-gray-600">
                     <div className="flex items-center gap-2">
                       <Calendar className="w-4 h-4" />
-                      <span>{car.year} • {car.mileage.toLocaleString()} km</span>
+                      <span>{car.year} • {car.mileage?.toLocaleString() || 'N/A'} km</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <Fuel className="w-4 h-4" />
-                      <span>{car.fuel_type} • {car.transmission}</span>
+                      <span>{car.fuel_type || 'N/A'} • {car.transmission || 'N/A'}</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <MapPin className="w-4 h-4" />
-                      <span>{car.location}</span>
+                      <span>{car.location || 'N/A'}</span>
                     </div>
                   </div>
 
