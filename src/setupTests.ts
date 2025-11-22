@@ -1,23 +1,28 @@
 import '@testing-library/jest-dom';
-import { TextEncoder, TextDecoder } from 'util';
 
-// Polyfill TextEncoder/TextDecoder for jsdom
-global.TextEncoder = TextEncoder;
-global.TextDecoder = TextDecoder as any;
+// Polyfill TextEncoder/TextDecoder for jsdom (Node.js built-in in v18+)
+if (typeof global !== 'undefined') {
+  // @ts-ignore - TextEncoder is available in Node.js
+  global.TextEncoder = TextEncoder;
+  // @ts-ignore - TextDecoder is available in Node.js
+  global.TextDecoder = TextDecoder;
 
-// Mock window.scrollTo
-global.scrollTo = jest.fn();
+  // Mock window.scrollTo
+  // @ts-ignore
+  global.scrollTo = jest.fn();
 
-// Mock IntersectionObserver
-global.IntersectionObserver = class IntersectionObserver {
-  constructor() {}
-  disconnect() {}
-  observe() {}
-  takeRecords() {
-    return [];
-  }
-  unobserve() {}
-} as any;
+  // Mock IntersectionObserver
+  // @ts-ignore
+  global.IntersectionObserver = class IntersectionObserver {
+    constructor() {}
+    disconnect() {}
+    observe() {}
+    takeRecords() {
+      return [];
+    }
+    unobserve() {}
+  };
+}
 
 // Mock matchMedia
 Object.defineProperty(window, 'matchMedia', {
@@ -35,8 +40,11 @@ Object.defineProperty(window, 'matchMedia', {
 });
 
 // Mock import.meta.env
-(global as any).importMeta = {
-  env: {
-    VITE_API_URL: 'http://localhost:8000',
-  },
-};
+if (typeof global !== 'undefined') {
+  // @ts-ignore
+  (global as any).importMeta = {
+    env: {
+      VITE_API_URL: 'http://localhost:8000',
+    },
+  };
+}
