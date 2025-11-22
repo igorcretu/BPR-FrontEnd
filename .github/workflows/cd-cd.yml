@@ -34,6 +34,18 @@ jobs:
       run: npm run lint
       continue-on-error: true
     
+    - name: Run tests with coverage
+      run: npm test -- --coverage --watchAll=false
+    
+    - name: Upload coverage reports
+      uses: codecov/codecov-action@v4
+      if: always()
+      with:
+        file: ./coverage/coverage-final.json
+        flags: frontend
+        name: frontend-coverage
+      continue-on-error: true
+    
     - name: Build project
       run: npm run build
     
