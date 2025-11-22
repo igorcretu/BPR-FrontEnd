@@ -79,7 +79,7 @@ describe('Predict Page', () => {
     renderWithRouter(<Predict />);
 
     await waitFor(() => {
-      expect(screen.getByText(/AI Price Prediction/i)).toBeInTheDocument();
+      expect(screen.getByText(/AI-Powered Prediction/i)).toBeInTheDocument();
     });
   });
 

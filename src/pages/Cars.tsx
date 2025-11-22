@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Search, Filter, Car as CarIcon, Fuel, Calendar, TrendingUp } from 'lucide-react';
+import { Search, Filter, Car as CarIcon, Fuel, Calendar } from 'lucide-react';
 import api from '../api/client';
 import { getCarImage } from '../utils/carImages';
 
@@ -17,6 +17,15 @@ interface Car {
   location: string;
   color: string;
   horsepower: number;
+  engine_size?: number;
+  doors?: number;
+  drive_type?: string;
+}
+
+interface Prediction {
+  predicted_price: number;
+  confidence: number;
+  price_range: { min: number; max: number };
 }
 
 export default function Cars() {
@@ -24,6 +33,7 @@ export default function Cars() {
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [carImages, setCarImages] = useState<Record<string, string | null>>({});
+  const [carPredictions, setCarPredictions] = useState<Record<string, Prediction>>({});
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [filters, setFilters] = useState({
@@ -35,6 +45,7 @@ export default function Cars() {
     year_max: '',
     price_min: '',
     price_max: '',
+    sort_by: 'newest',
   });
   const [showFilters, setShowFilters] = useState(false);
   const [filterOptions, setFilterOptions] = useState({
@@ -100,6 +111,62 @@ export default function Cars() {
     };
   }, [cars, carImages]);
 
+  // Fetch predictions for cars
+  useEffect(() => {
+    if (!cars.length) return;
+
+    const carsWithoutPredictions = cars.filter((car) => !carPredictions[car.id]);
+    if (!carsWithoutPredictions.length) return;
+
+    let active = true;
+
+    const loadPredictions = async () => {
+      const results = await Promise.all(
+        carsWithoutPredictions.map(async (car) => {
+          try {
+            const response = await api.post('/predict', {
+              brand: car.brand,
+              model: car.model,
+              year: car.year,
+              mileage: car.mileage,
+              fuel_type: car.fuel_type,
+              transmission: car.transmission,
+              body_type: car.body_type,
+              horsepower: car.horsepower,
+              engine_size: car.engine_size,
+              doors: car.doors,
+              color: car.color,
+              drive_type: car.drive_type,
+            });
+            return { id: car.id, prediction: response.data };
+          } catch (error) {
+            console.error(`Error predicting price for car ${car.id}:`, error);
+            return { id: car.id, prediction: null };
+          }
+        })
+      );
+
+      if (!active) return;
+
+      setCarPredictions((prev) => {
+        const next = { ...prev };
+        let changed = false;
+        for (const { id, prediction } of results) {
+          if (prediction && !next[id]) {
+            next[id] = prediction;
+            changed = true;
+          }
+        }
+        return changed ? next : prev;
+      });
+    };
+
+    loadPredictions();
+    return () => {
+      active = false;
+    };
+  }, [cars, carPredictions]);
+
   const fetchFilterOptions = async () => {
     try {
       // Fetch filters and brands from backend endpoints
@@ -130,7 +197,7 @@ export default function Cars() {
         params.q = searchQuery;
       }
       
-      // Add filter params
+      // Add filter params (including sort_by)
       Object.entries(filters).forEach(([key, value]) => {
         if (value) params[key] = value;
       });
@@ -157,7 +224,8 @@ export default function Cars() {
       {/* Header */}
       <div className="bg-white border-b sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-4 py-4">
-          <div className="flex gap-4 items-center">
+          {/* Search Bar - Full Width on Mobile */}
+          <div className="flex gap-2 items-center mb-3 md:mb-0">
             <div className="flex-1 relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
               <input
@@ -171,12 +239,31 @@ export default function Cars() {
               className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               />
             </div>
+          </div>
+          
+          {/* Sort and Filters - Full Width on Mobile */}
+          <div className="flex gap-2 items-center">
+            <select
+              value={filters.sort_by}
+              onChange={(e) => {
+                setFilters({ ...filters, sort_by: e.target.value });
+                setCurrentPage(1);
+              }}
+              className="flex-1 md:flex-none px-3 md:px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white font-medium text-gray-700 text-sm md:text-base"
+            >
+              <option value="newest">Newest</option>
+              <option value="oldest">Oldest</option>
+              <option value="price_low">Price: Low</option>
+              <option value="price_high">Price: High</option>
+              <option value="mileage_low">Mileage: Low</option>
+              <option value="mileage_high">Mileage: High</option>
+            </select>
             <button
               onClick={() => setShowFilters(!showFilters)}
-              className="flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+              className="flex items-center gap-2 px-4 md:px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium whitespace-nowrap"
             >
               <Filter className="w-5 h-5" />
-              Filters
+              <span className="hidden sm:inline">Filters</span>
             </button>
           </div>
 
@@ -271,6 +358,28 @@ export default function Cars() {
         </div>
       </div>
 
+      {/* Disclaimer Banner */}
+      <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border-b border-blue-100">
+        <div className="max-w-7xl mx-auto px-4 py-3">
+          <div className="flex items-center justify-center gap-4">
+            <p className="text-sm text-gray-600">
+              <span className="inline-flex items-center gap-1.5">
+                <svg className="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span>All listings are sourced from <span className="font-medium text-gray-700">Bilbasen</span> and used exclusively for market analysis and price prediction purposes.</span>
+              </span>
+            </p>
+            <Link
+              to="/about-us#disclaimer"
+              className="text-xs px-3 py-1.5 bg-white hover:bg-blue-50 text-blue-600 hover:text-blue-700 rounded-full border border-blue-200 hover:border-blue-300 transition-all font-medium whitespace-nowrap shadow-sm hover:shadow"
+            >
+              Learn More
+            </Link>
+          </div>
+        </div>
+      </div>
+
       {/* Cars Grid */}
       <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="mb-6 flex items-center justify-between">
@@ -297,6 +406,9 @@ export default function Cars() {
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredCars.map((car) => {
               const imageUrl = carImages[car.id] ?? null;
+              const prediction = carPredictions[car.id];
+              const priceDiff = prediction ? ((car.price - prediction.predicted_price) / prediction.predicted_price * 100) : null;
+              
               return (
               <Link
                 key={car.id}
@@ -323,7 +435,34 @@ export default function Cars() {
                   <h3 className="text-xl font-bold text-gray-900 mb-1 group-hover:text-blue-600 transition-colors">
                     {car.brand} {car.model}
                   </h3>
-                  <p className="text-2xl font-bold text-blue-600 mb-4">{formatPrice(car.price)}</p>
+                  <p className="text-2xl font-bold text-blue-600 mb-2">{formatPrice(car.price)}</p>
+
+                  {/* Predicted Price Section */}
+                  {prediction ? (
+                    <div className="mb-4">
+                      <div className="flex items-center justify-between text-sm mb-2">
+                        <span className="text-gray-500">AI Predicted Price</span>
+                        <span className="font-semibold text-gray-700">{formatPrice(prediction.predicted_price)}</span>
+                      </div>
+                      <div className={`px-3 py-2 rounded-lg ${priceDiff! > 5 ? 'bg-red-50' : priceDiff! < -5 ? 'bg-green-50' : 'bg-blue-50'}`}>
+                        <div className="flex items-center justify-between">
+                          <span className={`text-xs font-medium ${priceDiff! > 5 ? 'text-red-700' : priceDiff! < -5 ? 'text-green-700' : 'text-blue-700'}`}>
+                            {priceDiff! > 5 ? '⚠️ Overpriced' : priceDiff! < -5 ? '✅ Good Deal' : '👍 Fair Price'}
+                          </span>
+                          <span className={`text-sm font-bold ${priceDiff! > 5 ? 'text-red-600' : priceDiff! < -5 ? 'text-green-600' : 'text-blue-600'}`}>
+                            {priceDiff! > 0 ? '+' : ''}{priceDiff!.toFixed(1)}%
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="mb-4 h-[72px] flex items-center justify-center">
+                      <div className="flex items-center gap-2 text-gray-400 text-sm">
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-400"></div>
+                        <span>Analyzing price...</span>
+                      </div>
+                    </div>
+                  )}
 
                   <div className="space-y-2 text-sm text-gray-600">
                     <div className="flex items-center gap-2">
@@ -337,32 +476,6 @@ export default function Cars() {
                     <div className="flex items-center gap-2">
                       <CarIcon className="w-4 h-4" />
                       <span>{car.body_type || 'N/A'}{car.color ? ` • ${car.color}` : ''}</span>
-                    </div>
-                  </div>
-
-                  <div className="mt-4 pt-4 border-t flex items-center justify-between">
-                    <div className="flex items-center gap-2 flex-wrap">
-                      {car.fuel_type && (
-                        <span className="text-xs font-medium px-2 py-1 bg-green-100 text-green-700 rounded">
-                          {car.fuel_type.includes('Plug-in') && car.fuel_type.includes('Benzin') ? 'PGB' : 
-                           car.fuel_type.includes('Plug-in') && car.fuel_type.includes('Diesel') ? 'PGD' : 
-                           car.fuel_type}
-                        </span>
-                      )}
-                      {car.horsepower && (
-                        <span className="text-xs font-medium px-2 py-1 bg-blue-100 text-blue-700 rounded">
-                          {car.horsepower} HP
-                        </span>
-                      )}
-                      {car.transmission && (
-                        <span className="text-xs font-medium px-2 py-1 bg-purple-100 text-purple-700 rounded">
-                          {car.transmission}
-                        </span>
-                      )}
-                    </div>
-                    <div className="flex items-center gap-1 text-green-600 text-sm font-medium">
-                      <TrendingUp className="w-4 h-4" />
-                      Get Price
                     </div>
                   </div>
                 </div>

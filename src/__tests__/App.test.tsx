@@ -50,10 +50,12 @@ describe('App', () => {
     expect(aboutUsLinks.length).toBeGreaterThan(0);
     const howItWorksLinks = screen.getAllByText('How It Works');
     expect(howItWorksLinks.length).toBeGreaterThan(0);
-    const browseCarsLinks = screen.getAllByText('Browse Cars');
-    expect(browseCarsLinks.length).toBeGreaterThan(0);
-    expect(screen.getByText('Predict Price')).toBeInTheDocument();
-    expect(screen.getByText('Get Started')).toBeInTheDocument();
+    const marketAnalysisLinks = screen.getAllByText('Market Analysis');
+    expect(marketAnalysisLinks.length).toBeGreaterThan(0);
+    const predictPriceLinks = screen.getAllByText('Predict Price');
+    expect(predictPriceLinks.length).toBeGreaterThan(0);
+    const getStartedLinks = screen.getAllByText('Get Started');
+    expect(getStartedLinks.length).toBeGreaterThan(0);
   });
 
   it('renders home page by default', () => {

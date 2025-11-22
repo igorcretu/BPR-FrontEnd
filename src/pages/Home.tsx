@@ -33,8 +33,8 @@ export default function Home() {
                 to="/cars"
                 className="inline-flex items-center justify-center gap-2 bg-white text-blue-700 px-8 py-4 rounded-lg font-semibold text-lg hover:bg-blue-50 transition-colors shadow-xl"
               >
-                <Search className="w-5 h-5" />
-                Browse Cars
+                <Car className="w-5 h-5" />
+                Market Analysis
               </Link>
               <Link
                 to="/predict"
@@ -99,15 +99,15 @@ export default function Home() {
             </p>
           </div>
           
-          <div className="bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-shadow border border-gray-100">
-            <div className="bg-purple-100 w-14 h-14 rounded-xl flex items-center justify-center mb-6">
+          <Link to="/market-statistics" className="bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-shadow border border-gray-100 block group">
+            <div className="bg-purple-100 w-14 h-14 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
               <BarChart3 className="w-7 h-7 text-purple-600" />
             </div>
-            <h3 className="text-2xl font-bold mb-4 text-gray-900">Market Insights</h3>
+            <h3 className="text-2xl font-bold mb-4 text-gray-900 group-hover:text-purple-600 transition-colors">Market Insights</h3>
             <p className="text-gray-600 leading-relaxed">
               Access detailed statistics, trends, and analytics to understand the Danish car market better.
             </p>
-          </div>
+          </Link>
           
           <div className="bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-shadow border border-gray-100">
             <div className="bg-orange-100 w-14 h-14 rounded-xl flex items-center justify-center mb-6">

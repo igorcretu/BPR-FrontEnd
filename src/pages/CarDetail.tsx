@@ -100,6 +100,13 @@ export default function CarDetail() {
     return () => { active = false; };
   }, [car]);
 
+  // Auto-fetch prediction when car is loaded
+  useEffect(() => {
+    if (car && !prediction) {
+      getPrediction();
+    }
+  }, [car]);
+
   const fetchCar = async () => {
     try {
       const response = await api.get(`/cars/${id}`);

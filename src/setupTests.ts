@@ -11,6 +11,15 @@ global.TextDecoder = TextDecoder as any;
 // @ts-ignore
 global.scrollTo = jest.fn();
 
+// Mock ResizeObserver for Recharts
+// @ts-ignore
+global.ResizeObserver = class ResizeObserver {
+  constructor() {}
+  disconnect() {}
+  observe() {}
+  unobserve() {}
+};
+
 // Mock IntersectionObserver
 // @ts-ignore
 global.IntersectionObserver = class IntersectionObserver {

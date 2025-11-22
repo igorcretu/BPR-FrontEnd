@@ -237,7 +237,7 @@ export default function HowItWorks() {
               to="/cars"
               className="bg-white text-blue-600 px-8 py-4 rounded-xl font-semibold hover:bg-blue-50 transition-colors inline-flex items-center gap-2"
             >
-              Browse Cars
+              Market Analysis
               <ArrowRight className="w-5 h-5" />
             </Link>
             <Link

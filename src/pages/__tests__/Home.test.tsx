@@ -17,10 +17,10 @@ describe('Home Page', () => {
     expect(screen.getByText(/AI-Powered Price Predictions/i)).toBeInTheDocument();
   });
 
-  test('renders Browse Cars button', () => {
+  test('renders Market Analysis button', () => {
     renderWithRouter(<Home />);
-    const browseCarsButtons = screen.getAllByText(/Browse Cars/i);
-    expect(browseCarsButtons.length).toBeGreaterThan(0);
+    const marketAnalysisButtons = screen.getAllByText(/Market Analysis/i);
+    expect(marketAnalysisButtons.length).toBeGreaterThan(0);
   });
 
   test('renders Predict Price button', () => {
@@ -143,8 +143,8 @@ describe('Home Page', () => {
 
   test('renders all navigation links', () => {
     renderWithRouter(<Home />);
-    const browseCarsLinks = screen.getAllByRole('link', { name: /Browse Cars/i });
-    expect(browseCarsLinks.length).toBeGreaterThan(0);
+    const marketAnalysisLinks = screen.getAllByRole('link', { name: /Market Analysis/i });
+    expect(marketAnalysisLinks.length).toBeGreaterThan(0);
   });
 
   test('Why Choose Us section has subtitle', () => {

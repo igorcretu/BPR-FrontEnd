@@ -1,15 +1,20 @@
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
-import { Car } from 'lucide-react';
+import { Car, Menu, X } from 'lucide-react';
+import { useState } from 'react';
 import Home from './pages/Home';
 import Cars from './pages/Cars';
 import CarDetail from './pages/CarDetail';
 import Predict from './pages/Predict';
 import HowItWorks from './pages/HowItWorks';
 import AboutUs from './pages/AboutUs';
+import MarketStatistics from './pages/MarketStatistics';
+import NotFound from './pages/NotFound';
 import ScrollToTop from './components/ScrollToTop';
 
 
 export default function App() {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
   return (
     <BrowserRouter>
       <ScrollToTop />
@@ -23,16 +28,19 @@ export default function App() {
                 CarPredict
               </Link>
 
+              {/* Desktop Navigation */}
               <div className="hidden md:flex items-center gap-8">
-                                <Link to="/about-us" className="text-gray-700 hover:text-blue-600 transition-colors font-medium">
+                <Link to="/about-us" className="text-gray-700 hover:text-blue-600 transition-colors font-medium">
                   About Us
                 </Link>
                 <Link to="/how-it-works" className="text-gray-700 hover:text-blue-600 transition-colors font-medium">
                   How It Works
                 </Link>
-
+                <Link to="/market-statistics" className="text-gray-700 hover:text-blue-600 transition-colors font-medium">
+                  Market Stats
+                </Link>
                 <Link to="/cars" className="text-gray-700 hover:text-blue-600 transition-colors font-medium">
-                  Browse Cars
+                  Market Analysis
                 </Link>
                 <Link to="/predict" className="text-gray-700 hover:text-blue-600 transition-colors font-medium">
                   Predict Price
@@ -41,7 +49,69 @@ export default function App() {
                 <Link to="/cars" className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors font-medium">
                   Get Started
                 </Link>
-                
+              </div>
+
+              {/* Mobile Menu Button */}
+              <button
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                className="md:hidden p-2 text-gray-700 hover:text-blue-600 transition-colors"
+                aria-label="Toggle menu"
+              >
+                {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              </button>
+            </div>
+
+            {/* Mobile Navigation Menu */}
+            <div
+              className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out ${
+                mobileMenuOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
+              }`}
+            >
+              <div className="py-4 border-t">
+                <div className="flex flex-col gap-4">
+                  <Link
+                    to="/about-us"
+                    className="text-gray-700 hover:text-blue-600 transition-colors font-medium py-2 transform hover:translate-x-2 transition-transform"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    About Us
+                  </Link>
+                  <Link
+                    to="/how-it-works"
+                    className="text-gray-700 hover:text-blue-600 transition-colors font-medium py-2 transform hover:translate-x-2 transition-transform"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    How It Works
+                  </Link>
+                  <Link
+                    to="/market-statistics"
+                    className="text-gray-700 hover:text-blue-600 transition-colors font-medium py-2 transform hover:translate-x-2 transition-transform"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    Market Stats
+                  </Link>
+                  <Link
+                    to="/cars"
+                    className="text-gray-700 hover:text-blue-600 transition-colors font-medium py-2 transform hover:translate-x-2 transition-transform"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    Market Analysis
+                  </Link>
+                  <Link
+                    to="/predict"
+                    className="text-gray-700 hover:text-blue-600 transition-colors font-medium py-2 transform hover:translate-x-2 transition-transform"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    Predict Price
+                  </Link>
+                  <Link
+                    to="/cars"
+                    className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-all font-medium text-center transform hover:scale-105"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    Get Started
+                  </Link>
+                </div>
               </div>
             </div>
           </div>
@@ -54,6 +124,8 @@ export default function App() {
           <Route path="/predict" element={<Predict />} />
           <Route path="/how-it-works" element={<HowItWorks />} />
           <Route path="/about-us" element={<AboutUs />} />
+          <Route path="/market-statistics" element={<MarketStatistics />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
 
         {/* Footer */}
@@ -70,8 +142,9 @@ export default function App() {
               <div>
                 <h4 className="font-semibold mb-4">Product</h4>
                 <ul className="space-y-2 text-gray-400">
-                  <li><Link to="/cars" className="hover:text-white">Browse Cars</Link></li>
+                  <li><Link to="/cars" className="hover:text-white">Market Analysis</Link></li>
                   <li><Link to="/predict" className="hover:text-white">Price Prediction</Link></li>
+                  <li><Link to="/market-statistics" className="hover:text-white">Market Statistics</Link></li>
                 </ul>
               </div>
               <div>
