@@ -48,7 +48,7 @@ export default function Home() {
             {/* Stats */}
             <div className="mt-16 grid grid-cols-3 gap-8 max-w-2xl mx-auto">
               <div className="text-center">
-                <div className="text-4xl font-bold mb-2">30+</div>
+                <div className="text-4xl font-bold mb-2">20k+</div>
                 <div className="text-blue-200">Active Listings</div>
               </div>
               <div className="text-center">
