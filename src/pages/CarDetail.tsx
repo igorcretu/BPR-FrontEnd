@@ -6,18 +6,25 @@ import { getCarImage } from '../utils/carImages';
 
 interface CarDetail {
   id: string;
+  url?: string;
   brand: string;
   model: string;
   variant?: string;
   title?: string;
   description?: string;
+  price: number;
+  new_price?: number;
+  model_year?: number;
   year: number;
+  first_registration?: string;
+  production_date?: string;
   mileage: number;
   fuel_type: string;
   transmission: string;
-  body_type: string;
-  engine_size?: number;
+  gear_count?: number;
+  cylinders?: number;
   horsepower?: number;
+  engine_size?: number;
   torque_nm?: number;
   acceleration?: number;
   top_speed?: number;
@@ -27,6 +34,11 @@ interface CarDetail {
   home_charging_ac?: string;
   fast_charging_dc?: string;
   charging_time_dc?: string;
+  fuel_consumption?: string;
+  co2_emission?: string;
+  euro_norm?: string;
+  tank_capacity?: number;
+  body_type: string;
   doors?: number;
   seats?: number;
   color?: string;
@@ -39,22 +51,17 @@ interface CarDetail {
   towing_capacity?: number;
   max_towing_weight?: number;
   drive_type?: string;
-  price: number;
-  new_price?: number;
-  location?: string;
-  dealer_name?: string;
-  source_url?: string;
-  periodic_tax?: string;
-  equipment?: string;
-  fuel_consumption?: string;
-  co2_emission?: string;
-  euro_norm?: string;
-  gear_count?: number;
-  cylinders?: number;
-  tank_capacity?: number;
   abs_brakes?: boolean;
   esp?: boolean;
   airbags?: number;
+  category?: string;
+  equipment?: string;
+  periodic_tax?: string;
+  location?: string;
+  dealer_name?: string;
+  source_url?: string;
+  created_at?: string;
+  updated_at?: string;
 }
 
 interface Prediction {
@@ -179,15 +186,22 @@ export default function CarDetail() {
             {/* Header */}
             <div className="bg-white rounded-2xl p-6 shadow-md">
               <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
-                <div>
-                  <h1 className="text-3xl font-bold text-gray-900">
+                <div className="flex-1">
+                  <h1 className="text-3xl md:text-4xl font-bold text-gray-900">
                     {car.brand} {car.model}
                   </h1>
-                  {car.variant && <p className="text-lg text-gray-600 mt-1">{car.variant}</p>}
-                  <div className="flex items-center gap-4 mt-2 text-sm text-gray-500">
-                    {car.dealer_name && <span>{car.dealer_name}</span>}
+                  {car.variant && <p className="text-lg text-gray-600 mt-2">{car.variant}</p>}
+                  {car.title && car.title !== `${car.brand} ${car.model}` && (
+                    <p className="text-base text-gray-500 mt-1">{car.title}</p>
+                  )}
+                  <div className="flex flex-wrap items-center gap-3 mt-3 text-sm text-gray-500">
+                    {car.dealer_name && (
+                      <span className="flex items-center gap-1 bg-gray-50 px-3 py-1 rounded-full">
+                        <span className="font-medium">{car.dealer_name}</span>
+                      </span>
+                    )}
                     {car.location && (
-                      <span className="flex items-center gap-1">
+                      <span className="flex items-center gap-1 bg-gray-50 px-3 py-1 rounded-full">
                         <MapPin className="w-4 h-4" /> {car.location}
                       </span>
                     )}
@@ -226,18 +240,46 @@ export default function CarDetail() {
                   <div className="text-xs text-gray-500">Transmission</div>
                 </div>
               </div>
+              {(car.first_registration || car.production_date || car.model_year || car.category) && (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mt-6 pt-6 border-t">
+                  {car.first_registration && (
+                    <div className="bg-gray-50 rounded-lg p-3">
+                      <div className="text-xs text-gray-500 mb-1">First Registration</div>
+                      <div className="font-semibold text-gray-900">{car.first_registration}</div>
+                    </div>
+                  )}
+                  {car.production_date && (
+                    <div className="bg-gray-50 rounded-lg p-3">
+                      <div className="text-xs text-gray-500 mb-1">Production Date</div>
+                      <div className="font-semibold text-gray-900">{car.production_date}</div>
+                    </div>
+                  )}
+                  {car.model_year && car.model_year !== car.year && (
+                    <div className="bg-gray-50 rounded-lg p-3">
+                      <div className="text-xs text-gray-500 mb-1">Model Year</div>
+                      <div className="font-semibold text-gray-900">{car.model_year}</div>
+                    </div>
+                  )}
+                  {car.category && (
+                    <div className="bg-gray-50 rounded-lg p-3">
+                      <div className="text-xs text-gray-500 mb-1">Category</div>
+                      <div className="font-semibold text-gray-900">{car.category}</div>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
 
             {/* Specifications */}
             <div className="bg-white rounded-2xl p-6 shadow-md">
-              <h3 className="text-xl font-bold mb-4">Specifications</h3>
-              <div className="grid md:grid-cols-2 gap-x-8 gap-y-4">
+              <h3 className="text-2xl font-bold mb-6 pb-4 border-b">Specifications</h3>
+              <div className="grid md:grid-cols-2 gap-x-8 gap-y-6">
                 {/* Performance */}
-                <div>
-                  <h4 className="font-semibold text-gray-700 mb-3 flex items-center gap-2">
-                    <Gauge className="w-4 h-4 text-blue-600" /> Performance
+                <div className="bg-gray-50 rounded-lg p-4">
+                  <h4 className="font-semibold text-gray-800 mb-4 flex items-center gap-2 text-base">
+                    <Gauge className="w-5 h-5 text-blue-600" /> Performance
                   </h4>
-                  <dl className="space-y-2 text-sm">
+                  <dl className="space-y-3 text-sm">
                     {car.horsepower && (
                       <div className="flex justify-between">
                         <dt className="text-gray-500">Horsepower</dt>
@@ -273,11 +315,11 @@ export default function CarDetail() {
 
                 {/* Electric/Range */}
                 {isElectric && (
-                  <div>
-                    <h4 className="font-semibold text-gray-700 mb-3 flex items-center gap-2">
-                      <Zap className="w-4 h-4 text-green-600" /> Electric
+                  <div className="bg-green-50 rounded-lg p-4">
+                    <h4 className="font-semibold text-gray-800 mb-4 flex items-center gap-2 text-base">
+                      <Zap className="w-5 h-5 text-green-600" /> Electric
                     </h4>
-                    <dl className="space-y-2 text-sm">
+                    <dl className="space-y-3 text-sm">
                       {car.range_km && (
                         <div className="flex justify-between">
                           <dt className="text-gray-500">Range (WLTP)</dt>
@@ -320,11 +362,11 @@ export default function CarDetail() {
 
                 {/* Fuel Efficiency & Emissions */}
                 {!isElectric && (car.fuel_consumption || car.co2_emission || car.euro_norm) && (
-                  <div>
-                    <h4 className="font-semibold text-gray-700 mb-3 flex items-center gap-2">
-                      <Fuel className="w-4 h-4 text-orange-600" /> Efficiency
+                  <div className="bg-orange-50 rounded-lg p-4">
+                    <h4 className="font-semibold text-gray-800 mb-4 flex items-center gap-2 text-base">
+                      <Fuel className="w-5 h-5 text-orange-600" /> Efficiency
                     </h4>
-                    <dl className="space-y-2 text-sm">
+                    <dl className="space-y-3 text-sm">
                       {car.fuel_consumption && (
                         <div className="flex justify-between">
                           <dt className="text-gray-500">Consumption</dt>
@@ -353,12 +395,12 @@ export default function CarDetail() {
                   </div>
                 )}
 
-                {/* Dimensions */}
-                <div>
-                  <h4 className="font-semibold text-gray-700 mb-3 flex items-center gap-2">
-                    <CarIcon className="w-4 h-4 text-purple-600" /> Body
+                {/* Body */}
+                <div className="bg-purple-50 rounded-lg p-4">
+                  <h4 className="font-semibold text-gray-800 mb-4 flex items-center gap-2 text-base">
+                    <CarIcon className="w-5 h-5 text-purple-600" /> Body
                   </h4>
-                  <dl className="space-y-2 text-sm">
+                  <dl className="space-y-3 text-sm">
                     <div className="flex justify-between">
                       <dt className="text-gray-500">Body Type</dt>
                       <dd className="font-medium">{car.body_type}</dd>
@@ -403,9 +445,9 @@ export default function CarDetail() {
                 </div>
 
                 {/* Practical */}
-                <div>
-                  <h4 className="font-semibold text-gray-700 mb-3">Practical</h4>
-                  <dl className="space-y-2 text-sm">
+                <div className="bg-gray-50 rounded-lg p-4">
+                  <h4 className="font-semibold text-gray-800 mb-4 text-base">Practical</h4>
+                  <dl className="space-y-3 text-sm">
                     {car.weight && (
                       <div className="flex justify-between">
                         <dt className="text-gray-500">Weight</dt>
@@ -447,9 +489,9 @@ export default function CarDetail() {
 
                 {/* Dimensions */}
                 {(car.width || car.length || car.height) && (
-                  <div>
-                    <h4 className="font-semibold text-gray-700 mb-3">Dimensions</h4>
-                    <dl className="space-y-2 text-sm">
+                  <div className="bg-blue-50 rounded-lg p-4">
+                    <h4 className="font-semibold text-gray-800 mb-4 text-base">Dimensions</h4>
+                    <dl className="space-y-3 text-sm">
                       {car.length && (
                         <div className="flex justify-between">
                           <dt className="text-gray-500">Length</dt>
@@ -474,9 +516,9 @@ export default function CarDetail() {
 
                 {/* Safety */}
                 {(car.abs_brakes !== undefined || car.esp !== undefined || car.airbags) && (
-                  <div>
-                    <h4 className="font-semibold text-gray-700 mb-3">Safety</h4>
-                    <dl className="space-y-2 text-sm">
+                  <div className="bg-red-50 rounded-lg p-4">
+                    <h4 className="font-semibold text-gray-800 mb-4 text-base">Safety</h4>
+                    <dl className="space-y-3 text-sm">
                       {car.abs_brakes !== undefined && (
                         <div className="flex justify-between">
                           <dt className="text-gray-500">ABS Brakes</dt>
@@ -504,18 +546,18 @@ export default function CarDetail() {
             {/* Description */}
             {car.description && (
               <div className="bg-white rounded-2xl p-6 shadow-md">
-                <h3 className="text-xl font-bold mb-4">Description</h3>
-                <p className="text-gray-700 whitespace-pre-line leading-relaxed">{car.description}</p>
+                <h3 className="text-2xl font-bold mb-6 pb-4 border-b">Description</h3>
+                <p className="text-gray-700 whitespace-pre-line leading-relaxed text-base">{car.description}</p>
               </div>
             )}
 
             {/* Equipment */}
             {car.equipment && (
               <div className="bg-white rounded-2xl p-6 shadow-md">
-                <h3 className="text-xl font-bold mb-4">Equipment</h3>
+                <h3 className="text-2xl font-bold mb-6 pb-4 border-b">Equipment & Features</h3>
                 <div className="flex flex-wrap gap-2">
-                  {car.equipment.split('|').slice(0, 20).map((item, i) => (
-                    <span key={i} className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm">
+                  {car.equipment.split('|').filter(item => item.trim()).map((item, i) => (
+                    <span key={i} className="px-4 py-2 bg-gradient-to-r from-blue-50 to-blue-100 text-gray-800 rounded-lg text-sm font-medium hover:from-blue-100 hover:to-blue-200 transition-colors">
                       {item.trim()}
                     </span>
                   ))}
