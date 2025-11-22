@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { Activity, CheckCircle, XCircle, Clock, Server, Database, Cpu, AlertTriangle } from 'lucide-react';
-import api from '../api/client';
 
 interface HealthStatus {
   status: 'healthy' | 'unhealthy' | 'checking';
@@ -145,28 +144,43 @@ export default function BackendHealth() {
         </div>
 
         {/* Controls */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-6">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-4">
+        <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6 mb-6">
+          <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-6">
+            {/* Left side - Actions */}
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 flex-1">
               <button
                 onClick={checkHealth}
-                className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+                disabled={health.api.status === 'checking'}
+                className="flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all font-medium shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                <Activity className="w-5 h-5" />
-                Refresh Now
+                <Activity className={`w-5 h-5 ${health.api.status === 'checking' ? 'animate-spin' : ''}`} />
+                {health.api.status === 'checking' ? 'Checking...' : 'Refresh Now'}
               </button>
-              <label className="flex items-center gap-2 cursor-pointer">
+              
+              <label className="flex items-center gap-3 px-4 py-3 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100 transition-colors border border-gray-200">
                 <input
                   type="checkbox"
                   checked={autoRefresh}
                   onChange={(e) => setAutoRefresh(e.target.checked)}
-                  className="w-4 h-4 text-blue-600 rounded focus:ring-2 focus:ring-blue-500"
+                  className="w-5 h-5 text-blue-600 rounded focus:ring-2 focus:ring-blue-500 cursor-pointer"
                 />
-                <span className="text-gray-700">Auto-refresh (30s)</span>
+                <div className="flex items-center gap-2">
+                  <Clock className="w-4 h-4 text-gray-600" />
+                  <span className="text-gray-700 font-medium">Auto-refresh</span>
+                  <span className="text-xs text-gray-500 bg-white px-2 py-1 rounded-full border border-gray-200">30s</span>
+                </div>
               </label>
             </div>
-            <div className="text-sm text-gray-500">
-              Last checked: {formatTimestamp(lastCheck.toISOString())}
+            
+            {/* Right side - Last check info */}
+            <div className="flex items-center gap-3 px-4 py-3 bg-gradient-to-r from-gray-50 to-blue-50 rounded-lg border border-gray-200">
+              <div className="flex items-center justify-center w-10 h-10 bg-white rounded-full shadow-sm">
+                <Clock className="w-5 h-5 text-blue-600" />
+              </div>
+              <div className="flex flex-col">
+                <span className="text-xs text-gray-500 font-medium uppercase tracking-wide">Last Checked</span>
+                <span className="text-sm font-semibold text-gray-900">{formatTimestamp(lastCheck.toISOString())}</span>
+              </div>
             </div>
           </div>
         </div>

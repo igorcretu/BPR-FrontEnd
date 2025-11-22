@@ -31,8 +31,12 @@ export default function App() {
 
               {/* Desktop Navigation */}
               <div className="hidden md:flex items-center gap-8">
+                
                 <Link to="/about-us" className="text-gray-700 hover:text-blue-600 transition-colors font-medium">
                   About Us
+                </Link>
+                <Link to="/health" className="text-gray-700 hover:text-blue-600 transition-colors font-medium">
+                  Server Health
                 </Link>
                 <Link to="/how-it-works" className="text-gray-700 hover:text-blue-600 transition-colors font-medium">
                   How It Works
