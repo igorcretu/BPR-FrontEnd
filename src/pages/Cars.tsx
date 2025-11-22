@@ -224,47 +224,48 @@ export default function Cars() {
       {/* Header */}
       <div className="bg-white border-b sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-4 py-4">
-          {/* Search Bar - Full Width on Mobile */}
-          <div className="flex gap-2 items-center mb-3 md:mb-0">
+          {/* Search and Controls Container */}
+          <div className="flex flex-col md:flex-row gap-3 md:gap-4">
+            {/* Search Bar */}
             <div className="flex-1 relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
               <input
-              type="text"
-              placeholder="Search by brand, model, or title..."
-              value={searchQuery}
-              onChange={(e) => {
-                setSearchQuery(e.target.value);
-                setCurrentPage(1);
-              }}
-              className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                type="text"
+                placeholder="Search by brand, model, or title..."
+                value={searchQuery}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                  setCurrentPage(1);
+                }}
+                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               />
             </div>
-          </div>
-          
-          {/* Sort and Filters - Full Width on Mobile */}
-          <div className="flex gap-2 items-center">
-            <select
-              value={filters.sort_by}
-              onChange={(e) => {
-                setFilters({ ...filters, sort_by: e.target.value });
-                setCurrentPage(1);
-              }}
-              className="flex-1 md:flex-none px-3 md:px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white font-medium text-gray-700 text-sm md:text-base"
-            >
-              <option value="newest">Newest</option>
-              <option value="oldest">Oldest</option>
-              <option value="price_low">Price: Low</option>
-              <option value="price_high">Price: High</option>
-              <option value="mileage_low">Mileage: Low</option>
-              <option value="mileage_high">Mileage: High</option>
-            </select>
-            <button
-              onClick={() => setShowFilters(!showFilters)}
-              className="flex items-center gap-2 px-4 md:px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium whitespace-nowrap"
-            >
-              <Filter className="w-5 h-5" />
-              <span className="hidden sm:inline">Filters</span>
-            </button>
+            
+            {/* Sort and Filter Controls */}
+            <div className="flex gap-2 items-center">
+              <select
+                value={filters.sort_by}
+                onChange={(e) => {
+                  setFilters({ ...filters, sort_by: e.target.value });
+                  setCurrentPage(1);
+                }}
+                className="flex-1 md:flex-none md:w-44 px-3 md:px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white font-medium text-gray-700 text-sm md:text-base"
+              >
+                <option value="newest">Newest</option>
+                <option value="oldest">Oldest</option>
+                <option value="price_low">Price: Low</option>
+                <option value="price_high">Price: High</option>
+                <option value="mileage_low">Mileage: Low</option>
+                <option value="mileage_high">Mileage: High</option>
+              </select>
+              <button
+                onClick={() => setShowFilters(!showFilters)}
+                className="flex items-center gap-2 px-4 md:px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium whitespace-nowrap"
+              >
+                <Filter className="w-5 h-5" />
+                <span className="hidden sm:inline">Filters</span>
+              </button>
+            </div>
           </div>
 
           {/* Filters Panel */}
