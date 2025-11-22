@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { TrendingUp, Car, AlertCircle, CheckCircle, Zap, Fuel, Settings } from 'lucide-react';
 import api from '../api/client';
+import { getCarImage } from '../utils/carImages';
 
 const COLORS = [
   'Black', 'White', 'Silver', 'Grey', 'Blue', 'Red', 'Green', 'Brown', 'Beige', 'Orange', 'Yellow'
@@ -18,6 +19,7 @@ export default function Predict() {
   const [modelSpecs, setModelSpecs] = useState<ModelSpec | null>(null);
   const [loadingModels, setLoadingModels] = useState(false);
   const [loadingSpecs, setLoadingSpecs] = useState(false);
+  const [carImage, setCarImage] = useState<string | null>(null);
   
   const [formData, setFormData] = useState({
     brand: '',
@@ -114,6 +116,25 @@ export default function Predict() {
     fetchSpecs();
   }, [formData.brand, formData.model]);
 
+  // Fetch car image when brand, model, and year are set
+  useEffect(() => {
+    if (!formData.brand || !formData.model || !formData.year) {
+      setCarImage(null);
+      return;
+    }
+
+    const loadImage = async () => {
+      const image = await getCarImage({
+        id: `${formData.brand}-${formData.model}-${formData.year}`,
+        brand: formData.brand,
+        model: formData.model,
+        year: formData.year,
+      });
+      setCarImage(image);
+    };
+    loadImage();
+  }, [formData.brand, formData.model, formData.year]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -154,6 +175,35 @@ export default function Predict() {
 
         <div className="grid lg:grid-cols-3 gap-8">
           <form onSubmit={handleSubmit} className="lg:col-span-2 bg-white rounded-2xl shadow-md p-8 space-y-6">
+            {/* Car Image Preview */}
+            <div className="relative h-56 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl overflow-hidden border-2 border-blue-100">
+              {carImage ? (
+                <>
+                  <img
+                    src={carImage}
+                    alt={`${formData.brand} ${formData.model} ${formData.year}`}
+                    className="w-full h-full object-contain p-4"
+                  />
+                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-4">
+                    <p className="text-white font-semibold text-lg">
+                      {formData.brand} {formData.model} ({formData.year})
+                    </p>
+                  </div>
+                </>
+              ) : (
+                <div className="flex flex-col items-center justify-center h-full text-gray-400">
+                  <Car className="w-20 h-20 mb-3 opacity-40" />
+                  <p className="text-sm font-medium">
+                    {!formData.brand 
+                      ? 'Select a brand to preview' 
+                      : !formData.model 
+                      ? 'Select a model to preview' 
+                      : 'Loading preview...'}
+                  </p>
+                </div>
+              )}
+            </div>
+
             {/* Basic Info */}
             <div>
               <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
@@ -243,7 +293,7 @@ export default function Predict() {
                     <option value="">{!formData.model ? 'Select model first' : 'Select fuel type'}</option>
                     {modelSpecs?.fuel_types?.map(ft => (
                       <option key={ft.value} value={ft.value}>
-                        {ft.value} {ft.count > 1 && `(${ft.count} variants)`}
+                        {ft.value}
                       </option>
                     ))}
                     {!modelSpecs && formData.model && (
@@ -273,7 +323,7 @@ export default function Predict() {
                     <option value="">{!formData.model ? 'Select model first' : 'Select transmission'}</option>
                     {modelSpecs?.transmissions?.map(tr => (
                       <option key={tr.value} value={tr.value}>
-                        {tr.value} {tr.count > 1 && `(${tr.count} variants)`}
+                        {tr.value}
                       </option>
                     ))}
                     {!modelSpecs && formData.model && (
@@ -335,7 +385,7 @@ export default function Predict() {
                     <option value="">{!formData.model ? 'Select model first' : 'Select body type'}</option>
                     {modelSpecs?.body_types?.map(bt => (
                       <option key={bt.value} value={bt.value}>
-                        {bt.value} {bt.count > 1 && `(${bt.count} variants)`}
+                        {bt.value}
                       </option>
                     ))}
                     {!modelSpecs && formData.model && (

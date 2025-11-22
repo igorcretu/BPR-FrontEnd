@@ -45,7 +45,7 @@ export const generateCarImageUrl = (car: CarImageDescriptor, angle: string = DEF
   url.searchParams.append('customer', IMAGIN_CUSTOMER)
   url.searchParams.append('make', brand.trim())
   url.searchParams.append('modelFamily', model.trim().split(/\s+/)[0])
-  url.searchParams.append('zoomType', 'fullscreen')
+  url.searchParams.append('zoomType', 'standard')
   url.searchParams.append('modelYear', `${year}`)
   if (angle) url.searchParams.append('angle', angle)
 

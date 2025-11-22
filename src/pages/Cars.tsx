@@ -308,7 +308,7 @@ export default function Cars() {
                     <img
                       src={imageUrl}
                       alt={`${car.brand} ${car.model}`}
-                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 scale-100 group-hover:scale-105"
+                      className="w-full h-full object-contain p-2 transition-transform duration-500 scale-100 group-hover:scale-105"
                       loading="lazy"
                     />
                   ) : (
