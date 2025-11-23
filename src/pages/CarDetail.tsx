@@ -617,13 +617,13 @@ export default function CarDetail() {
                     </div>
                   </div>
 
-                  {prediction.warning && (
+                  {(prediction?.warning || (car && car.year && car.year < 2000)) && (
                     <div className="p-4 bg-yellow-100 border-2 border-yellow-400 rounded-lg shadow-md animate-in fade-in duration-500">
                       <div className="flex items-start gap-2">
                         <span className="text-2xl">⚠️</span>
                         <div className="flex-1">
                           <div className="font-semibold text-yellow-900 mb-1">Classic Car Warning</div>
-                          <div className="text-sm text-yellow-800">{prediction.warning}</div>
+                          <div className="text-sm text-yellow-800">{prediction?.warning ?? 'Classic/vintage car: Prediction may not reflect collector value'}</div>
                         </div>
                       </div>
                     </div>
