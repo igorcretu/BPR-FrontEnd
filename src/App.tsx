@@ -51,7 +51,7 @@ export default function App() {
                   Predict Price
                 </Link>
                 
-                <Link to="/cars" className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors font-medium">
+                <Link to="/predict" className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors font-medium">
                   Get Started
                 </Link>
               </div>
@@ -69,7 +69,7 @@ export default function App() {
             {/* Mobile Navigation Menu */}
             <div
               className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out ${
-                mobileMenuOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
+                mobileMenuOpen ? 'max-h-[600px] opacity-100' : 'max-h-0 opacity-0'
               }`}
             >
               <div className="py-4 border-t">
@@ -117,7 +117,7 @@ export default function App() {
                     Predict Price
                   </Link>
                   <Link
-                    to="/cars"
+                    to="/predict"
                     className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-all font-medium text-center transform hover:scale-105"
                     onClick={() => setMobileMenuOpen(false)}
                   >
