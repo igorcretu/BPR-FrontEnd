@@ -197,8 +197,8 @@ export default function Cars() {
       
       // Map frontend sort values to backend values
       const sortMapping: Record<string, { sort_by: string; sort_order: string }> = {
-        'newest': { sort_by: 'listing_date', sort_order: 'desc' },
-        'oldest': { sort_by: 'listing_date', sort_order: 'asc' },
+        'newest': { sort_by: 'year', sort_order: 'desc' },
+        'oldest': { sort_by: 'year', sort_order: 'asc' },
         'price_low': { sort_by: 'price', sort_order: 'asc' },
         'price_high': { sort_by: 'price', sort_order: 'desc' },
         'mileage_low': { sort_by: 'mileage', sort_order: 'asc' },
