@@ -82,6 +82,13 @@ export default function App() {
                     About Us
                   </Link>
                   <Link
+                    to="/health"
+                    className="text-gray-700 hover:text-blue-600 transition-colors font-medium py-2 transform hover:translate-x-2 transition-transform"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    Server Health
+                  </Link>
+                  <Link
                     to="/how-it-works"
                     className="text-gray-700 hover:text-blue-600 transition-colors font-medium py-2 transform hover:translate-x-2 transition-transform"
                     onClick={() => setMobileMenuOpen(false)}
