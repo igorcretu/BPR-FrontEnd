@@ -69,6 +69,7 @@ interface Prediction {
   predicted_price: number;
   confidence: number;
   price_range: { min: number; max: number };
+  warning?: string;
 }
 
 export default function CarDetail() {
@@ -586,7 +587,7 @@ export default function CarDetail() {
           {/* Sidebar */}
           <div className="space-y-6">
             {/* Price Prediction */}
-            <div className="bg-white rounded-2xl p-6 shadow-md sticky top-8">
+            <div className="bg-white rounded-2xl p-6 shadow-lg sticky top-8">
               <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
                 <TrendingUp className="w-5 h-5 text-blue-600" />
                 AI Price Analysis
@@ -608,13 +609,19 @@ export default function CarDetail() {
                   )}
                 </button>
               ) : (
-                <div className="space-y-4">
-                  <div>
+                <div className="space-y-5">
+                  <div className="animate-in fade-in duration-300">
                     <div className="text-sm text-gray-500 mb-1">Predicted Price</div>
-                    <div className="text-3xl font-bold text-gray-900">
+                    <div className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
                       {formatPrice(prediction.predicted_price)}
                     </div>
                   </div>
+
+                  {prediction.warning && (
+                    <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-lg animate-in fade-in duration-500">
+                      <div className="text-sm text-yellow-800">{prediction.warning}</div>
+                    </div>
+                  )}
 
                   <div className={`p-4 rounded-lg ${priceDiff > 5 ? 'bg-red-50' : priceDiff < -5 ? 'bg-green-50' : 'bg-blue-50'}`}>
                     <div className="text-sm font-medium mb-1">
@@ -625,21 +632,45 @@ export default function CarDetail() {
                     </div>
                   </div>
 
-                  <div>
-                    <div className="text-sm text-gray-500 mb-2">Price Range</div>
-                    <div className="flex justify-between text-sm">
-                      <span>{formatPrice(prediction.price_range.min)}</span>
-                      <span>{formatPrice(prediction.price_range.max)}</span>
+                  <div className="p-4 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg border border-blue-100">
+                    <div className="flex items-center gap-2 text-sm text-gray-600 mb-3">
+                      <TrendingUp className="w-4 h-4" />
+                      <span>Price Range</span>
                     </div>
-                    <div className="h-2 bg-gray-200 rounded-full mt-2">
-                      <div className="h-full bg-blue-600 rounded-full" style={{ width: '100%' }}></div>
+                    <div className="flex justify-between items-center mb-3">
+                      <div className="text-center">
+                        <div className="text-xs text-gray-500 mb-1">Min</div>
+                        <span className="font-semibold text-gray-700 text-sm">{formatPrice(prediction.price_range.min)}</span>
+                      </div>
+                      <div className="text-center px-4">
+                        <div className="text-xs text-gray-500 mb-1">Predicted</div>
+                        <span className="font-bold text-blue-600 text-sm">{formatPrice(prediction.predicted_price)}</span>
+                      </div>
+                      <div className="text-center">
+                        <div className="text-xs text-gray-500 mb-1">Max</div>
+                        <span className="font-semibold text-gray-700 text-sm">{formatPrice(prediction.price_range.max)}</span>
+                      </div>
+                    </div>
+                    <div className="relative h-3 bg-blue-200 rounded-full overflow-hidden">
+                      <div className="absolute inset-0 bg-gradient-to-r from-green-400 via-blue-500 to-purple-500 rounded-full" />
+                      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-4 h-4 bg-white border-2 border-blue-600 rounded-full shadow-lg" />
                     </div>
                   </div>
 
-                  <div className="pt-4 border-t text-sm">
-                    <div className="flex justify-between text-gray-500">
-                      <span>Confidence</span>
-                      <span className="font-semibold text-gray-700">{prediction.confidence.toFixed(1)}%</span>
+                  <div className="p-4 bg-gray-50 rounded-lg">
+                    <div className="flex items-center justify-between mb-3">
+                      <span className="text-sm font-medium text-gray-700">Prediction Confidence</span>
+                      <span className="text-2xl font-bold text-blue-600">{prediction.confidence.toFixed(1)}%</span>
+                    </div>
+                    <div className="relative h-3 bg-gray-200 rounded-full overflow-hidden">
+                      <div 
+                        className="absolute inset-y-0 left-0 bg-gradient-to-r from-blue-500 to-green-500 rounded-full transition-all duration-1000"
+                        style={{ width: `${prediction.confidence}%` }}
+                      />
+                    </div>
+                    <div className="flex justify-between mt-2 text-xs text-gray-500">
+                      <span>Low</span>
+                      <span>High</span>
                     </div>
                   </div>
                 </div>

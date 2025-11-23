@@ -333,15 +333,15 @@ export default function MarketStatistics() {
               <Fuel className="w-6 h-6 text-purple-600" />
               Fuel Type Distribution
             </h2>
-            <ResponsiveContainer width="100%" height={300}>
+            <ResponsiveContainer width="100%" height={350}>
               <PieChart>
                 <Pie
                   data={statistics.fuel_types}
                   cx="50%"
-                  cy="50%"
+                  cy="45%"
                   labelLine={false}
-                  label={({ type, percent }) => `${type} (${(percent * 100).toFixed(0)}%)`}
-                  outerRadius={100}
+                  label={({ percent }) => percent > 0.05 ? `${(percent * 100).toFixed(0)}%` : ''}
+                  outerRadius={90}
                   fill="#8884d8"
                   dataKey="count"
                 >
@@ -349,7 +349,12 @@ export default function MarketStatistics() {
                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                   ))}
                 </Pie>
-                <Tooltip />
+                <Tooltip formatter={(value: number, name: string, props: any) => [`${value} cars`, props.payload.type]} />
+                <Legend 
+                  verticalAlign="bottom" 
+                  height={36}
+                  formatter={(value, entry: any) => `${entry.payload.type} (${(entry.payload.count / statistics.fuel_types.reduce((sum, f) => sum + f.count, 0) * 100).toFixed(0)}%)`}
+                />
               </PieChart>
             </ResponsiveContainer>
           </div>
@@ -359,15 +364,15 @@ export default function MarketStatistics() {
               <Box className="w-6 h-6 text-indigo-600" />
               Body Type Distribution
             </h2>
-            <ResponsiveContainer width="100%" height={300}>
+            <ResponsiveContainer width="100%" height={350}>
               <PieChart>
                 <Pie
                   data={statistics.body_types}
                   cx="50%"
-                  cy="50%"
+                  cy="45%"
                   labelLine={false}
-                  label={({ type, percent }) => `${type} (${(percent * 100).toFixed(0)}%)`}
-                  outerRadius={100}
+                  label={({ percent }) => percent > 0.05 ? `${(percent * 100).toFixed(0)}%` : ''}
+                  outerRadius={90}
                   fill="#8884d8"
                   dataKey="count"
                 >
@@ -375,7 +380,12 @@ export default function MarketStatistics() {
                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                   ))}
                 </Pie>
-                <Tooltip />
+                <Tooltip formatter={(value: number, name: string, props: any) => [`${value} cars`, props.payload.type]} />
+                <Legend 
+                  verticalAlign="bottom" 
+                  height={36}
+                  formatter={(value, entry: any) => `${entry.payload.type} (${(entry.payload.count / statistics.body_types.reduce((sum, b) => sum + b.count, 0) * 100).toFixed(0)}%)`}
+                />
               </PieChart>
             </ResponsiveContainer>
           </div>

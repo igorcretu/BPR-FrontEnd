@@ -26,6 +26,7 @@ interface Prediction {
   predicted_price: number;
   confidence: number;
   price_range: { min: number; max: number };
+  warning?: string;
 }
 
 export default function Cars() {
@@ -454,6 +455,11 @@ export default function Cars() {
                   {/* Predicted Price Section */}
                   {prediction ? (
                     <div className="mb-4">
+                      {prediction.warning && (
+                        <div className="mb-2 px-2 py-1 bg-yellow-50 border border-yellow-200 rounded text-xs text-yellow-800">
+                          {prediction.warning}
+                        </div>
+                      )}
                       <div className="flex items-center justify-between text-sm mb-2">
                         <span className="text-gray-500">AI Predicted Price</span>
                         <span className="font-semibold text-gray-700">{formatPrice(prediction.predicted_price)}</span>
