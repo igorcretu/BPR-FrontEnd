@@ -12,12 +12,14 @@ A modern, responsive web application for browsing cars and getting AI-powered pr
 ## 🚀 Features
 
 ### Core Functionality
-- **Car Browsing**: Browse through 30,000+ car listings from the Danish market
+- **Car Browsing**: Browse through 28,000+ car listings from bilbasen.dk
 - **Advanced Search**: Search by brand, model, or title with real-time results
 - **Smart Filters**: Filter by brand, fuel type, transmission, body type, year range, and price range
-- **AI Price Predictions**: Get instant machine learning-powered price estimates
-- **Detailed Car Views**: Comprehensive specifications including performance, dimensions, safety features
+- **AI Price Predictions**: Get instant XGBoost/CatBoost-powered price estimates with 85-90% accuracy
+- **Market Statistics**: Interactive charts showing price distributions, brand popularity, and market trends
+- **Detailed Car Views**: Comprehensive specifications including performance, electric specs, dimensions, safety features
 - **Responsive Design**: Fully optimized for mobile, tablet, and desktop devices
+- **Real-time Data**: Database synchronized with latest market data from bilbasen.dk
 
 ### User Experience
 - **Smooth Navigation**: Client-side routing with React Router
@@ -25,6 +27,8 @@ A modern, responsive web application for browsing cars and getting AI-powered pr
 - **Image Loading**: Lazy loading with fallback for car images
 - **Pagination**: Efficient pagination for browsing large datasets
 - **Real-time Updates**: Data synchronized with backend API
+- **Standardized Data**: Clean, English-labeled categories (7 fuel types, 9 body types)
+- **Prediction Confidence**: ML predictions include confidence scores and price ranges
 
 ## 🛠️ Technology Stack
 
@@ -176,22 +180,25 @@ export default api;
 
 ### Car Detail (`CarDetail.tsx`)
 - High-resolution car images
-- Comprehensive specifications
-- Color-coded sections:
-  - Performance (gray)
-  - Electric specs (green)
-  - Fuel efficiency (orange)
-  - Body details (purple)
-  - Dimensions (blue)
-  - Safety features (red)
-- AI price prediction widget
-- Link to original listing
+- Comprehensive specifications in 6 categories:
+  - **Performance**: Horsepower, Torque, 0-100 km/h, Top Speed, Engine Size
+  - **Electric**: Range, Battery, Consumption, AC/DC Charging, Charging Time
+  - **Efficiency**: Fuel Consumption, CO₂ Emission, Euro Norm, Tank Capacity
+  - **Body**: Body Type, Doors, Seats, Color, Drive Type, Gears, Cylinders
+  - **Practical**: Weight, Trunk Size, Load Capacity, Towing Capacity, Tax
+  - **Dimensions**: Length, Width, Height
+  - **Safety**: ABS Brakes, ESP, Airbags
+- Key details display: First Registration, Body Type, Tax, Category
+- AI price prediction widget with confidence intervals
+- Link to original bilbasen.dk listing
 
-### Price Prediction (`Predict.tsx`)
-- Interactive form for car details
-- Real-time validation
-- AI-powered price estimation
-- Confidence intervals
+### Market Statistics (`MarketStatistics.tsx`)
+- **Price Distribution**: Histogram showing market price ranges
+- **Brand Popularity**: Top 15 brands by listing count
+- **Fuel Type Distribution**: Pie chart of 7 standardized fuel types
+- **Body Type Distribution**: Market share of 9 body types
+- **Interactive Charts**: Built with Recharts library
+- **Real-time Data**: Live statistics from PostgreSQL database
 
 ### How It Works (`HowItWorks.tsx`)
 - 4-step process explanation
@@ -356,10 +363,21 @@ This project is for educational purposes only. Not licensed for commercial use.
 **Year**: 2024-2025  
 **Purpose**: Educational demonstration of full-stack development and ML integration
 
+## 🔗 Related Repositories
+
+- **Backend API**: [BPR-BackEnd-API](https://github.com/igorcretu/BPR-BackEnd-API) - Flask REST API with ML predictions
+- **ML Model**: [BPR-BackEnd-ML-Model](https://github.com/igorcretu/BPR-BackEnd-ML-Model) - Data pipeline and model training
+
 ## 📧 Contact
 
 For academic inquiries, please contact VIA University College.
 
+## 🌐 Live Demo
+
+- **Frontend**: Deployed on Netlify
+- **Backend API**: https://test.bachelorproject26.site
+- **Database**: PostgreSQL on Raspberry Pi 5
+
 ---
 
-**Note**: This platform is created solely for educational purposes and is not intended for commercial use. All car listings are scraped from public sources for research purposes. Price predictions are educational estimates only.
+**Note**: This platform is created solely for educational purposes and is not intended for commercial use. All car listings are scraped from bilbasen.dk for research purposes. Price predictions are educational estimates only.
