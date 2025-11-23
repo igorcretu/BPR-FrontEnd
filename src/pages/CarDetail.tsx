@@ -57,6 +57,7 @@ interface CarDetail {
   category?: string;
   equipment?: string;
   periodic_tax?: string;
+  tax?: number;
   location?: string;
   dealer_name?: string;
   source_url?: string;
@@ -247,24 +248,24 @@ export default function CarDetail() {
                   <div className="text-xs text-gray-500">Transmission</div>
                 </div>
               </div>
-              {(car.first_registration || car.production_date || car.model_year || car.category) && (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mt-6 pt-6 border-t">
+              {(car.first_registration || car.production_date || car.model_year || car.category || car.body_type || car.tax) && (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mt-6 pt-6 border-t">
                   {car.first_registration && (
                     <div className="bg-gray-50 rounded-lg p-3">
                       <div className="text-xs text-gray-500 mb-1">First Registration</div>
                       <div className="font-semibold text-gray-900">{car.first_registration}</div>
                     </div>
                   )}
-                  {car.production_date && (
+                  {car.body_type && (
                     <div className="bg-gray-50 rounded-lg p-3">
-                      <div className="text-xs text-gray-500 mb-1">Production Date</div>
-                      <div className="font-semibold text-gray-900">{car.production_date}</div>
+                      <div className="text-xs text-gray-500 mb-1">Body Type</div>
+                      <div className="font-semibold text-gray-900">{car.body_type}</div>
                     </div>
                   )}
-                  {car.model_year && car.model_year !== car.year && (
+                  {car.tax && (
                     <div className="bg-gray-50 rounded-lg p-3">
-                      <div className="text-xs text-gray-500 mb-1">Model Year</div>
-                      <div className="font-semibold text-gray-900">{car.model_year}</div>
+                      <div className="text-xs text-gray-500 mb-1">Tax</div>
+                      <div className="font-semibold text-gray-900">{car.tax.toLocaleString()} DKK/year</div>
                     </div>
                   )}
                   {car.category && (
