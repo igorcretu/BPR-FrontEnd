@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { 
   BarChart, Bar, LineChart, Line, PieChart, Pie, Cell, 
   XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
-  Area, AreaChart
+  Area, AreaChart, ScatterChart, Scatter, ZAxis
 } from 'recharts';
 import { TrendingUp, DollarSign, Car, Calendar, Gauge, Fuel, Box, Activity } from 'lucide-react';
 import api from '../api/client';
@@ -270,30 +270,26 @@ export default function MarketStatistics() {
           </div>
         </div>
 
-        {/* Price Trend Chart */}
-        {statistics.price_trend.length > 0 && (
-          <div className="bg-white rounded-xl shadow-md p-6">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-2">
-              <TrendingUp className="w-6 h-6 text-blue-600" />
-              Price Trend (Last 30 Days)
-            </h2>
-            <ResponsiveContainer width="100%" height={300}>
-              <AreaChart data={statistics.price_trend}>
-                <defs>
-                  <linearGradient id="colorPrice" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#3B82F6" stopOpacity={0.8}/>
-                    <stop offset="95%" stopColor="#3B82F6" stopOpacity={0}/>
-                  </linearGradient>
-                </defs>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="date" />
-                <YAxis tickFormatter={(value) => `${(value / 1000).toFixed(0)}k`} />
-                <Tooltip formatter={(value: number) => formatPrice(value)} />
-                <Area type="monotone" dataKey="avg_price" stroke="#3B82F6" fillOpacity={1} fill="url(#colorPrice)" />
-              </AreaChart>
-            </ResponsiveContainer>
-          </div>
-        )}
+        {/* Fuel Type Price Comparison */}
+        <div className="bg-white rounded-xl shadow-md p-6">
+          <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+            <Fuel className="w-6 h-6 text-purple-600" />
+            Average Price by Fuel Type
+          </h2>
+          <ResponsiveContainer width="100%" height={300}>
+            <BarChart data={statistics.fuel_types}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="type" />
+              <YAxis tickFormatter={(value) => `${(value / 1000).toFixed(0)}k`} />
+              <Tooltip formatter={(value: number) => formatPrice(value)} />
+              <Bar dataKey="avg_price" fill="#8B5CF6" name="Average Price">
+                {statistics.fuel_types.map((_, index) => (
+                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                ))}
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
 
         {/* Top Brands by Listings */}
         <div className="bg-white rounded-xl shadow-md p-6">
@@ -469,7 +465,7 @@ export default function MarketStatistics() {
         <div className="bg-white rounded-xl shadow-md p-6">
           <h2 className="text-2xl font-bold text-gray-900 mb-6">Top Models by Brand</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {Object.entries(statistics.models_by_brand).map(([brand, models]) => (
+            {Object.entries(statistics.models_by_brand).slice(0, 6).map(([brand, models]) => (
               <div key={brand} className="border border-gray-200 rounded-lg p-4">
                 <h3 className="font-bold text-lg text-blue-600 mb-3">{brand}</h3>
                 <div className="space-y-2">
@@ -488,17 +484,24 @@ export default function MarketStatistics() {
           </div>
         </div>
 
-        {/* Transmission Distribution */}
+        {/* Mileage vs Year Analysis */}
         <div className="bg-white rounded-xl shadow-md p-6">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">Transmission Types</h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {statistics.transmissions.map((trans, idx) => (
-              <div key={idx} className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg p-4 text-center">
-                <div className="text-3xl font-bold text-blue-600">{formatNumber(trans.count)}</div>
-                <div className="text-sm text-gray-600 mt-1">{trans.type}</div>
-              </div>
-            ))}
-          </div>
+          <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+            <Gauge className="w-6 h-6 text-purple-600" />
+            Mileage Range by Model Year
+          </h2>
+          <ResponsiveContainer width="100%" height={300}>
+            <LineChart data={statistics.mileage_by_year}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="year" />
+              <YAxis tickFormatter={(value) => `${(value / 1000).toFixed(0)}k km`} />
+              <Tooltip formatter={(value: number) => `${formatNumber(value)} km`} />
+              <Legend />
+              <Line type="monotone" dataKey="avg_mileage" stroke="#8B5CF6" name="Average Mileage" strokeWidth={2} />
+              <Line type="monotone" dataKey="min_mileage" stroke="#10B981" name="Minimum" strokeWidth={1} strokeDasharray="5 5" />
+              <Line type="monotone" dataKey="max_mileage" stroke="#EF4444" name="Maximum" strokeWidth={1} strokeDasharray="5 5" />
+            </LineChart>
+          </ResponsiveContainer>
         </div>
       </div>
     </div>
