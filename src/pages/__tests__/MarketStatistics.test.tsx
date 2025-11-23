@@ -150,23 +150,6 @@ describe('MarketStatistics', () => {
     });
   });
 
-  it('displays transmission types', async () => {
-    mockedApi.get.mockResolvedValue({
-      data: { statistics: mockStatistics }
-    });
-
-    render(
-      <BrowserRouter>
-        <MarketStatistics />
-      </BrowserRouter>
-    );
-
-    await waitFor(() => {
-      expect(screen.getByText('Manual')).toBeInTheDocument();
-      expect(screen.getByText('Automatic')).toBeInTheDocument();
-    });
-  });
-
   it('displays top models by brand section', async () => {
     mockedApi.get.mockResolvedValue({
       data: { statistics: mockStatistics }

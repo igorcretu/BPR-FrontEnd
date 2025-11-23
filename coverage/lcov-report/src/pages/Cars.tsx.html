@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">77.44% </span>
+                <span class="strong">77.37% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>103/133</span>
+                <span class='fraction'>106/137</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">51.02% </span>
+                <span class="strong">50.96% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>50/98</span>
+                <span class='fraction'>53/104</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">76.61% </span>
+                <span class="strong">77.34% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>95/124</span>
+                <span class='fraction'>99/128</span>
             </div>
         
             
@@ -625,7 +625,21 @@
 <a name='L560'></a><a href='#L560'>560</a>
 <a name='L561'></a><a href='#L561'>561</a>
 <a name='L562'></a><a href='#L562'>562</a>
-<a name='L563'></a><a href='#L563'>563</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L563'></a><a href='#L563'>563</a>
+<a name='L564'></a><a href='#L564'>564</a>
+<a name='L565'></a><a href='#L565'>565</a>
+<a name='L566'></a><a href='#L566'>566</a>
+<a name='L567'></a><a href='#L567'>567</a>
+<a name='L568'></a><a href='#L568'>568</a>
+<a name='L569'></a><a href='#L569'>569</a>
+<a name='L570'></a><a href='#L570'>570</a>
+<a name='L571'></a><a href='#L571'>571</a>
+<a name='L572'></a><a href='#L572'>572</a>
+<a name='L573'></a><a href='#L573'>573</a>
+<a name='L574'></a><a href='#L574'>574</a>
+<a name='L575'></a><a href='#L575'>575</a>
+<a name='L576'></a><a href='#L576'>576</a>
+<a name='L577'></a><a href='#L577'>577</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -763,8 +777,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">16x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">16x</span>
@@ -826,6 +838,21 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-yes">90x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -860,9 +887,9 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -887,6 +914,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1321,11 +1349,9 @@ export default function Cars() {
               fuel_type: car.fuel_type,
               transmission: car.transmission,
               body_type: car.body_type,
-              horsepower: car.horsepower,
+              horsepower: car.horsepower || <span class="branch-1 cbranch-no" title="branch not covered" >150,</span>
               engine_size: car.engine_size,
               doors: car.doors,
-              color: car.color,
-              drive_type: car.drive_type,
             });
             return { id: car.id, prediction: response.data };
           } catch (error) {
@@ -1386,9 +1412,24 @@ export default function Cars() {
 <span class="cstat-no" title="statement not covered" >        params.q = searchQuery;</span>
       }
       
-      // Add filter params (including sort_by)
+      // Map frontend sort values to backend values
+      const sortMapping: Record&lt;string, { sort_by: string; sort_order: string }&gt; = {
+        'newest': { sort_by: 'year', sort_order: 'desc' },
+        'oldest': { sort_by: 'year', sort_order: 'asc' },
+        'price_low': { sort_by: 'price', sort_order: 'asc' },
+        'price_high': { sort_by: 'price', sort_order: 'desc' },
+        'mileage_low': { sort_by: 'mileage', sort_order: 'asc' },
+        'mileage_high': { sort_by: 'mileage', sort_order: 'desc' },
+      };
+      
+      // Apply sorting
+      const sortConfig = sortMapping[filters.sort_by] || <span class="branch-1 cbranch-no" title="branch not covered" >sortMapping['newest'];</span>
+      params.sort_by = sortConfig.sort_by;
+      params.sort_order = sortConfig.sort_order;
+      
+      // Add filter params (excluding sort_by since we handled it above)
       Object.entries(filters).forEach(([key, value]) =&gt; {
-        if (value) params[key] = value;
+        <span class="missing-if-branch" title="if path not taken" >I</span>if (value &amp;&amp; key !== 'sort_by') <span class="cstat-no" title="statement not covered" >params[key] = value;</span>
       });
       
       const response = await api.get('/cars', { params });
@@ -1411,49 +1452,50 @@ export default function Cars() {
   return (
     &lt;div className="min-h-screen bg-gray-50"&gt;
       {/* Header */}
-      &lt;div className="bg-white border-b sticky top-0 z-10"&gt;
+      &lt;div className="bg-white border-b"&gt;
         &lt;div className="max-w-7xl mx-auto px-4 py-4"&gt;
-          {/* Search Bar - Full Width on Mobile */}
-          &lt;div className="flex gap-2 items-center mb-3 md:mb-0"&gt;
+          {/* Search and Controls Container */}
+          &lt;div className="flex flex-col md:flex-row gap-3 md:gap-4"&gt;
+            {/* Search Bar */}
             &lt;div className="flex-1 relative"&gt;
               &lt;Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" /&gt;
               &lt;input
-              type="text"
-              placeholder="Search by brand, model, or title..."
-              value={searchQuery}
-              onChange={<span class="fstat-no" title="function not covered" >(e</span>) =&gt; {
-<span class="cstat-no" title="statement not covered" >                setSearchQuery(e.target.value);</span>
-<span class="cstat-no" title="statement not covered" >                setCurrentPage(1);</span>
-              }}
-              className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                type="text"
+                placeholder="Search by brand, model, or title..."
+                value={searchQuery}
+                onChange={<span class="fstat-no" title="function not covered" >(e</span>) =&gt; {
+<span class="cstat-no" title="statement not covered" >                  setSearchQuery(e.target.value);</span>
+<span class="cstat-no" title="statement not covered" >                  setCurrentPage(1);</span>
+                }}
+                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               /&gt;
             &lt;/div&gt;
-          &lt;/div&gt;
-          
-          {/* Sort and Filters - Full Width on Mobile */}
-          &lt;div className="flex gap-2 items-center"&gt;
-            &lt;select
-              value={filters.sort_by}
-              onChange={<span class="fstat-no" title="function not covered" >(e</span>) =&gt; {
-<span class="cstat-no" title="statement not covered" >                setFilters({ ...filters, sort_by: e.target.value });</span>
-<span class="cstat-no" title="statement not covered" >                setCurrentPage(1);</span>
-              }}
-              className="flex-1 md:flex-none px-3 md:px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white font-medium text-gray-700 text-sm md:text-base"
-            &gt;
-              &lt;option value="newest"&gt;Newest&lt;/option&gt;
-              &lt;option value="oldest"&gt;Oldest&lt;/option&gt;
-              &lt;option value="price_low"&gt;Price: Low&lt;/option&gt;
-              &lt;option value="price_high"&gt;Price: High&lt;/option&gt;
-              &lt;option value="mileage_low"&gt;Mileage: Low&lt;/option&gt;
-              &lt;option value="mileage_high"&gt;Mileage: High&lt;/option&gt;
-            &lt;/select&gt;
-            &lt;button
-              onClick={() =&gt; setShowFilters(!showFilters)}
-              className="flex items-center gap-2 px-4 md:px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium whitespace-nowrap"
-            &gt;
-              &lt;Filter className="w-5 h-5" /&gt;
-              &lt;span className="hidden sm:inline"&gt;Filters&lt;/span&gt;
-            &lt;/button&gt;
+            
+            {/* Sort and Filter Controls */}
+            &lt;div className="flex gap-2 items-center"&gt;
+              &lt;select
+                value={filters.sort_by}
+                onChange={<span class="fstat-no" title="function not covered" >(e</span>) =&gt; {
+<span class="cstat-no" title="statement not covered" >                  setFilters({ ...filters, sort_by: e.target.value });</span>
+<span class="cstat-no" title="statement not covered" >                  setCurrentPage(1);</span>
+                }}
+                className="flex-1 md:flex-none md:w-44 px-3 md:px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white font-medium text-gray-700 text-sm md:text-base"
+              &gt;
+                &lt;option value="newest"&gt;Newest&lt;/option&gt;
+                &lt;option value="oldest"&gt;Oldest&lt;/option&gt;
+                &lt;option value="price_low"&gt;Price: Low&lt;/option&gt;
+                &lt;option value="price_high"&gt;Price: High&lt;/option&gt;
+                &lt;option value="mileage_low"&gt;Mileage: Low&lt;/option&gt;
+                &lt;option value="mileage_high"&gt;Mileage: High&lt;/option&gt;
+              &lt;/select&gt;
+              &lt;button
+                onClick={() =&gt; setShowFilters(!showFilters)}
+                className="flex items-center gap-2 px-4 md:px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium whitespace-nowrap"
+              &gt;
+                &lt;Filter className="w-5 h-5" /&gt;
+                &lt;span className="hidden sm:inline"&gt;Filters&lt;/span&gt;
+              &lt;/button&gt;
+            &lt;/div&gt;
           &lt;/div&gt;
 &nbsp;
           {/* Filters Panel */}
@@ -1549,19 +1591,19 @@ export default function Cars() {
 &nbsp;
       {/* Disclaimer Banner */}
       &lt;div className="bg-gradient-to-r from-blue-50 to-indigo-50 border-b border-blue-100"&gt;
-        &lt;div className="max-w-7xl mx-auto px-4 py-3"&gt;
-          &lt;div className="flex items-center justify-center gap-4"&gt;
-            &lt;p className="text-sm text-gray-600"&gt;
-              &lt;span className="inline-flex items-center gap-1.5"&gt;
-                &lt;svg className="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"&gt;
-                  &lt;path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /&gt;
+        &lt;div className="max-w-7xl mx-auto px-4 py-2 md:py-3"&gt;
+          &lt;div className="flex items-center justify-center gap-2 md:gap-4"&gt;
+            &lt;p className="text-xs md:text-sm text-gray-600"&gt;
+              &lt;span className="inline-flex items-center gap-1 md:gap-1.5"&gt;
+                &lt;svg className="w-4 h-4 md:w-5 md:h-5 text-blue-600 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24"&gt;
+                  &lt;path fillRule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.709 2.836.042-.02a.75.75 0 01.67 1.34l-.04.022c-1.147.573-2.438-.463-2.127-1.706l.71-2.836-.042.02a.75.75 0 11-.671-1.34l.041-.022zM12 9a.75.75 0 100-1.5.75.75 0 000 1.5z" clipRule="evenodd" /&gt;
                 &lt;/svg&gt;
                 &lt;span&gt;All listings are sourced from &lt;span className="font-medium text-gray-700"&gt;Bilbasen&lt;/span&gt; and used exclusively for market analysis and price prediction purposes.&lt;/span&gt;
               &lt;/span&gt;
             &lt;/p&gt;
             &lt;Link
               to="/about-us#disclaimer"
-              className="text-xs px-3 py-1.5 bg-white hover:bg-blue-50 text-blue-600 hover:text-blue-700 rounded-full border border-blue-200 hover:border-blue-300 transition-all font-medium whitespace-nowrap shadow-sm hover:shadow"
+              className="text-xs px-2 md:px-3 py-1 md:py-1.5 bg-white hover:bg-blue-50 text-blue-600 hover:text-blue-700 rounded-full border border-blue-200 hover:border-blue-300 transition-all font-medium whitespace-nowrap shadow-sm hover:shadow"
             &gt;
               Learn More
             &lt;/Link&gt;
@@ -1756,7 +1798,7 @@ export default function Cars() {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-11-22T22:10:32.683Z
+                at 2025-11-23T02:28:03.575Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

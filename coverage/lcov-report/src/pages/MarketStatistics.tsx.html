@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">69.04% </span>
+                <span class="strong">65.9% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>29/42</span>
+                <span class='fraction'>29/44</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">71.42% </span>
+                <span class="strong">66.66% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>10/14</span>
+                <span class='fraction'>8/12</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">47.61% </span>
+                <span class="strong">43.47% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>10/21</span>
+                <span class='fraction'>10/23</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">70.73% </span>
+                <span class="strong">67.44% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>29/41</span>
+                <span class='fraction'>29/43</span>
             </div>
         
             
@@ -569,7 +569,10 @@
 <a name='L504'></a><a href='#L504'>504</a>
 <a name='L505'></a><a href='#L505'>505</a>
 <a name='L506'></a><a href='#L506'>506</a>
-<a name='L507'></a><a href='#L507'>507</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L507'></a><a href='#L507'>507</a>
+<a name='L508'></a><a href='#L508'>508</a>
+<a name='L509'></a><a href='#L509'>509</a>
+<a name='L510'></a><a href='#L510'>510</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -758,7 +761,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">20x</span>
+<span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">5x</span>
@@ -851,15 +854,11 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1064,7 +1063,14 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1347,30 +1353,26 @@ export default function MarketStatistics() {
           &lt;/div&gt;
         &lt;/div&gt;
 &nbsp;
-        {/* Price Trend Chart */}
-        {statistics.price_trend.length &gt; 0 &amp;&amp; (
-          &lt;div className="bg-white rounded-xl shadow-md p-6"&gt;
-            &lt;h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-2"&gt;
-              &lt;TrendingUp className="w-6 h-6 text-blue-600" /&gt;
-              Price Trend (Last 30 Days)
-            &lt;/h2&gt;
-            &lt;ResponsiveContainer width="100%" height={300}&gt;
-              &lt;AreaChart data={statistics.price_trend}&gt;
-                &lt;defs&gt;
-                  &lt;linearGradient id="colorPrice" x1="0" y1="0" x2="0" y2="1"&gt;
-                    &lt;stop offset="5%" stopColor="#3B82F6" stopOpacity={0.8}/&gt;
-                    &lt;stop offset="95%" stopColor="#3B82F6" stopOpacity={0}/&gt;
-                  &lt;/linearGradient&gt;
-                &lt;/defs&gt;
-                &lt;CartesianGrid strokeDasharray="3 3" /&gt;
-                &lt;XAxis dataKey="date" /&gt;
-                &lt;YAxis tickFormatter={<span class="fstat-no" title="function not covered" >(v</span>alue) =&gt; <span class="cstat-no" title="statement not covered" >`${(value / 1000).toFixed(0)}k`}</span> /&gt;
-                &lt;Tooltip formatter={<span class="fstat-no" title="function not covered" >(v</span>alue: number) =&gt; <span class="cstat-no" title="statement not covered" >formatPrice(value)}</span> /&gt;
-                &lt;Area type="monotone" dataKey="avg_price" stroke="#3B82F6" fillOpacity={1} fill="url(#colorPrice)" /&gt;
-              &lt;/AreaChart&gt;
-            &lt;/ResponsiveContainer&gt;
-          &lt;/div&gt;
-        )}
+        {/* Fuel Type Price Comparison */}
+        &lt;div className="bg-white rounded-xl shadow-md p-6"&gt;
+          &lt;h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-2"&gt;
+            &lt;Fuel className="w-6 h-6 text-purple-600" /&gt;
+            Average Price by Fuel Type
+          &lt;/h2&gt;
+          &lt;ResponsiveContainer width="100%" height={300}&gt;
+            &lt;BarChart data={statistics.fuel_types}&gt;
+              &lt;CartesianGrid strokeDasharray="3 3" /&gt;
+              &lt;XAxis dataKey="type" /&gt;
+              &lt;YAxis tickFormatter={<span class="fstat-no" title="function not covered" >(v</span>alue) =&gt; <span class="cstat-no" title="statement not covered" >`${(value / 1000).toFixed(0)}k`}</span> /&gt;
+              &lt;Tooltip formatter={<span class="fstat-no" title="function not covered" >(v</span>alue: number) =&gt; <span class="cstat-no" title="statement not covered" >formatPrice(value)}</span> /&gt;
+              &lt;Bar dataKey="avg_price" fill="#8B5CF6" name="Average Price"&gt;
+                {statistics.fuel_types.map((_, index) =&gt; (
+                  &lt;Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} /&gt;
+                ))}
+              &lt;/Bar&gt;
+            &lt;/BarChart&gt;
+          &lt;/ResponsiveContainer&gt;
+        &lt;/div&gt;
 &nbsp;
         {/* Top Brands by Listings */}
         &lt;div className="bg-white rounded-xl shadow-md p-6"&gt;
@@ -1546,7 +1548,7 @@ export default function MarketStatistics() {
         &lt;div className="bg-white rounded-xl shadow-md p-6"&gt;
           &lt;h2 className="text-2xl font-bold text-gray-900 mb-6"&gt;Top Models by Brand&lt;/h2&gt;
           &lt;div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"&gt;
-            {Object.entries(statistics.models_by_brand).map(([brand, models]) =&gt; (
+            {Object.entries(statistics.models_by_brand).slice(0, 6).map(([brand, models]) =&gt; (
               &lt;div key={brand} className="border border-gray-200 rounded-lg p-4"&gt;
                 &lt;h3 className="font-bold text-lg text-blue-600 mb-3"&gt;{brand}&lt;/h3&gt;
                 &lt;div className="space-y-2"&gt;
@@ -1565,17 +1567,24 @@ export default function MarketStatistics() {
           &lt;/div&gt;
         &lt;/div&gt;
 &nbsp;
-        {/* Transmission Distribution */}
+        {/* Mileage vs Year Analysis */}
         &lt;div className="bg-white rounded-xl shadow-md p-6"&gt;
-          &lt;h2 className="text-2xl font-bold text-gray-900 mb-6"&gt;Transmission Types&lt;/h2&gt;
-          &lt;div className="grid grid-cols-2 md:grid-cols-4 gap-4"&gt;
-            {statistics.transmissions.map((trans, idx) =&gt; (
-              &lt;div key={idx} className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg p-4 text-center"&gt;
-                &lt;div className="text-3xl font-bold text-blue-600"&gt;{formatNumber(trans.count)}&lt;/div&gt;
-                &lt;div className="text-sm text-gray-600 mt-1"&gt;{trans.type}&lt;/div&gt;
-              &lt;/div&gt;
-            ))}
-          &lt;/div&gt;
+          &lt;h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-2"&gt;
+            &lt;Gauge className="w-6 h-6 text-purple-600" /&gt;
+            Mileage Range by Model Year
+          &lt;/h2&gt;
+          &lt;ResponsiveContainer width="100%" height={300}&gt;
+            &lt;LineChart data={statistics.mileage_by_year}&gt;
+              &lt;CartesianGrid strokeDasharray="3 3" /&gt;
+              &lt;XAxis dataKey="year" /&gt;
+              &lt;YAxis tickFormatter={<span class="fstat-no" title="function not covered" >(v</span>alue) =&gt; <span class="cstat-no" title="statement not covered" >`${(value / 1000).toFixed(0)}k km`}</span> /&gt;
+              &lt;Tooltip formatter={<span class="fstat-no" title="function not covered" >(v</span>alue: number) =&gt; <span class="cstat-no" title="statement not covered" >`${formatNumber(value)} km`}</span> /&gt;
+              &lt;Legend /&gt;
+              &lt;Line type="monotone" dataKey="avg_mileage" stroke="#8B5CF6" name="Average Mileage" strokeWidth={2} /&gt;
+              &lt;Line type="monotone" dataKey="min_mileage" stroke="#10B981" name="Minimum" strokeWidth={1} strokeDasharray="5 5" /&gt;
+              &lt;Line type="monotone" dataKey="max_mileage" stroke="#EF4444" name="Maximum" strokeWidth={1} strokeDasharray="5 5" /&gt;
+            &lt;/LineChart&gt;
+          &lt;/ResponsiveContainer&gt;
         &lt;/div&gt;
       &lt;/div&gt;
     &lt;/div&gt;
@@ -1588,7 +1597,7 @@ export default function MarketStatistics() {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-11-22T22:10:32.683Z
+                at 2025-11-23T02:28:03.575Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

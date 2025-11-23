@@ -237,7 +237,15 @@
 <a name='L172'></a><a href='#L172'>172</a>
 <a name='L173'></a><a href='#L173'>173</a>
 <a name='L174'></a><a href='#L174'>174</a>
-<a name='L175'></a><a href='#L175'>175</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L175'></a><a href='#L175'>175</a>
+<a name='L176'></a><a href='#L176'>176</a>
+<a name='L177'></a><a href='#L177'>177</a>
+<a name='L178'></a><a href='#L178'>178</a>
+<a name='L179'></a><a href='#L179'>179</a>
+<a name='L180'></a><a href='#L180'>180</a>
+<a name='L181'></a><a href='#L181'>181</a>
+<a name='L182'></a><a href='#L182'>182</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -292,21 +300,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -318,7 +311,12 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -347,6 +345,22 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -421,6 +435,7 @@ import Predict from './pages/Predict';
 import HowItWorks from './pages/HowItWorks';
 import AboutUs from './pages/AboutUs';
 import MarketStatistics from './pages/MarketStatistics';
+import BackendHealth from './pages/BackendHealth';
 import NotFound from './pages/NotFound';
 import ScrollToTop from './components/ScrollToTop';
 &nbsp;
@@ -443,8 +458,12 @@ export default function App() {
 &nbsp;
               {/* Desktop Navigation */}
               &lt;div className="hidden md:flex items-center gap-8"&gt;
+                
                 &lt;Link to="/about-us" className="text-gray-700 hover:text-blue-600 transition-colors font-medium"&gt;
                   About Us
+                &lt;/Link&gt;
+                &lt;Link to="/health" className="text-gray-700 hover:text-blue-600 transition-colors font-medium"&gt;
+                  Server Health
                 &lt;/Link&gt;
                 &lt;Link to="/how-it-works" className="text-gray-700 hover:text-blue-600 transition-colors font-medium"&gt;
                   How It Works
@@ -538,6 +557,7 @@ export default function App() {
           &lt;Route path="/how-it-works" element={&lt;HowItWorks /&gt;} /&gt;
           &lt;Route path="/about-us" element={&lt;AboutUs /&gt;} /&gt;
           &lt;Route path="/market-statistics" element={&lt;MarketStatistics /&gt;} /&gt;
+          &lt;Route path="/health" element={&lt;BackendHealth /&gt;} /&gt;
           &lt;Route path="*" element={&lt;NotFound /&gt;} /&gt;
         &lt;/Routes&gt;
 &nbsp;
@@ -565,6 +585,7 @@ export default function App() {
                 &lt;ul className="space-y-2 text-gray-400"&gt;
                   &lt;li&gt;&lt;Link to="/about-us" className="hover:text-white"&gt;About Us&lt;/Link&gt;&lt;/li&gt;
                   &lt;li&gt;&lt;Link to="/how-it-works" className="hover:text-white"&gt;How It Works&lt;/Link&gt;&lt;/li&gt;
+                  &lt;li&gt;&lt;Link to="/health" className="hover:text-white"&gt;Backend Health&lt;/Link&gt;&lt;/li&gt;
                 &lt;/ul&gt;
               &lt;/div&gt;
               &lt;div&gt;
@@ -592,7 +613,7 @@ export default function App() {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-11-22T22:10:32.683Z
+                at 2025-11-23T02:28:03.575Z
             </div>
         <script src="../prettify.js"></script>
         <script>

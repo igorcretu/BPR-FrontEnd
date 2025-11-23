@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { 
   BarChart, Bar, LineChart, Line, PieChart, Pie, Cell, 
   XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
-  Area, AreaChart, ScatterChart, Scatter, ZAxis
+  Area, AreaChart
 } from 'recharts';
 import { TrendingUp, DollarSign, Car, Calendar, Gauge, Fuel, Box, Activity } from 'lucide-react';
 import api from '../api/client';
