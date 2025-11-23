@@ -349,11 +349,11 @@ export default function MarketStatistics() {
                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                   ))}
                 </Pie>
-                <Tooltip formatter={(value: number, name: string, props: any) => [`${value} cars`, props.payload.type]} />
+                <Tooltip formatter={(value: number, _name: string, props: any) => [`${value} cars`, props.payload.type]} />
                 <Legend 
                   verticalAlign="bottom" 
                   height={36}
-                  formatter={(value, entry: any) => `${entry.payload.type} (${(entry.payload.count / statistics.fuel_types.reduce((sum, f) => sum + f.count, 0) * 100).toFixed(0)}%)`}
+                  formatter={(_value, entry: any) => `${entry.payload.type} (${(entry.payload.count / statistics.fuel_types.reduce((sum, f) => sum + f.count, 0) * 100).toFixed(0)}%)`}
                 />
               </PieChart>
             </ResponsiveContainer>
@@ -380,11 +380,11 @@ export default function MarketStatistics() {
                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                   ))}
                 </Pie>
-                <Tooltip formatter={(value: number, name: string, props: any) => [`${value} cars`, props.payload.type]} />
+                <Tooltip formatter={(value: number, _name: string, props: any) => [`${value} cars`, props.payload.type]} />
                 <Legend 
                   verticalAlign="bottom" 
                   height={36}
-                  formatter={(value, entry: any) => `${entry.payload.type} (${(entry.payload.count / statistics.body_types.reduce((sum, b) => sum + b.count, 0) * 100).toFixed(0)}%)`}
+                  formatter={(_value, entry: any) => `${entry.payload.type} (${(entry.payload.count / statistics.body_types.reduce((sum, b) => sum + b.count, 0) * 100).toFixed(0)}%)`}
                 />
               </PieChart>
             </ResponsiveContainer>
