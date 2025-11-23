@@ -456,8 +456,11 @@ export default function Cars() {
                   {prediction ? (
                     <div className="mb-4">
                       {prediction.warning && (
-                        <div className="mb-2 px-2 py-1 bg-yellow-50 border border-yellow-200 rounded text-xs text-yellow-800">
-                          {prediction.warning}
+                        <div className="mb-3 px-3 py-2 bg-yellow-100 border-l-4 border-yellow-500 rounded text-xs">
+                          <div className="flex items-center gap-2">
+                            <span className="text-base">⚠️</span>
+                            <span className="font-semibold text-yellow-900">{prediction.warning}</span>
+                          </div>
                         </div>
                       )}
                       <div className="flex items-center justify-between text-sm mb-2">

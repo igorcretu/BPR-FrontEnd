@@ -618,8 +618,14 @@ export default function CarDetail() {
                   </div>
 
                   {prediction.warning && (
-                    <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-lg animate-in fade-in duration-500">
-                      <div className="text-sm text-yellow-800">{prediction.warning}</div>
+                    <div className="p-4 bg-yellow-100 border-2 border-yellow-400 rounded-lg shadow-md animate-in fade-in duration-500">
+                      <div className="flex items-start gap-2">
+                        <span className="text-2xl">⚠️</span>
+                        <div className="flex-1">
+                          <div className="font-semibold text-yellow-900 mb-1">Classic Car Warning</div>
+                          <div className="text-sm text-yellow-800">{prediction.warning}</div>
+                        </div>
+                      </div>
                     </div>
                   )}
 
