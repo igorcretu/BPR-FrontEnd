@@ -5,8 +5,8 @@ type CarImageDescriptor = {
   year: number
 }
 
-const IMAGIN_BASE_URL = 'https://cdn.imagin.studio/getimage'
-const IMAGIN_CUSTOMER = 'hrjavascript-mastery'
+const IMAGIN_BASE_URL = ''
+const IMAGIN_CUSTOMER = ''
 const DEFAULT_ANGLE = 'front'
 const CACHE_VERSION = 'v2'
 const memoryCache = new Map<string, string | null>()
