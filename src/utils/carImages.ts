@@ -40,6 +40,7 @@ const writeToSession = (key: string, value: string | null) => {
 export const generateCarImageUrl = (car: CarImageDescriptor, angle: string = DEFAULT_ANGLE): string | null => {
   const { brand, model, year } = car
   if (!brand?.trim() || !model?.trim() || !year) return null
+  if (!IMAGIN_BASE_URL) return null
 
   const url = new URL(IMAGIN_BASE_URL)
   url.searchParams.append('customer', IMAGIN_CUSTOMER)

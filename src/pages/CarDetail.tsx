@@ -185,11 +185,11 @@ export default function CarDetail() {
           <div className="lg:col-span-2 space-y-6">
             {/* Image */}
             <div className="bg-gray-200 rounded-2xl h-80 md:h-96 flex items-center justify-center overflow-hidden relative">
-              {imageUrl ? (
-                <img src={imageUrl} alt={`${car.brand} ${car.model}`} className="absolute inset-0 w-full h-full object-cover" />
-              ) : (
-                <CarIcon className="w-32 h-32 text-gray-400" />
-              )}
+              <img
+                src={imageUrl ?? 'data:image/svg+xml;utf8,'}
+                alt={`${car.brand} ${car.model}`}
+                className="absolute inset-0 w-full h-full object-cover"
+              />
             </div>
 
             {/* Header */}
