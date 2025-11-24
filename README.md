@@ -1,6 +1,6 @@
-[![CI/CD Pipeline](https://github.com/igorcretu/BPR-FrontEnd/actions/workflows/cd-cd.yml/badge.svg)](https://github.com/igorcretu/BPR-FrontEnd/actions/workflows/cd-cd.yml)
-
 # CarPredict Frontend
+
+[![CI/CD Pipeline](https://github.com/igorcretu/BPR-FrontEnd/actions/workflows/cd-cd.yml/badge.svg)](https://github.com/igorcretu/BPR-FrontEnd/actions/workflows/cd-cd.yml)
 
 A modern, responsive web application for browsing cars and getting AI-powered price predictions for the Danish car market. Built with React, TypeScript, and Tailwind CSS.
 
