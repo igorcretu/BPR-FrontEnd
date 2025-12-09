@@ -9,6 +9,7 @@ import HowItWorks from './pages/HowItWorks';
 import AboutUs from './pages/AboutUs';
 import MarketStatistics from './pages/MarketStatistics';
 import BackendHealth from './pages/BackendHealth';
+import ModelComparison from './pages/ModelComparison';
 import NotFound from './pages/NotFound';
 import ScrollToTop from './components/ScrollToTop';
 
@@ -60,6 +61,9 @@ function Navigation() {
             </Link>
             <Link to="/market-statistics" className={navLinkClass('/market-statistics')}>
               Market Stats
+            </Link>
+            <Link to="/model-comparison" className={navLinkClass('/model-comparison')}>
+              Model Comparison
             </Link>
             <Link to="/cars" className={navLinkClass('/cars')}>
               Market Analysis
@@ -120,6 +124,13 @@ function Navigation() {
                 Market Stats
               </Link>
               <Link
+                to="/model-comparison"
+                className={mobileNavLinkClass('/model-comparison')}
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Model Comparison
+              </Link>
+              <Link
                 to="/cars"
                 className={mobileNavLinkClass('/cars')}
                 onClick={() => setMobileMenuOpen(false)}
@@ -165,6 +176,7 @@ export default function App() {
           <Route path="/how-it-works" element={<HowItWorks />} />
           <Route path="/about-us" element={<AboutUs />} />
           <Route path="/market-statistics" element={<MarketStatistics />} />
+          <Route path="/model-comparison" element={<ModelComparison />} />
           <Route path="/health" element={<BackendHealth />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
@@ -186,6 +198,7 @@ export default function App() {
                   <li><Link to="/cars" className="hover:text-white">Market Analysis</Link></li>
                   <li><Link to="/predict" className="hover:text-white">Price Prediction</Link></li>
                   <li><Link to="/market-statistics" className="hover:text-white">Market Statistics</Link></li>
+                  <li><Link to="/model-comparison" className="hover:text-white">Model Comparison</Link></li>
                 </ul>
               </div>
               <div>

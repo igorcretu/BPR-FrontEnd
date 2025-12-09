@@ -86,6 +86,22 @@ const lookupWikimediaImage = async (brand: string, model: string, year: number):
   return null
 }
 
+const tryBackendImage = async (carId: string): Promise<string | null> => {
+  try {
+    const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000'
+    const url = `${apiUrl}/api/cars/${carId}/image`
+    const response = await fetch(url)
+    
+    if (response.ok) {
+      // Return the full URL for the image
+      return url
+    }
+    return null
+  } catch {
+    return null
+  }
+}
+
 export const getCarImage = async (descriptor: CarImageDescriptor): Promise<string | null> => {
   const key = getCacheKey(descriptor)
 
@@ -97,6 +113,16 @@ export const getCarImage = async (descriptor: CarImageDescriptor): Promise<strin
   if (stored !== undefined) {
     memoryCache.set(key, stored)
     return stored
+  }
+
+  // Try backend API first if we have a car ID
+  if (descriptor.id) {
+    const backendImage = await tryBackendImage(descriptor.id)
+    if (backendImage) {
+      memoryCache.set(key, backendImage)
+      writeToSession(key, backendImage)
+      return backendImage
+    }
   }
 
   const generated = generateCarImageUrl(descriptor)

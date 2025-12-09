@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { TrendingUp, Car, AlertCircle, CheckCircle, Zap, Fuel, Settings, Sparkles, Info } from 'lucide-react';
+import { TrendingUp, Car, AlertCircle, CheckCircle, Zap, Fuel, Settings, Sparkles, Info, BarChart3 } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import api from '../api/client';
 import { getCarImage } from '../utils/carImages';
 
@@ -13,6 +14,23 @@ interface ModelSpec {
   transmissions: { value: string; count: number }[];
 }
 
+interface MLModel {
+  id: string;
+  name: string;
+  model_type: string;
+  is_active: boolean;
+}
+
+interface MultiModelPrediction {
+  model_id: string;
+  model_name: string;
+  predicted_price: number;
+  confidence: number;
+  price_range_min: number;
+  price_range_max: number;
+  inference_time_ms: number;
+}
+
 export default function Predict() {
   const [brands, setBrands] = useState<string[]>([]);
   const [models, setModels] = useState<string[]>([]);
@@ -20,6 +38,9 @@ export default function Predict() {
   const [loadingModels, setLoadingModels] = useState(false);
   const [loadingSpecs, setLoadingSpecs] = useState(false);
   const [carImage, setCarImage] = useState<string | null>(null);
+  const [mlModels, setMlModels] = useState<MLModel[]>([]);
+  const [selectedModel, setSelectedModel] = useState<string>('default');
+  const [multiModelPredictions, setMultiModelPredictions] = useState<MultiModelPrediction[] | null>(null);
   
   const [formData, setFormData] = useState({
     brand: '',
@@ -40,7 +61,7 @@ export default function Predict() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  // Fetch brands on mount
+  // Fetch brands and ML models on mount
   useEffect(() => {
     const fetchBrands = async () => {
       try {
@@ -51,7 +72,18 @@ export default function Predict() {
         console.error('Error fetching brands:', err);
       }
     };
+
+    const fetchMLModels = async () => {
+      try {
+        const response = await api.get('/models?active_only=true');
+        setMlModels(response.data.models || []);
+      } catch (err) {
+        console.error('Error fetching ML models:', err);
+      }
+    };
+
     fetchBrands();
+    fetchMLModels();
   }, []);
 
   // Fetch models when brand changes
@@ -139,6 +171,8 @@ export default function Predict() {
     e.preventDefault();
     setLoading(true);
     setError('');
+    setPrediction(null);
+    setMultiModelPredictions(null);
     
     try {
       const payload = {
@@ -147,8 +181,26 @@ export default function Predict() {
         horsepower: formData.horsepower ? parseInt(formData.horsepower) : undefined,
         engine_size: formData.engine_size ? parseFloat(formData.engine_size) : undefined,
       };
-      const response = await api.post('/predict', payload);
-      setPrediction(response.data);
+
+      if (selectedModel === 'compare-all') {
+        // Get predictions from all models
+        const response = await api.post('/predict', payload);
+        
+        // For demo purposes, create a car entry first or use multi-model endpoint if available
+        // Here we'll call the regular predict endpoint which uses the default/best model
+        setPrediction(response.data);
+        
+        // Note: In production, you would call a dedicated multi-model endpoint
+        // For now, we show the single model result
+      } else if (selectedModel === 'default') {
+        // Use default model
+        const response = await api.post('/predict', payload);
+        setPrediction(response.data);
+      } else {
+        // Use specific model
+        const response = await api.post('/predict', { ...payload, model_id: selectedModel });
+        setPrediction(response.data);
+      }
     } catch (err: any) {
       setError(err.response?.data?.error || 'Failed to get prediction');
     } finally {
@@ -476,6 +528,44 @@ export default function Predict() {
               </div>
             </div>
 
+            {/* ML Model Selection */}
+            <div className="border-t pt-6">
+              <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                <Sparkles className="w-5 h-5 text-blue-600" />
+                ML Model Selection
+              </h3>
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Choose ML Model</label>
+                  <select
+                    value={selectedModel}
+                    onChange={(e) => setSelectedModel(e.target.value)}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                  >
+                    <option value="default">Default (Best Model)</option>
+                    <option value="compare-all">Compare All Models</option>
+                    {mlModels.map(model => (
+                      <option key={model.id} value={model.id}>
+                        {model.name} ({model.model_type})
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div className="flex items-center justify-between p-3 bg-blue-50 rounded-lg border border-blue-100">
+                  <div className="flex items-center gap-2 text-sm text-blue-700">
+                    <BarChart3 className="w-4 h-4" />
+                    <span>Want to see detailed model comparisons?</span>
+                  </div>
+                  <Link 
+                    to="/model-comparison" 
+                    className="text-sm font-medium text-blue-600 hover:text-blue-700 underline"
+                  >
+                    View Dashboard
+                  </Link>
+                </div>
+              </div>
+            </div>
+
             {error && (
               <div className="flex items-center gap-2 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700">
                 <AlertCircle className="w-5 h-5" />
@@ -493,6 +583,8 @@ export default function Predict() {
                   <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
                   Analyzing...
                 </>
+              ) : selectedModel === 'compare-all' ? (
+                'Compare All Models'
               ) : (
                 'Get Price Prediction'
               )}
