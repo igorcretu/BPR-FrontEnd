@@ -21,16 +21,6 @@ interface MLModel {
   is_active: boolean;
 }
 
-interface MultiModelPrediction {
-  model_id: string;
-  model_name: string;
-  predicted_price: number;
-  confidence: number;
-  price_range_min: number;
-  price_range_max: number;
-  inference_time_ms: number;
-}
-
 export default function Predict() {
   const [brands, setBrands] = useState<string[]>([]);
   const [models, setModels] = useState<string[]>([]);
@@ -40,7 +30,6 @@ export default function Predict() {
   const [carImage, setCarImage] = useState<string | null>(null);
   const [mlModels, setMlModels] = useState<MLModel[]>([]);
   const [selectedModel, setSelectedModel] = useState<string>('default');
-  const [multiModelPredictions, setMultiModelPredictions] = useState<MultiModelPrediction[] | null>(null);
   
   const [formData, setFormData] = useState({
     brand: '',
@@ -172,7 +161,6 @@ export default function Predict() {
     setLoading(true);
     setError('');
     setPrediction(null);
-    setMultiModelPredictions(null);
     
     try {
       const payload = {
