@@ -257,6 +257,18 @@ export default function CarDetail() {
                       <div className="font-semibold text-gray-900">{car.first_registration}</div>
                     </div>
                   )}
+                  {car.model_year && (
+                    <div className="bg-gray-50 rounded-lg p-3">
+                      <div className="text-xs text-gray-500 mb-1">Model Year</div>
+                      <div className="font-semibold text-gray-900">{car.model_year}</div>
+                    </div>
+                  )}
+                  {car.production_date && (
+                    <div className="bg-gray-50 rounded-lg p-3">
+                      <div className="text-xs text-gray-500 mb-1">Production Date</div>
+                      <div className="font-semibold text-gray-900">{car.production_date}</div>
+                    </div>
+                  )}
                   {car.body_type && (
                     <div className="bg-gray-50 rounded-lg p-3">
                       <div className="text-xs text-gray-500 mb-1">Body Type</div>
@@ -579,6 +591,58 @@ export default function CarDetail() {
                         {item.trim()}
                       </span>
                     ))}
+                </div>
+              </div>
+            )}
+
+            {/* Listing Information */}
+            {(car.url || car.created_at || car.updated_at) && (
+              <div className="bg-white rounded-2xl p-6 shadow-md">
+                <h3 className="text-2xl font-bold mb-6 pb-4 border-b">Listing Information</h3>
+                <div className="space-y-4">
+                  {car.url && (
+                    <div>
+                      <div className="text-sm text-gray-500 mb-1">Original URL</div>
+                      <a 
+                        href={car.url} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="text-blue-600 hover:text-blue-800 hover:underline break-all text-sm"
+                      >
+                        {car.url}
+                      </a>
+                    </div>
+                  )}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {car.created_at && (
+                      <div>
+                        <div className="text-sm text-gray-500 mb-1">Added to Database</div>
+                        <div className="font-medium text-gray-900">
+                          {new Date(car.created_at).toLocaleString('da-DK', {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                          })}
+                        </div>
+                      </div>
+                    )}
+                    {car.updated_at && (
+                      <div>
+                        <div className="text-sm text-gray-500 mb-1">Last Updated</div>
+                        <div className="font-medium text-gray-900">
+                          {new Date(car.updated_at).toLocaleString('da-DK', {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                          })}
+                        </div>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
             )}
