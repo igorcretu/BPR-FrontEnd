@@ -572,7 +572,7 @@ export default function CarDetail() {
                 <h3 className="text-2xl font-bold mb-6 pb-4 border-b">Equipment & Features</h3>
                 <div className="flex flex-wrap gap-2">
                   {car.equipment
-                    .split(/(?=[A-ZÆØÅ])/)
+                    .split(';')
                     .filter(item => item.trim())
                     .map((item, i) => (
                       <span key={i} className="px-4 py-2 bg-gradient-to-r from-blue-50 to-blue-100 text-gray-800 rounded-lg text-sm font-medium hover:from-blue-100 hover:to-blue-200 transition-colors">
