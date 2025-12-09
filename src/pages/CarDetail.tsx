@@ -249,7 +249,7 @@ export default function CarDetail() {
                   <div className="text-xs text-gray-500">Transmission</div>
                 </div>
               </div>
-              {(car.first_registration || car.production_date || car.model_year || car.category || car.body_type || car.tax) && (
+              {(car.first_registration || car.production_date || car.model_year || car.category || car.body_type || car.tax || car.doors || car.seats) && (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mt-6 pt-6 border-t">
                   {car.first_registration && (
                     <div className="bg-gray-50 rounded-lg p-3">
@@ -273,6 +273,18 @@ export default function CarDetail() {
                     <div className="bg-gray-50 rounded-lg p-3">
                       <div className="text-xs text-gray-500 mb-1">Body Type</div>
                       <div className="font-semibold text-gray-900">{car.body_type}</div>
+                    </div>
+                  )}
+                  {car.doors && (
+                    <div className="bg-gray-50 rounded-lg p-3">
+                      <div className="text-xs text-gray-500 mb-1">Doors</div>
+                      <div className="font-semibold text-gray-900">{car.doors}</div>
+                    </div>
+                  )}
+                  {car.seats && (
+                    <div className="bg-gray-50 rounded-lg p-3">
+                      <div className="text-xs text-gray-500 mb-1">Seats</div>
+                      <div className="font-semibold text-gray-900">{car.seats}</div>
                     </div>
                   )}
                   {car.tax && (
@@ -466,49 +478,51 @@ export default function CarDetail() {
                 </div>
 
                 {/* Practical */}
-                <div className="bg-gray-50 rounded-lg p-4">
-                  <h4 className="font-semibold text-gray-800 mb-4 flex items-center gap-2 text-base">
-                    <Package className="w-5 h-5 text-gray-600" /> Practical
-                  </h4>
-                  <dl className="space-y-3 text-sm">
-                    {car.weight && (
-                      <div className="flex justify-between">
-                        <dt className="text-gray-500">Weight</dt>
-                        <dd className="font-medium">{formatNumber(car.weight)} kg</dd>
-                      </div>
-                    )}
-                    {car.trunk_size && (
-                      <div className="flex justify-between">
-                        <dt className="text-gray-500">Trunk Size</dt>
-                        <dd className="font-medium">{car.trunk_size} L</dd>
-                      </div>
-                    )}
-                    {car.load_capacity && (
-                      <div className="flex justify-between">
-                        <dt className="text-gray-500">Load Capacity</dt>
-                        <dd className="font-medium">{formatNumber(car.load_capacity)} kg</dd>
-                      </div>
-                    )}
-                    {car.towing_capacity && (
-                      <div className="flex justify-between">
-                        <dt className="text-gray-500">Towing Capacity</dt>
-                        <dd className="font-medium">{formatNumber(car.towing_capacity)} kg</dd>
-                      </div>
-                    )}
-                    {car.max_towing_weight && (
-                      <div className="flex justify-between">
-                        <dt className="text-gray-500">Max Towing (Brakes)</dt>
-                        <dd className="font-medium">{formatNumber(car.max_towing_weight)} kg</dd>
-                      </div>
-                    )}
-                    {car.periodic_tax && (
-                      <div className="flex justify-between">
-                        <dt className="text-gray-500">Tax</dt>
-                        <dd className="font-medium">{car.periodic_tax}</dd>
-                      </div>
-                    )}
-                  </dl>
-                </div>
+                {(car.weight || car.trunk_size || car.load_capacity || car.towing_capacity || car.max_towing_weight || car.periodic_tax) && (
+                  <div className="bg-gray-50 rounded-lg p-4">
+                    <h4 className="font-semibold text-gray-800 mb-4 flex items-center gap-2 text-base">
+                      <Package className="w-5 h-5 text-gray-600" /> Practical
+                    </h4>
+                    <dl className="space-y-3 text-sm">
+                      {car.weight && (
+                        <div className="flex justify-between">
+                          <dt className="text-gray-500">Weight</dt>
+                          <dd className="font-medium">{formatNumber(car.weight)} kg</dd>
+                        </div>
+                      )}
+                      {car.trunk_size && (
+                        <div className="flex justify-between">
+                          <dt className="text-gray-500">Trunk Size</dt>
+                          <dd className="font-medium">{car.trunk_size} L</dd>
+                        </div>
+                      )}
+                      {car.load_capacity && (
+                        <div className="flex justify-between">
+                          <dt className="text-gray-500">Load Capacity</dt>
+                          <dd className="font-medium">{formatNumber(car.load_capacity)} kg</dd>
+                        </div>
+                      )}
+                      {car.towing_capacity && (
+                        <div className="flex justify-between">
+                          <dt className="text-gray-500">Towing Capacity</dt>
+                          <dd className="font-medium">{formatNumber(car.towing_capacity)} kg</dd>
+                        </div>
+                      )}
+                      {car.max_towing_weight && (
+                        <div className="flex justify-between">
+                          <dt className="text-gray-500">Max Towing (Brakes)</dt>
+                          <dd className="font-medium">{formatNumber(car.max_towing_weight)} kg</dd>
+                        </div>
+                      )}
+                      {car.periodic_tax && (
+                        <div className="flex justify-between">
+                          <dt className="text-gray-500">Tax</dt>
+                          <dd className="font-medium">{car.periodic_tax}</dd>
+                        </div>
+                      )}
+                    </dl>
+                  </div>
+                )}
 
                 {/* Dimensions */}
                 {(car.width || car.length || car.height) && (
