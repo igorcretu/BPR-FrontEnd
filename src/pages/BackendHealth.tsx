@@ -54,6 +54,13 @@ interface TrainingStatus {
   error?: string;
 }
 
+interface ProcessStatus {
+  running: boolean;
+  process_count?: number;
+  pids?: number[];
+  error?: string;
+}
+
 interface ServiceHealth {
   api: HealthStatus;
   database?: HealthStatus;
@@ -62,6 +69,10 @@ interface ServiceHealth {
   mlModels?: MLModelStatus[] | { error: string };
   scraping?: ScrapingStatus | null;
   training?: TrainingStatus | null;
+  processes?: {
+    scraper?: ProcessStatus;
+    training?: ProcessStatus;
+  };
 }
 
 export default function BackendHealth() {
@@ -404,6 +415,12 @@ export default function BackendHealth() {
                   <div>
                     <h3 className="text-xl font-bold text-gray-900">Data Scraping</h3>
                     <p className="text-sm text-gray-600">Latest scraping run</p>
+                    {health.processes?.scraper?.running && (
+                      <span className="inline-flex items-center gap-1 mt-1 px-2 py-0.5 bg-blue-100 text-blue-700 text-xs font-semibold rounded-full">
+                        <Activity className="w-3 h-3 animate-pulse" />
+                        Currently Running
+                      </span>
+                    )}
                   </div>
                 </div>
                 {health.scraping.success ? (
@@ -445,6 +462,12 @@ export default function BackendHealth() {
                   <div>
                     <h3 className="text-xl font-bold text-gray-900">Model Training</h3>
                     <p className="text-sm text-gray-600">Latest training run</p>
+                    {health.processes?.training?.running && (
+                      <span className="inline-flex items-center gap-1 mt-1 px-2 py-0.5 bg-blue-100 text-blue-700 text-xs font-semibold rounded-full">
+                        <Activity className="w-3 h-3 animate-pulse" />
+                        Currently Running
+                      </span>
+                    )}
                   </div>
                 </div>
                 {health.training.status === 'completed' ? (
