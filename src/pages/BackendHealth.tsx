@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Activity, CheckCircle, XCircle, Clock, Server, Database, Cpu, AlertTriangle } from 'lucide-react';
+import { Activity, CheckCircle, XCircle, Clock, Server, Database, Cpu, AlertTriangle, Download, Brain, TrendingUp } from 'lucide-react';
 
 interface HealthStatus {
   status: 'healthy' | 'unhealthy' | 'checking';
@@ -18,11 +18,50 @@ interface MLModelInfo {
   features_count?: number;
 }
 
+interface MLModelStatus {
+  id: string;
+  name: string;
+  algorithm: string;
+  is_active: boolean;
+  r2_score: number | null;
+  mae: number | null;
+  version: string;
+  created_at: string;
+}
+
+interface ScrapingStatus {
+  last_run: string | null;
+  completed_at: string | null;
+  success: boolean;
+  cars_scraped: number;
+  cars_new: number;
+  cars_updated: number;
+  images_downloaded: number;
+  error_message: string | null;
+  source: string;
+  error?: string;
+}
+
+interface TrainingStatus {
+  last_run: string | null;
+  status: string;
+  dataset_size: number;
+  train_size: number;
+  test_size: number;
+  duration_seconds: number | null;
+  models_trained: string[];
+  best_model_id: string | null;
+  error?: string;
+}
+
 interface ServiceHealth {
   api: HealthStatus;
   database?: HealthStatus;
   cache?: HealthStatus;
   mlModel?: MLModelInfo;
+  mlModels?: MLModelStatus[] | { error: string };
+  scraping?: ScrapingStatus | null;
+  training?: TrainingStatus | null;
 }
 
 export default function BackendHealth() {
@@ -69,6 +108,9 @@ export default function BackendHealth() {
               }
             : undefined,
           mlModel: data.ml_model || undefined,
+          mlModels: data.ml_models || undefined,
+          scraping: data.scraping || null,
+          training: data.training || null,
         });
       }
     } catch (error: any) {
@@ -306,6 +348,136 @@ export default function BackendHealth() {
                   )}
                   {health.mlModel.test_mae && health.mlModel.test_mae !== 'N/A' && (
                     <span>MAE: <span className="font-semibold">{typeof health.mlModel.test_mae === 'number' ? health.mlModel.test_mae.toFixed(0) : health.mlModel.test_mae}</span></span>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* All ML Models Status */}
+          {health.mlModels && Array.isArray(health.mlModels) && health.mlModels.length > 0 && (
+            <div className="rounded-lg shadow-md border-2 bg-purple-50 border-purple-200 p-6 transition-all">
+              <div className="flex items-start justify-between mb-4">
+                <div className="flex items-center gap-3">
+                  <Brain className="w-8 h-8 text-purple-600" />
+                  <div>
+                    <h3 className="text-xl font-bold text-gray-900">All ML Models</h3>
+                    <p className="text-sm text-gray-600">{health.mlModels.length} registered models</p>
+                  </div>
+                </div>
+                <CheckCircle className="w-6 h-6 text-green-500" />
+              </div>
+              <div className="space-y-3">
+                {health.mlModels.map((model) => (
+                  <div key={model.id} className="bg-white rounded-lg p-4 border border-purple-100">
+                    <div className="flex items-start justify-between mb-2">
+                      <div>
+                        <h4 className="font-semibold text-gray-900">{model.name}</h4>
+                        <p className="text-sm text-gray-600">{model.algorithm} v{model.version}</p>
+                      </div>
+                      {model.is_active ? (
+                        <span className="px-3 py-1 bg-green-100 text-green-700 text-xs font-medium rounded-full">Active</span>
+                      ) : (
+                        <span className="px-3 py-1 bg-gray-100 text-gray-600 text-xs font-medium rounded-full">Inactive</span>
+                      )}
+                    </div>
+                    <div className="grid grid-cols-2 gap-2 text-sm text-gray-600">
+                      {model.r2_score !== null && (
+                        <span>R² Score: <span className="font-semibold text-purple-700">{model.r2_score.toFixed(4)}</span></span>
+                      )}
+                      {model.mae !== null && (
+                        <span>MAE: <span className="font-semibold text-purple-700">{model.mae.toFixed(0)} DKK</span></span>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Scraping Status */}
+          {health.scraping && !health.scraping.error && (
+            <div className={`rounded-lg shadow-md border-2 p-6 transition-all ${health.scraping.success ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'}`}>
+              <div className="flex items-start justify-between mb-4">
+                <div className="flex items-center gap-3">
+                  <Download className="w-8 h-8 text-teal-600" />
+                  <div>
+                    <h3 className="text-xl font-bold text-gray-900">Data Scraping</h3>
+                    <p className="text-sm text-gray-600">Latest scraping run</p>
+                  </div>
+                </div>
+                {health.scraping.success ? (
+                  <CheckCircle className="w-6 h-6 text-green-500" />
+                ) : (
+                  <XCircle className="w-6 h-6 text-red-500" />
+                )}
+              </div>
+              <div className="space-y-2">
+                <p className="text-gray-700">
+                  {health.scraping.success ? 'Last scraping completed successfully' : 'Last scraping failed'}
+                </p>
+                {health.scraping.error_message && (
+                  <p className="text-red-600 text-sm">{health.scraping.error_message}</p>
+                )}
+                <div className="grid grid-cols-2 gap-3 text-sm text-gray-600">
+                  <span>Source: <span className="font-semibold">{health.scraping.source}</span></span>
+                  <span>Cars Scraped: <span className="font-semibold">{health.scraping.cars_scraped}</span></span>
+                  <span>New: <span className="font-semibold text-green-600">{health.scraping.cars_new}</span></span>
+                  <span>Updated: <span className="font-semibold text-blue-600">{health.scraping.cars_updated}</span></span>
+                  <span>Images: <span className="font-semibold">{health.scraping.images_downloaded}</span></span>
+                  {health.scraping.last_run && (
+                    <span>Started: <span className="font-semibold">{new Date(health.scraping.last_run).toLocaleString()}</span></span>
+                  )}
+                  {health.scraping.completed_at && (
+                    <span>Completed: <span className="font-semibold">{new Date(health.scraping.completed_at).toLocaleString()}</span></span>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Training Status */}
+          {health.training && !health.training.error && (
+            <div className={`rounded-lg shadow-md border-2 p-6 transition-all ${health.training.status === 'completed' ? 'bg-green-50 border-green-200' : health.training.status === 'failed' ? 'bg-red-50 border-red-200' : 'bg-yellow-50 border-yellow-200'}`}>
+              <div className="flex items-start justify-between mb-4">
+                <div className="flex items-center gap-3">
+                  <TrendingUp className="w-8 h-8 text-orange-600" />
+                  <div>
+                    <h3 className="text-xl font-bold text-gray-900">Model Training</h3>
+                    <p className="text-sm text-gray-600">Latest training run</p>
+                  </div>
+                </div>
+                {health.training.status === 'completed' ? (
+                  <CheckCircle className="w-6 h-6 text-green-500" />
+                ) : health.training.status === 'failed' ? (
+                  <XCircle className="w-6 h-6 text-red-500" />
+                ) : (
+                  <Clock className="w-6 h-6 text-yellow-500" />
+                )}
+              </div>
+              <div className="space-y-2">
+                <p className="text-gray-700">
+                  Training {health.training.status}
+                </p>
+                <div className="grid grid-cols-2 gap-3 text-sm text-gray-600">
+                  <span>Status: <span className="font-semibold capitalize">{health.training.status}</span></span>
+                  {health.training.dataset_size && (
+                    <span>Dataset: <span className="font-semibold">{health.training.dataset_size.toLocaleString()} cars</span></span>
+                  )}
+                  {health.training.train_size && (
+                    <span>Train Set: <span className="font-semibold">{health.training.train_size.toLocaleString()}</span></span>
+                  )}
+                  {health.training.test_size && (
+                    <span>Test Set: <span className="font-semibold">{health.training.test_size.toLocaleString()}</span></span>
+                  )}
+                  {health.training.duration_seconds && (
+                    <span>Duration: <span className="font-semibold">{Math.round(health.training.duration_seconds)}s</span></span>
+                  )}
+                  {health.training.models_trained && health.training.models_trained.length > 0 && (
+                    <span className="col-span-2">Models: <span className="font-semibold">{health.training.models_trained.join(', ')}</span></span>
+                  )}
+                  {health.training.last_run && (
+                    <span className="col-span-2">Last Run: <span className="font-semibold">{new Date(health.training.last_run).toLocaleString()}</span></span>
                   )}
                 </div>
               </div>
