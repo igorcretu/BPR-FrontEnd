@@ -188,10 +188,12 @@ const ModelComparison: React.FC = () => {
     }
   ];
 
-  // Best model
-  const bestModel = models.reduce((best, current) => 
-    current.r2_score > best.r2_score ? current : best
-  );
+  // Best model (with safety check for empty array)
+  const bestModel = models.length > 0 
+    ? models.reduce((best, current) => 
+        current.r2_score > best.r2_score ? current : best
+      )
+    : null;
 
   const formatNumber = (num: number | null | undefined) => {
     if (num === null || num === undefined) return 'N/A';
@@ -214,8 +216,14 @@ const ModelComparison: React.FC = () => {
               <Award className="w-8 h-8 text-blue-600" />
               <span className="text-sm text-gray-500">Best Model</span>
             </div>
-            <p className="text-2xl font-bold text-gray-900">{bestModel.name}</p>
-            <p className="text-sm text-gray-600">R² Score: {formatNumber(bestModel.r2_score)}</p>
+            {bestModel ? (
+              <>
+                <p className="text-2xl font-bold text-gray-900">{bestModel.name}</p>
+                <p className="text-sm text-gray-600">R² Score: {formatNumber(bestModel.r2_score)}</p>
+              </>
+            ) : (
+              <p className="text-gray-500">No models available</p>
+            )}
           </div>
 
           <div className="bg-white rounded-lg shadow-md p-6">

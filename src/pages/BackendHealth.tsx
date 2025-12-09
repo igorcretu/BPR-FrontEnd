@@ -81,6 +81,9 @@ export default function BackendHealth() {
   });
   const [lastCheck, setLastCheck] = useState<Date>(new Date());
   const [autoRefresh, setAutoRefresh] = useState(true);
+  const [showScrapingWarning, setShowScrapingWarning] = useState(false);
+  const [showTrainingWarning, setShowTrainingWarning] = useState(false);
+  const [isTriggering, setIsTriggering] = useState(false);
 
   const checkHealth = async () => {
     const startTime = Date.now();
@@ -136,6 +139,61 @@ export default function BackendHealth() {
       });
     } finally {
       setLastCheck(new Date());
+    }
+  };
+
+  const triggerScraping = async (mode: 'incremental' | 'full') => {
+    setIsTriggering(true);
+    try {
+      const apiHost = (import.meta.env.VITE_API_URL || 'https://test.bachelorproject26.site').replace(/\/$/, '');
+      const response = await fetch(`${apiHost}/api/trigger-scraping`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ mode })
+      });
+      
+      const data = await response.json();
+      
+      if (response.ok) {
+        alert(`✅ ${data.message}\n\nEstimated duration: ${data.estimated_duration}`);
+        setShowScrapingWarning(false);
+        // Refresh health to show running status
+        setTimeout(() => checkHealth(), 2000);
+      } else {
+        alert(`❌ ${data.message}`);
+      }
+    } catch (error) {
+      alert('❌ Failed to trigger scraping. Please try again.');
+      console.error('Trigger scraping error:', error);
+    } finally {
+      setIsTriggering(false);
+    }
+  };
+
+  const triggerTraining = async () => {
+    setIsTriggering(true);
+    try {
+      const apiHost = (import.meta.env.VITE_API_URL || 'https://test.bachelorproject26.site').replace(/\/$/, '');
+      const response = await fetch(`${apiHost}/api/trigger-training`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+      });
+      
+      const data = await response.json();
+      
+      if (response.ok) {
+        alert(`✅ ${data.message}\n\nEstimated duration: ${data.estimated_duration}`);
+        setShowTrainingWarning(false);
+        // Refresh health to show running status
+        setTimeout(() => checkHealth(), 2000);
+      } else {
+        alert(`❌ ${data.message}`);
+      }
+    } catch (error) {
+      alert('❌ Failed to trigger training. Please try again.');
+      console.error('Trigger training error:', error);
+    } finally {
+      setIsTriggering(false);
     }
   };
 
@@ -507,6 +565,132 @@ export default function BackendHealth() {
             </div>
           )}
         </div>
+
+        {/* Manual Trigger Controls */}
+        <div className="mt-8 bg-gradient-to-r from-purple-50 to-indigo-50 border-2 border-purple-200 rounded-lg p-6">
+          <h3 className="font-bold text-gray-900 text-lg mb-4 flex items-center gap-2">
+            <Cpu className="w-6 h-6 text-purple-600" />
+            Manual Operations
+          </h3>
+          <div className="grid md:grid-cols-2 gap-4">
+            {/* Scraping Trigger */}
+            <div className="bg-white rounded-lg p-4 border border-purple-200">
+              <h4 className="font-semibold text-gray-800 mb-2">Data Scraping</h4>
+              <p className="text-sm text-gray-600 mb-3">Collect new car listings from Bilbasen.dk</p>
+              <button
+                onClick={() => setShowScrapingWarning(true)}
+                disabled={health.processes?.scraper?.running || isTriggering}
+                className="w-full px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              >
+                <Download className="w-4 h-4" />
+                {health.processes?.scraper?.running ? 'Scraping Running...' : 'Start Scraping'}
+              </button>
+            </div>
+
+            {/* Training Trigger */}
+            <div className="bg-white rounded-lg p-4 border border-purple-200">
+              <h4 className="font-semibold text-gray-800 mb-2">Model Training</h4>
+              <p className="text-sm text-gray-600 mb-3">Train all ML models with latest data</p>
+              <button
+                onClick={() => setShowTrainingWarning(true)}
+                disabled={health.processes?.training?.running || isTriggering}
+                className="w-full px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              >
+                <Brain className="w-4 h-4" />
+                {health.processes?.training?.running ? 'Training Running...' : 'Start Training'}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Scraping Warning Modal */}
+        {showScrapingWarning && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-lg max-w-md w-full p-6 shadow-2xl">
+              <div className="flex items-center gap-3 mb-4">
+                <AlertTriangle className="w-8 h-8 text-yellow-500" />
+                <h3 className="text-xl font-bold text-gray-900">Start Data Scraping?</h3>
+              </div>
+              <div className="bg-yellow-50 border-l-4 border-yellow-400 p-3 mb-4">
+                <p className="text-sm text-yellow-800 font-semibold">
+                  ⚠️ Warning: This process cannot be stopped once started!
+                </p>
+              </div>
+              <p className="text-gray-700 mb-2">
+                This will start scraping car listings from Bilbasen.dk. The process will run for <strong>several hours</strong> depending on data size.
+              </p>
+              <p className="text-sm text-gray-600 mb-4">
+                The button will be disabled during execution and you must wait for completion.
+              </p>
+              <p className="text-sm text-gray-600 font-semibold mb-3">
+                Choose scraping mode:
+              </p>
+              <div className="flex flex-col gap-3">
+                <button
+                  onClick={() => triggerScraping('incremental')}
+                  disabled={isTriggering}
+                  className="px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition-colors disabled:opacity-50"
+                >
+                  Incremental (New listings only)
+                </button>
+                <button
+                  onClick={() => triggerScraping('full')}
+                  disabled={isTriggering}
+                  className="px-4 py-2 bg-teal-700 text-white rounded-lg hover:bg-teal-800 transition-colors disabled:opacity-50"
+                >
+                  Full (All listings)
+                </button>
+                <button
+                  onClick={() => setShowScrapingWarning(false)}
+                  className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Training Warning Modal */}
+        {showTrainingWarning && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-lg max-w-md w-full p-6 shadow-2xl">
+              <div className="flex items-center gap-3 mb-4">
+                <AlertTriangle className="w-8 h-8 text-yellow-500" />
+                <h3 className="text-xl font-bold text-gray-900">Start Model Training?</h3>
+              </div>
+              <div className="bg-yellow-50 border-l-4 border-yellow-400 p-3 mb-4">
+                <p className="text-sm text-yellow-800 font-semibold">
+                  ⚠️ Warning: This process cannot be stopped once started!
+                </p>
+              </div>
+              <p className="text-gray-700 mb-2">
+                This will train all 7 ML models with the latest data from the database. The process will run for <strong>several hours</strong> depending on dataset size.
+              </p>
+              <p className="text-sm text-gray-600 mb-4">
+                The button will be disabled during execution and you must wait for completion.
+              </p>
+              <p className="text-sm text-gray-600 font-semibold mb-4">
+                Models to be trained: XGBoost, CatBoost, Ridge, Lasso, ElasticNet, LSTM, GRU
+              </p>
+              <div className="flex gap-3">
+                <button
+                  onClick={triggerTraining}
+                  disabled={isTriggering}
+                  className="flex-1 px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors disabled:opacity-50"
+                >
+                  {isTriggering ? 'Starting...' : 'Start Training'}
+                </button>
+                <button
+                  onClick={() => setShowTrainingWarning(false)}
+                  className="flex-1 px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Info Section */}
         <div className="mt-8 bg-blue-50 border border-blue-200 rounded-lg p-6">
