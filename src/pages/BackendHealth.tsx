@@ -513,17 +513,17 @@ export default function BackendHealth() {
 
           {/* Training Status */}
           {health.training && !health.training.error && (
-            <div className={`rounded-lg shadow-md border-2 p-6 transition-all ${health.training.status === 'completed' ? 'bg-green-50 border-green-200' : health.training.status === 'failed' ? 'bg-red-50 border-red-200' : 'bg-yellow-50 border-yellow-200'}`}>
+            <div className={`rounded-lg shadow-md border-2 p-6 transition-all ${health.training.status === 'completed' ? 'bg-green-50 border-green-200' : health.training.status === 'failed' ? 'bg-red-50 border-red-200' : health.training.status === 'running' ? 'bg-blue-50 border-blue-200' : 'bg-yellow-50 border-yellow-200'}`}>
               <div className="flex items-start justify-between mb-4">
                 <div className="flex items-center gap-3">
                   <TrendingUp className="w-8 h-8 text-orange-600" />
                   <div>
                     <h3 className="text-xl font-bold text-gray-900">Model Training</h3>
                     <p className="text-sm text-gray-600">Latest training run</p>
-                    {health.processes?.training?.running && (
+                    {(health.training.status === 'pending' || health.training.status === 'running' || health.processes?.training?.running) && (
                       <span className="inline-flex items-center gap-1 mt-1 px-2 py-0.5 bg-blue-100 text-blue-700 text-xs font-semibold rounded-full">
                         <Activity className="w-3 h-3 animate-pulse" />
-                        Currently Running
+                        {health.training.status === 'pending' ? 'Starting...' : 'Currently Running'}
                       </span>
                     )}
                   </div>
@@ -532,16 +532,29 @@ export default function BackendHealth() {
                   <CheckCircle className="w-6 h-6 text-green-500" />
                 ) : health.training.status === 'failed' ? (
                   <XCircle className="w-6 h-6 text-red-500" />
+                ) : health.training.status === 'running' ? (
+                  <Activity className="w-6 h-6 text-blue-500 animate-pulse" />
                 ) : (
                   <Clock className="w-6 h-6 text-yellow-500" />
                 )}
               </div>
               <div className="space-y-2">
-                <p className="text-gray-700">
-                  Training {health.training.status}
-                </p>
+                {health.training.status === 'pending' && (
+                  <div className="bg-blue-100 border-l-4 border-blue-500 p-3 mb-2">
+                    <p className="text-sm text-blue-800 font-semibold">
+                      🚀 Training is initializing... This may take a few moments.
+                    </p>
+                  </div>
+                )}
+                {health.training.status === 'running' && (
+                  <div className="bg-blue-100 border-l-4 border-blue-500 p-3 mb-2">
+                    <p className="text-sm text-blue-800 font-semibold">
+                      ⚡ Training in progress... This may take several hours depending on dataset size.
+                    </p>
+                  </div>
+                )}
                 <div className="grid grid-cols-2 gap-3 text-sm text-gray-600">
-                  <span>Status: <span className="font-semibold capitalize">{health.training.status}</span></span>
+                  <span>Status: <span className={`font-semibold capitalize ${health.training.status === 'completed' ? 'text-green-600' : health.training.status === 'failed' ? 'text-red-600' : health.training.status === 'running' ? 'text-blue-600' : 'text-yellow-600'}`}>{health.training.status}</span></span>
                   {health.training.dataset_size && (
                     <span>Dataset: <span className="font-semibold">{health.training.dataset_size.toLocaleString()} cars</span></span>
                   )}
@@ -551,8 +564,15 @@ export default function BackendHealth() {
                   {health.training.test_size && (
                     <span>Test Set: <span className="font-semibold">{health.training.test_size.toLocaleString()}</span></span>
                   )}
-                  {health.training.duration_seconds && (
-                    <span>Duration: <span className="font-semibold">{Math.round(health.training.duration_seconds)}s</span></span>
+                  {health.training.duration_seconds && health.training.duration_seconds > 0 && (
+                    <span>Duration: <span className="font-semibold">
+                      {health.training.duration_seconds >= 3600 
+                        ? `${Math.floor(health.training.duration_seconds / 3600)}h ${Math.floor((health.training.duration_seconds % 3600) / 60)}m`
+                        : health.training.duration_seconds >= 60
+                        ? `${Math.floor(health.training.duration_seconds / 60)}m ${Math.floor(health.training.duration_seconds % 60)}s`
+                        : `${Math.round(health.training.duration_seconds)}s`
+                      }
+                    </span></span>
                   )}
                   {health.training.models_trained && health.training.models_trained.length > 0 && (
                     <span className="col-span-2">Models: <span className="font-semibold">{health.training.models_trained.join(', ')}</span></span>
@@ -562,6 +582,22 @@ export default function BackendHealth() {
                   )}
                 </div>
               </div>
+            </div>
+          )}
+          
+          {/* Show message when no training history exists */}
+          {!health.training && (
+            <div className="rounded-lg shadow-md border-2 bg-gray-50 border-gray-200 p-6">
+              <div className="flex items-center gap-3 mb-2">
+                <TrendingUp className="w-8 h-8 text-gray-400" />
+                <div>
+                  <h3 className="text-xl font-bold text-gray-900">Model Training</h3>
+                  <p className="text-sm text-gray-600">No training runs yet</p>
+                </div>
+              </div>
+              <p className="text-gray-600">
+                Click "Start Training" below to train ML models with the latest data.
+              </p>
             </div>
           )}
         </div>
@@ -591,13 +627,21 @@ export default function BackendHealth() {
             <div className="bg-white rounded-lg p-4 border border-purple-200">
               <h4 className="font-semibold text-gray-800 mb-2">Model Training</h4>
               <p className="text-sm text-gray-600 mb-3">Train all ML models with latest data</p>
+              {(health.training?.status === 'pending' || health.training?.status === 'running' || health.processes?.training?.running) && (
+                <div className="mb-2 p-2 bg-blue-50 border border-blue-200 rounded text-xs text-blue-700">
+                  <Activity className="w-3 h-3 inline mr-1 animate-pulse" />
+                  Training is {health.training?.status === 'pending' ? 'starting' : 'in progress'}...
+                </div>
+              )}
               <button
                 onClick={() => setShowTrainingWarning(true)}
-                disabled={health.processes?.training?.running || isTriggering}
+                disabled={health.training?.status === 'pending' || health.training?.status === 'running' || health.processes?.training?.running || isTriggering}
                 className="w-full px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               >
                 <Brain className="w-4 h-4" />
-                {health.processes?.training?.running ? 'Training Running...' : 'Start Training'}
+                {health.training?.status === 'pending' ? 'Training Starting...' : 
+                 health.training?.status === 'running' || health.processes?.training?.running ? 'Training Running...' : 
+                 'Start Training'}
               </button>
             </div>
           </div>
