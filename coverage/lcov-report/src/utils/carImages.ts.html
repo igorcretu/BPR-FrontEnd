@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">60.67% </span>
+                <span class="strong">52.27% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>54/89</span>
+                <span class='fraction'>46/88</span>
             </div>
         
             
@@ -37,16 +37,16 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">85.71% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>7/7</span>
+                <span class='fraction'>6/7</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">65% </span>
+                <span class="strong">55.69% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>52/80</span>
+                <span class='fraction'>44/79</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line high'></div>
+    <div class='status-line medium'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -206,7 +206,8 @@
 <a name='L141'></a><a href='#L141'>141</a>
 <a name='L142'></a><a href='#L142'>142</a>
 <a name='L143'></a><a href='#L143'>143</a>
-<a name='L144'></a><a href='#L144'>144</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L144'></a><a href='#L144'>144</a>
+<a name='L145'></a><a href='#L145'>145</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -262,22 +263,12 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -291,7 +282,17 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
@@ -340,7 +341,8 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -404,19 +406,19 @@ export const generateCarImageUrl = (car: CarImageDescriptor, angle: string = DEF
 <span class="cstat-no" title="statement not covered" >  return url.toString()</span>
 }
 &nbsp;
-const lookupWikimediaImage = async (brand: string, model: string, year: number): Promise&lt;string | null&gt; =&gt; {
-  const queries = [`${year} ${brand} ${model}`]
-  const desiredWidth = 800
+const lookupWikimediaImage = <span class="fstat-no" title="function not covered" >as</span>ync (brand: string, model: string, year: number): Promise&lt;string | null&gt; =&gt; {
+  const queries = <span class="cstat-no" title="statement not covered" >[`${year} ${brand} ${model}`]</span>
+  const desiredWidth = <span class="cstat-no" title="statement not covered" >800</span>
 &nbsp;
-  for (const query of queries) {
+<span class="cstat-no" title="statement not covered" >  for (const query of queries) {</span>
     const url =
-      'https://commons.wikimedia.org/w/api.php?action=query' +
+<span class="cstat-no" title="statement not covered" >      'https://commons.wikimedia.org/w/api.php?action=query' +</span>
       `&amp;generator=search&amp;gsrsearch=${encodeURIComponent(query)}` +
       '&amp;gsrnamespace=6&amp;gsrlimit=1&amp;prop=imageinfo' +
       `&amp;iiprop=url|dimensions&amp;iiurlwidth=${desiredWidth}&amp;format=json&amp;origin=*`
 &nbsp;
-    try {
-      const response = await fetch(url)
+<span class="cstat-no" title="statement not covered" >    try {</span>
+      const response = <span class="cstat-no" title="statement not covered" >await fetch(url)</span>
 <span class="cstat-no" title="statement not covered" >      if (!response.ok) <span class="cstat-no" title="statement not covered" >continue</span></span>
       const data = <span class="cstat-no" title="statement not covered" >(await response.json()) as {</span>
         query?: {
@@ -434,7 +436,7 @@ const lookupWikimediaImage = async (brand: string, model: string, year: number):
     }
   }
 &nbsp;
-  return null
+<span class="cstat-no" title="statement not covered" >  return null</span>
 }
 &nbsp;
 const tryBackendImage = async (carId: string): Promise&lt;string | null&gt; =&gt; {
@@ -483,10 +485,11 @@ export const getCarImage = async (descriptor: CarImageDescriptor): Promise&lt;st
 <span class="cstat-no" title="statement not covered" >    return generated</span>
   }
 &nbsp;
-  const image = await lookupWikimediaImage(descriptor.brand, descriptor.model, descriptor.year)
-  memoryCache.set(key, image)
-  writeToSession(key, image)
-  return image
+  // Wikimedia disabled - just return null instead of fetching
+  // const image = await lookupWikimediaImage(descriptor.brand, descriptor.model, descriptor.year)
+  memoryCache.set(key, null)
+  writeToSession(key, null)
+  return null
 }
 &nbsp;
 export const fetchRandomCarImage = lookupWikimediaImage
@@ -499,7 +502,7 @@ export type { CarImageDescriptor }
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-12-09T09:53:56.350Z
+                at 2025-12-11T13:40:27.852Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

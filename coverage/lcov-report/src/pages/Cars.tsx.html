@@ -648,7 +648,11 @@
 <a name='L583'></a><a href='#L583'>583</a>
 <a name='L584'></a><a href='#L584'>584</a>
 <a name='L585'></a><a href='#L585'>585</a>
-<a name='L586'></a><a href='#L586'>586</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L586'></a><a href='#L586'>586</a>
+<a name='L587'></a><a href='#L587'>587</a>
+<a name='L588'></a><a href='#L588'>588</a>
+<a name='L589'></a><a href='#L589'>589</a>
+<a name='L590'></a><a href='#L590'>590</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -857,6 +861,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-yes">10x</span>
@@ -912,6 +918,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1281,7 +1289,7 @@ export default function Cars() {
     year_max: '',
     price_min: '',
     price_max: '',
-    sort_by: 'newest',
+    sort_by: 'listing_newest',
   });
   const [showFilters, setShowFilters] = useState(false);
   const [filterOptions, setFilterOptions] = useState({
@@ -1433,8 +1441,10 @@ export default function Cars() {
       
       // Map frontend sort values to backend values
       const sortMapping: Record&lt;string, { sort_by: string; sort_order: string }&gt; = {
-        'newest': { sort_by: 'year', sort_order: 'desc' },
-        'oldest': { sort_by: 'year', sort_order: 'asc' },
+        'listing_newest': { sort_by: 'listing_date', sort_order: 'desc' },
+        'listing_oldest': { sort_by: 'listing_date', sort_order: 'asc' },
+        'year_newest': { sort_by: 'year', sort_order: 'desc' },
+        'year_oldest': { sort_by: 'year', sort_order: 'asc' },
         'price_low': { sort_by: 'price', sort_order: 'asc' },
         'price_high': { sort_by: 'price', sort_order: 'desc' },
         'mileage_low': { sort_by: 'mileage', sort_order: 'asc' },
@@ -1442,7 +1452,7 @@ export default function Cars() {
       };
       
       // Apply sorting
-      const sortConfig = sortMapping[filters.sort_by] || <span class="branch-1 cbranch-no" title="branch not covered" >sortMapping['newest'];</span>
+      const sortConfig = sortMapping[filters.sort_by] || <span class="branch-1 cbranch-no" title="branch not covered" >sortMapping['listing_newest'];</span>
       params.sort_by = sortConfig.sort_by;
       params.sort_order = sortConfig.sort_order;
       
@@ -1498,14 +1508,16 @@ export default function Cars() {
 <span class="cstat-no" title="statement not covered" >                  setFilters({ ...filters, sort_by: e.target.value });</span>
 <span class="cstat-no" title="statement not covered" >                  setCurrentPage(1);</span>
                 }}
-                className="flex-1 md:flex-none md:w-44 px-3 md:px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white font-medium text-gray-700 text-sm md:text-base"
+                className="flex-1 md:flex-none md:w-56 px-3 md:px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white font-medium text-gray-700 text-sm md:text-base"
               &gt;
-                &lt;option value="newest"&gt;Newest&lt;/option&gt;
-                &lt;option value="oldest"&gt;Oldest&lt;/option&gt;
-                &lt;option value="price_low"&gt;Price: Low&lt;/option&gt;
-                &lt;option value="price_high"&gt;Price: High&lt;/option&gt;
-                &lt;option value="mileage_low"&gt;Mileage: Low&lt;/option&gt;
-                &lt;option value="mileage_high"&gt;Mileage: High&lt;/option&gt;
+                &lt;option value="listing_newest"&gt;Recently Listed&lt;/option&gt;
+                &lt;option value="listing_oldest"&gt;Oldest Listings&lt;/option&gt;
+                &lt;option value="year_newest"&gt;Newest Year&lt;/option&gt;
+                &lt;option value="year_oldest"&gt;Oldest Year&lt;/option&gt;
+                &lt;option value="price_low"&gt;Price: Low to High&lt;/option&gt;
+                &lt;option value="price_high"&gt;Price: High to Low&lt;/option&gt;
+                &lt;option value="mileage_low"&gt;Mileage: Low to High&lt;/option&gt;
+                &lt;option value="mileage_high"&gt;Mileage: High to Low&lt;/option&gt;
               &lt;/select&gt;
               &lt;button
                 onClick={() =&gt; setShowFilters(!showFilters)}
@@ -1825,7 +1837,7 @@ export default function Cars() {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-12-09T09:53:56.350Z
+                at 2025-12-11T13:40:27.852Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">43.08% </span>
+                <span class="strong">42.97% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>53/123</span>
+                <span class='fraction'>52/121</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">42.85% </span>
+                <span class="strong">42.73% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>51/119</span>
+                <span class='fraction'>50/117</span>
             </div>
         
             
@@ -754,19 +754,7 @@
 <a name='L689'></a><a href='#L689'>689</a>
 <a name='L690'></a><a href='#L690'>690</a>
 <a name='L691'></a><a href='#L691'>691</a>
-<a name='L692'></a><a href='#L692'>692</a>
-<a name='L693'></a><a href='#L693'>693</a>
-<a name='L694'></a><a href='#L694'>694</a>
-<a name='L695'></a><a href='#L695'>695</a>
-<a name='L696'></a><a href='#L696'>696</a>
-<a name='L697'></a><a href='#L697'>697</a>
-<a name='L698'></a><a href='#L698'>698</a>
-<a name='L699'></a><a href='#L699'>699</a>
-<a name='L700'></a><a href='#L700'>700</a>
-<a name='L701'></a><a href='#L701'>701</a>
-<a name='L702'></a><a href='#L702'>702</a>
-<a name='L703'></a><a href='#L703'>703</a>
-<a name='L704'></a><a href='#L704'>704</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L692'></a><a href='#L692'>692</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -790,18 +778,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">17x</span>
-<span class="cline-any cline-yes">16x</span>
 <span class="cline-any cline-yes">16x</span>
 <span class="cline-any cline-yes">16x</span>
 <span class="cline-any cline-yes">16x</span>
@@ -936,7 +913,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">16x</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -1492,16 +1468,6 @@ interface MLModel {
   is_active: boolean;
 }
 &nbsp;
-interface MultiModelPrediction {
-  model_id: string;
-  model_name: string;
-  predicted_price: number;
-  confidence: number;
-  price_range_min: number;
-  price_range_max: number;
-  inference_time_ms: number;
-}
-&nbsp;
 export default function Predict() {
   const [brands, setBrands] = useState&lt;string[]&gt;([]);
   const [models, setModels] = useState&lt;string[]&gt;([]);
@@ -1511,7 +1477,6 @@ export default function Predict() {
   const [carImage, setCarImage] = useState&lt;string | null&gt;(null);
   const [mlModels, setMlModels] = useState&lt;MLModel[]&gt;([]);
   const [selectedModel, setSelectedModel] = useState&lt;string&gt;('default');
-  const [multiModelPredictions, setMultiModelPredictions] = useState&lt;MultiModelPrediction[] | null&gt;(null);
   
   const [formData, setFormData] = useState({
     brand: '',
@@ -1546,7 +1511,7 @@ export default function Predict() {
 &nbsp;
     const fetchMLModels = async () =&gt; {
       try {
-        const response = await api.get('/models?active_only=true');
+        const response = await api.get('/models?active=true');
         setMlModels(response.data.models || <span class="branch-1 cbranch-no" title="branch not covered" >[])</span>;
       } catch (err) {
 <span class="cstat-no" title="statement not covered" >        console.error('Error fetching ML models:', err);</span>
@@ -1568,7 +1533,7 @@ export default function Predict() {
     const fetchModels = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >as</span>ync () =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >      setLoadingModels(true);</span>
 <span class="cstat-no" title="statement not covered" >      try {</span>
-        const response = <span class="cstat-no" title="statement not covered" >await api.get(`/models/${formData.brand}`);</span>
+        const response = <span class="cstat-no" title="statement not covered" >await api.get(`/car-models/${formData.brand}`);</span>
         const modelList = <span class="cstat-no" title="statement not covered" >response.data.models.map(<span class="fstat-no" title="function not covered" >(m</span>: any) =&gt; <span class="cstat-no" title="statement not covered" >m.name)</span>;</span>
 <span class="cstat-no" title="statement not covered" >        setModels(modelList);</span>
       } catch (err) {
@@ -1643,7 +1608,6 @@ export default function Predict() {
 <span class="cstat-no" title="statement not covered" >    setLoading(true);</span>
 <span class="cstat-no" title="statement not covered" >    setError('');</span>
 <span class="cstat-no" title="statement not covered" >    setPrediction(null);</span>
-<span class="cstat-no" title="statement not covered" >    setMultiModelPredictions(null);</span>
     
 <span class="cstat-no" title="statement not covered" >    try {</span>
       const payload = <span class="cstat-no" title="statement not covered" >{</span>
@@ -2179,7 +2143,7 @@ export default function Predict() {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-12-09T09:53:56.350Z
+                at 2025-12-11T13:40:27.852Z
             </div>
         <script src="../../prettify.js"></script>
         <script>
