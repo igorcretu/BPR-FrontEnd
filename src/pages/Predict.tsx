@@ -64,7 +64,7 @@ export default function Predict() {
 
     const fetchMLModels = async () => {
       try {
-        const response = await api.get('/models?active_only=true');
+        const response = await api.get('/models?active=true');
         setMlModels(response.data.models || []);
       } catch (err) {
         console.error('Error fetching ML models:', err);
