@@ -86,7 +86,7 @@ export default function Predict() {
     const fetchModels = async () => {
       setLoadingModels(true);
       try {
-        const response = await api.get(`/models/${formData.brand}`);
+        const response = await api.get(`/car-models/${formData.brand}`);
         const modelList = response.data.models.map((m: any) => m.name);
         setModels(modelList);
       } catch (err) {
