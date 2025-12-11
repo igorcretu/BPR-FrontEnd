@@ -51,6 +51,7 @@ interface TrainingStatus {
   duration_seconds: number | null;
   models_trained: string[];
   best_model_id: string | null;
+  notes?: string | null;
   error?: string;
 }
 
@@ -551,6 +552,11 @@ export default function BackendHealth() {
                     <p className="text-sm text-blue-800 font-semibold">
                       ⚡ Training in progress... This may take several hours depending on dataset size.
                     </p>
+                    {health.training.notes && (
+                      <p className="text-xs text-blue-700 mt-1">
+                        📊 Progress: {health.training.notes}
+                      </p>
+                    )}
                   </div>
                 )}
                 <div className="grid grid-cols-2 gap-3 text-sm text-gray-600">
