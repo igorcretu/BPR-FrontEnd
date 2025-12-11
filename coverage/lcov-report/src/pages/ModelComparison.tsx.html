@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">76.27% </span>
+                <span class="strong">77.04% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>45/59</span>
+                <span class='fraction'>47/61</span>
             </div>
         
             
@@ -37,16 +37,16 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">70.37% </span>
+                <span class="strong">71.42% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>19/27</span>
+                <span class='fraction'>20/28</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">78.18% </span>
+                <span class="strong">79.31% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>43/55</span>
+                <span class='fraction'>46/58</span>
             </div>
         
             
@@ -601,8 +601,7 @@
 <a name='L536'></a><a href='#L536'>536</a>
 <a name='L537'></a><a href='#L537'>537</a>
 <a name='L538'></a><a href='#L538'>538</a>
-<a name='L539'></a><a href='#L539'>539</a>
-<a name='L540'></a><a href='#L540'>540</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L539'></a><a href='#L539'>539</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1043,20 +1042,19 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-yes">20x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1143,7 +1141,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import React, { useState, useEffect } from 'react';
 import { BarChart, Bar, LineChart, Line, RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ScatterChart, Scatter, ZAxis, Cell } from 'recharts';
-import { Award, Clock, Target, Activity, TrendingUp, Zap, Database, BarChart3, Brain, AlertCircle } from 'lucide-react';
+import { Award, Target, TrendingUp, Zap, BarChart3, Brain, AlertCircle } from 'lucide-react';
 import api from '../api/client';
 &nbsp;
 interface ModelMetrics {
@@ -1581,30 +1579,29 @@ const ModelComparison: React.FC = () =&gt; {
                 All metrics normalized to 0-100 scale (higher is better for all dimensions)
               &lt;/p&gt;
               &lt;ResponsiveContainer width="100%" height={550}&gt;
-                &lt;RadarChart&gt;
+                &lt;RadarChart data={chartData.radar_chart.labels.map((label, i) =&gt; {
+                  const dataPoint: Record&lt;string, any&gt; = { metric: label };
+                  chartData.radar_chart.datasets.forEach((dataset) =&gt; {
+                    dataPoint[dataset.label] = dataset.data[i];
+                  });
+                  return dataPoint;
+                })}&gt;
                   &lt;PolarGrid /&gt;
                   &lt;PolarAngleAxis dataKey="metric" /&gt;
                   &lt;PolarRadiusAxis angle={90} domain={[0, 100]} /&gt;
                   &lt;Tooltip /&gt;
                   &lt;Legend wrapperStyle={{ paddingTop: '20px' }} /&gt;
-                  {chartData.radar_chart.datasets.map((dataset, idx) =&gt; {
-                    const radarData = chartData.radar_chart.labels.map((label, i) =&gt; ({
-                      metric: label,
-                      value: dataset.data[i]
-                    }));
-                    return (
-                      &lt;Radar
-                        key={idx}
-                        name={dataset.label}
-                        data={radarData}
-                        dataKey="value"
-                        stroke={MODEL_COLORS[dataset.label] || <span class="branch-1 cbranch-no" title="branch not covered" >'#3b82f6'}</span>
-                        fill={MODEL_COLORS[dataset.label] || <span class="branch-1 cbranch-no" title="branch not covered" >'#3b82f6'}</span>
-                        fillOpacity={0.25}
-                        strokeWidth={2}
-                      /&gt;
-                    );
-                  })}
+                  {chartData.radar_chart.datasets.map((dataset, idx) =&gt; (
+                    &lt;Radar
+                      key={idx}
+                      name={dataset.label}
+                      dataKey={dataset.label}
+                      stroke={MODEL_COLORS[dataset.label] || <span class="branch-1 cbranch-no" title="branch not covered" >'#3b82f6'}</span>
+                      fill={MODEL_COLORS[dataset.label] || <span class="branch-1 cbranch-no" title="branch not covered" >'#3b82f6'}</span>
+                      fillOpacity={0.25}
+                      strokeWidth={2}
+                    /&gt;
+                  ))}
                 &lt;/RadarChart&gt;
               &lt;/ResponsiveContainer&gt;
             &lt;/div&gt;
@@ -1687,7 +1684,7 @@ export default ModelComparison;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-12-11T13:40:27.852Z
+                at 2025-12-11T13:48:06.255Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

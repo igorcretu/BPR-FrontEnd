@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { BarChart, Bar, LineChart, Line, RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ScatterChart, Scatter, ZAxis, Cell } from 'recharts';
-import { Award, Clock, Target, Activity, TrendingUp, Zap, Database, BarChart3, Brain, AlertCircle } from 'lucide-react';
+import { Award, Target, TrendingUp, Zap, BarChart3, Brain, AlertCircle } from 'lucide-react';
 import api from '../api/client';
 
 interface ModelMetrics {
@@ -438,30 +438,29 @@ const ModelComparison: React.FC = () => {
                 All metrics normalized to 0-100 scale (higher is better for all dimensions)
               </p>
               <ResponsiveContainer width="100%" height={550}>
-                <RadarChart>
+                <RadarChart data={chartData.radar_chart.labels.map((label, i) => {
+                  const dataPoint: Record<string, any> = { metric: label };
+                  chartData.radar_chart.datasets.forEach((dataset) => {
+                    dataPoint[dataset.label] = dataset.data[i];
+                  });
+                  return dataPoint;
+                })}>
                   <PolarGrid />
                   <PolarAngleAxis dataKey="metric" />
                   <PolarRadiusAxis angle={90} domain={[0, 100]} />
                   <Tooltip />
                   <Legend wrapperStyle={{ paddingTop: '20px' }} />
-                  {chartData.radar_chart.datasets.map((dataset, idx) => {
-                    const radarData = chartData.radar_chart.labels.map((label, i) => ({
-                      metric: label,
-                      value: dataset.data[i]
-                    }));
-                    return (
-                      <Radar
-                        key={idx}
-                        name={dataset.label}
-                        data={radarData}
-                        dataKey="value"
-                        stroke={MODEL_COLORS[dataset.label] || '#3b82f6'}
-                        fill={MODEL_COLORS[dataset.label] || '#3b82f6'}
-                        fillOpacity={0.25}
-                        strokeWidth={2}
-                      />
-                    );
-                  })}
+                  {chartData.radar_chart.datasets.map((dataset, idx) => (
+                    <Radar
+                      key={idx}
+                      name={dataset.label}
+                      dataKey={dataset.label}
+                      stroke={MODEL_COLORS[dataset.label] || '#3b82f6'}
+                      fill={MODEL_COLORS[dataset.label] || '#3b82f6'}
+                      fillOpacity={0.25}
+                      strokeWidth={2}
+                    />
+                  ))}
                 </RadarChart>
               </ResponsiveContainer>
             </div>
