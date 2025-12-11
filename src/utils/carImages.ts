@@ -132,10 +132,11 @@ export const getCarImage = async (descriptor: CarImageDescriptor): Promise<strin
     return generated
   }
 
-  const image = await lookupWikimediaImage(descriptor.brand, descriptor.model, descriptor.year)
-  memoryCache.set(key, image)
-  writeToSession(key, image)
-  return image
+  // Wikimedia disabled - just return null instead of fetching
+  // const image = await lookupWikimediaImage(descriptor.brand, descriptor.model, descriptor.year)
+  memoryCache.set(key, null)
+  writeToSession(key, null)
+  return null
 }
 
 export const fetchRandomCarImage = lookupWikimediaImage
