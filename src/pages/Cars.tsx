@@ -46,7 +46,7 @@ export default function Cars() {
     year_max: '',
     price_min: '',
     price_max: '',
-    sort_by: 'newest',
+    sort_by: 'listing_newest',
   });
   const [showFilters, setShowFilters] = useState(false);
   const [filterOptions, setFilterOptions] = useState({
@@ -198,8 +198,10 @@ export default function Cars() {
       
       // Map frontend sort values to backend values
       const sortMapping: Record<string, { sort_by: string; sort_order: string }> = {
-        'newest': { sort_by: 'year', sort_order: 'desc' },
-        'oldest': { sort_by: 'year', sort_order: 'asc' },
+        'listing_newest': { sort_by: 'listing_date', sort_order: 'desc' },
+        'listing_oldest': { sort_by: 'listing_date', sort_order: 'asc' },
+        'year_newest': { sort_by: 'year', sort_order: 'desc' },
+        'year_oldest': { sort_by: 'year', sort_order: 'asc' },
         'price_low': { sort_by: 'price', sort_order: 'asc' },
         'price_high': { sort_by: 'price', sort_order: 'desc' },
         'mileage_low': { sort_by: 'mileage', sort_order: 'asc' },
@@ -207,7 +209,7 @@ export default function Cars() {
       };
       
       // Apply sorting
-      const sortConfig = sortMapping[filters.sort_by] || sortMapping['newest'];
+      const sortConfig = sortMapping[filters.sort_by] || sortMapping['listing_newest'];
       params.sort_by = sortConfig.sort_by;
       params.sort_order = sortConfig.sort_order;
       
@@ -263,14 +265,16 @@ export default function Cars() {
                   setFilters({ ...filters, sort_by: e.target.value });
                   setCurrentPage(1);
                 }}
-                className="flex-1 md:flex-none md:w-44 px-3 md:px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white font-medium text-gray-700 text-sm md:text-base"
+                className="flex-1 md:flex-none md:w-56 px-3 md:px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white font-medium text-gray-700 text-sm md:text-base"
               >
-                <option value="newest">Newest</option>
-                <option value="oldest">Oldest</option>
-                <option value="price_low">Price: Low</option>
-                <option value="price_high">Price: High</option>
-                <option value="mileage_low">Mileage: Low</option>
-                <option value="mileage_high">Mileage: High</option>
+                <option value="listing_newest">Recently Listed</option>
+                <option value="listing_oldest">Oldest Listings</option>
+                <option value="year_newest">Newest Year</option>
+                <option value="year_oldest">Oldest Year</option>
+                <option value="price_low">Price: Low to High</option>
+                <option value="price_high">Price: High to Low</option>
+                <option value="mileage_low">Mileage: Low to High</option>
+                <option value="mileage_high">Mileage: High to Low</option>
               </select>
               <button
                 onClick={() => setShowFilters(!showFilters)}
