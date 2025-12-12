@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1765460886426" clover="3.2.0">
-  <project timestamp="1765460886426" name="All files">
-    <metrics statements="593" coveredstatements="383" conditionals="710" coveredconditionals="317" methods="204" coveredmethods="115" elements="1507" coveredelements="815" complexity="0" loc="593" ncloc="593" packages="5" files="14" classes="14"/>
+<coverage generated="1765557194228" clover="3.2.0">
+  <project timestamp="1765557194228" name="All files">
+    <metrics statements="592" coveredstatements="383" conditionals="708" coveredconditionals="316" methods="205" coveredmethods="115" elements="1505" coveredelements="814" complexity="0" loc="592" ncloc="592" packages="5" files="14" classes="14"/>
     <package name="src">
       <metrics statements="21" coveredstatements="11" conditionals="10" coveredconditionals="5" methods="14" coveredmethods="5"/>
       <file name="App.tsx" path="/home/igor/BachelorApi/BPR-FrontEnd/src/App.tsx">
@@ -48,7 +48,7 @@
       </file>
     </package>
     <package name="src.pages">
-      <metrics statements="487" coveredstatements="322" conditionals="648" coveredconditionals="284" methods="181" coveredmethods="102"/>
+      <metrics statements="486" coveredstatements="322" conditionals="646" coveredconditionals="283" methods="182" coveredmethods="102"/>
       <file name="AboutUs.tsx" path="/home/igor/BachelorApi/BPR-FrontEnd/src/pages/AboutUs.tsx">
         <metrics statements="1" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
         <line num="5" count="7" type="stmt"/>
@@ -447,7 +447,7 @@
         <line num="66" count="0" type="stmt"/>
       </file>
       <file name="Predict.tsx" path="/home/igor/BachelorApi/BPR-FrontEnd/src/pages/Predict.tsx">
-        <metrics statements="117" coveredstatements="50" conditionals="88" coveredconditionals="35" methods="37" coveredmethods="13"/>
+        <metrics statements="116" coveredstatements="50" conditionals="86" coveredconditionals="34" methods="38" coveredmethods="13"/>
         <line num="7" count="1" type="stmt"/>
         <line num="25" count="17" type="stmt"/>
         <line num="26" count="16" type="stmt"/>
@@ -528,43 +528,42 @@
         <line num="166" count="0" type="stmt"/>
         <line num="173" count="0" type="cond" truecount="0" falsecount="2"/>
         <line num="175" count="0" type="stmt"/>
+        <line num="176" count="0" type="stmt"/>
         <line num="179" count="0" type="stmt"/>
-        <line num="183" count="0" type="cond" truecount="0" falsecount="2"/>
-        <line num="185" count="0" type="stmt"/>
-        <line num="186" count="0" type="stmt"/>
-        <line num="189" count="0" type="stmt"/>
-        <line num="190" count="0" type="stmt"/>
-        <line num="193" count="0" type="cond" truecount="0" falsecount="2"/>
-        <line num="195" count="0" type="stmt"/>
-        <line num="199" count="16" type="stmt"/>
-        <line num="200" count="0" type="stmt"/>
-        <line num="202" count="16" type="stmt"/>
-        <line num="205" count="16" type="stmt"/>
-        <line num="206" count="16" type="stmt"/>
-        <line num="216" count="128" type="cond" truecount="2" falsecount="0"/>
-        <line num="217" count="16" type="stmt"/>
-        <line num="220" count="16" type="stmt"/>
-        <line num="222" count="16" type="stmt"/>
-        <line num="292" count="0" type="stmt"/>
-        <line num="297" count="12" type="stmt"/>
+        <line num="180" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="181" count="0" type="stmt"/>
+        <line num="182" count="0" type="stmt"/>
+        <line num="185" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="187" count="0" type="stmt"/>
+        <line num="191" count="16" type="stmt"/>
+        <line num="192" count="0" type="stmt"/>
+        <line num="194" count="16" type="stmt"/>
+        <line num="197" count="16" type="stmt"/>
+        <line num="198" count="16" type="stmt"/>
+        <line num="208" count="128" type="cond" truecount="2" falsecount="0"/>
+        <line num="209" count="16" type="stmt"/>
+        <line num="212" count="16" type="stmt"/>
+        <line num="214" count="16" type="stmt"/>
+        <line num="284" count="0" type="stmt"/>
+        <line num="289" count="12" type="stmt"/>
+        <line num="299" count="0" type="stmt"/>
         <line num="307" count="0" type="stmt"/>
-        <line num="315" count="0" type="stmt"/>
-        <line num="325" count="0" type="stmt"/>
-        <line num="338" count="0" type="stmt"/>
-        <line num="361" count="0" type="stmt"/>
-        <line num="367" count="0" type="stmt"/>
-        <line num="391" count="0" type="stmt"/>
-        <line num="397" count="0" type="stmt"/>
-        <line num="416" count="0" type="stmt"/>
-        <line num="429" count="0" type="stmt"/>
-        <line num="453" count="0" type="stmt"/>
-        <line num="459" count="0" type="stmt"/>
-        <line num="482" count="0" type="stmt"/>
-        <line num="496" count="0" type="stmt"/>
-        <line num="500" count="176" type="stmt"/>
-        <line num="508" count="0" type="stmt"/>
-        <line num="530" count="0" type="stmt"/>
-        <line num="536" count="12" type="stmt"/>
+        <line num="317" count="0" type="stmt"/>
+        <line num="330" count="0" type="stmt"/>
+        <line num="353" count="0" type="stmt"/>
+        <line num="359" count="0" type="stmt"/>
+        <line num="383" count="0" type="stmt"/>
+        <line num="389" count="0" type="stmt"/>
+        <line num="408" count="0" type="stmt"/>
+        <line num="421" count="0" type="stmt"/>
+        <line num="445" count="0" type="stmt"/>
+        <line num="451" count="0" type="stmt"/>
+        <line num="474" count="0" type="stmt"/>
+        <line num="488" count="0" type="stmt"/>
+        <line num="492" count="176" type="stmt"/>
+        <line num="500" count="0" type="stmt"/>
+        <line num="522" count="0" type="stmt"/>
+        <line num="527" count="12" type="stmt"/>
       </file>
     </package>
     <package name="src.utils">

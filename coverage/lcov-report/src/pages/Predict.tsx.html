@@ -30,23 +30,23 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">39.77% </span>
+                <span class="strong">39.53% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>35/88</span>
+                <span class='fraction'>34/86</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">35.13% </span>
+                <span class="strong">34.21% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>13/37</span>
+                <span class='fraction'>13/38</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">42.73% </span>
+                <span class="strong">43.1% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>50/117</span>
+                <span class='fraction'>50/116</span>
             </div>
         
             
@@ -743,18 +743,7 @@
 <a name='L678'></a><a href='#L678'>678</a>
 <a name='L679'></a><a href='#L679'>679</a>
 <a name='L680'></a><a href='#L680'>680</a>
-<a name='L681'></a><a href='#L681'>681</a>
-<a name='L682'></a><a href='#L682'>682</a>
-<a name='L683'></a><a href='#L683'>683</a>
-<a name='L684'></a><a href='#L684'>684</a>
-<a name='L685'></a><a href='#L685'>685</a>
-<a name='L686'></a><a href='#L686'>686</a>
-<a name='L687'></a><a href='#L687'>687</a>
-<a name='L688'></a><a href='#L688'>688</a>
-<a name='L689'></a><a href='#L689'>689</a>
-<a name='L690'></a><a href='#L690'>690</a>
-<a name='L691'></a><a href='#L691'>691</a>
-<a name='L692'></a><a href='#L692'>692</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L681'></a><a href='#L681'>681</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -929,19 +918,11 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1288,10 +1269,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">12x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1617,23 +1595,15 @@ export default function Predict() {
         engine_size: formData.engine_size ? parseFloat(formData.engine_size) : undefined,
       };
 &nbsp;
-<span class="cstat-no" title="statement not covered" >      if (selectedModel === 'compare-all') {</span>
-        // Get predictions from all models
-        const response = <span class="cstat-no" title="statement not covered" >await api.post('/predict', payload);</span>
-        
-        // For demo purposes, create a car entry first or use multi-model endpoint if available
-        // Here we'll call the regular predict endpoint which uses the default/best model
-<span class="cstat-no" title="statement not covered" >        setPrediction(response.data);</span>
-        
-        // Note: In production, you would call a dedicated multi-model endpoint
-        // For now, we show the single model result
-      } else <span class="cstat-no" title="statement not covered" >if (selectedModel === 'default') {</span>
-        // Use default model
+<span class="cstat-no" title="statement not covered" >      if (selectedModel === 'default') {</span>
+        // Use default model (best performing model)
         const response = <span class="cstat-no" title="statement not covered" >await api.post('/predict', payload);</span>
 <span class="cstat-no" title="statement not covered" >        setPrediction(response.data);</span>
       } else {
-        // Use specific model
-        const response = <span class="cstat-no" title="statement not covered" >await api.post('/predict', { ...payload, model_id: selectedModel });</span>
+        // Use specific model - backend expects 'model' parameter with model name
+        const selectedModelData = <span class="cstat-no" title="statement not covered" >mlModels.find(<span class="fstat-no" title="function not covered" >m </span>=&gt; <span class="cstat-no" title="statement not covered" >m.id === selectedModel)</span>;</span>
+        const modelName = <span class="cstat-no" title="statement not covered" >selectedModelData?.name || selectedModel;</span>
+        const response = <span class="cstat-no" title="statement not covered" >await api.post(`/predict?model=${encodeURIComponent(modelName)}`, payload);</span>
 <span class="cstat-no" title="statement not covered" >        setPrediction(response.data);</span>
       }
     } catch (err: any) {
@@ -1978,7 +1948,6 @@ export default function Predict() {
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                   &gt;
                     &lt;option value="default"&gt;Default (Best Model)&lt;/option&gt;
-                    &lt;option value="compare-all"&gt;Compare All Models&lt;/option&gt;
                     {mlModels.map(model =&gt; (
                       &lt;option key={model.id} value={model.id}&gt;
                         {model.name} ({model.model_type})
@@ -2018,8 +1987,6 @@ export default function Predict() {
                   &lt;div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" /&gt;
                   Analyzing...
                 &lt;/&gt;
-              ) : selectedModel === 'compare-all' ? (
-<span class="branch-0 cbranch-no" title="branch not covered" >                'Compare All Models'</span>
               ) : (
                 'Get Price Prediction'
               )}
@@ -2143,7 +2110,7 @@ export default function Predict() {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-12-11T13:48:06.255Z
+                at 2025-12-12T16:33:13.970Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

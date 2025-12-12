@@ -9,13 +9,15 @@ interface HealthStatus {
 }
 
 interface MLModelInfo {
+  id?: string;
+  name?: string;
+  algorithm?: string;
   version?: string;
-  loaded?: boolean;
-  type?: string;
-  model_name?: string;
-  test_r2?: number | string;
-  test_mae?: number | string;
-  features_count?: number;
+  r2_score?: number | null;
+  mae?: number | null;
+  rmse?: number | null;
+  is_active?: boolean;
+  created_at?: string;
 }
 
 interface MLModelStatus {
@@ -384,7 +386,7 @@ export default function BackendHealth() {
           {/* ML Model / Predictor Health */}
           {health.mlModel && (
             <div
-              className={`rounded-lg shadow-md border-2 p-6 transition-all ${health.mlModel.loaded ? 'bg-green-50 border-green-200' : 'bg-yellow-50 border-yellow-200'}`}
+              className={`rounded-lg shadow-md border-2 p-6 transition-all ${health.mlModel.name ? 'bg-green-50 border-green-200' : 'bg-yellow-50 border-yellow-200'}`}
             >
               <div className="flex items-start justify-between mb-4">
                 <div className="flex items-center gap-3">
@@ -394,7 +396,7 @@ export default function BackendHealth() {
                     <p className="text-sm text-gray-600">Machine learning model</p>
                   </div>
                 </div>
-                {health.mlModel.loaded ? (
+                {health.mlModel.name ? (
                   <CheckCircle className="w-6 h-6 text-green-500" />
                 ) : (
                   <AlertTriangle className="w-6 h-6 text-yellow-500" />
@@ -402,22 +404,19 @@ export default function BackendHealth() {
               </div>
               <div className="space-y-2">
                 <p className="text-gray-700">
-                  {health.mlModel.loaded ? 'Model loaded and ready' : 'Using heuristic fallback'}
+                  {health.mlModel.name && health.mlModel.name !== 'N/A' ? 'Model loaded and ready' : 'Using heuristic fallback'}
                 </p>
                 <div className="grid grid-cols-2 gap-3 text-sm text-gray-600">
-                  <span>Type: <span className="font-semibold">{health.mlModel.type || 'N/A'}</span></span>
+                  <span>Algorithm: <span className="font-semibold">{health.mlModel.algorithm || 'N/A'}</span></span>
                   <span>Version: <span className="font-semibold">{health.mlModel.version || 'N/A'}</span></span>
-                  {health.mlModel.model_name && health.mlModel.model_name !== 'N/A' && (
-                    <span>Model: <span className="font-semibold">{health.mlModel.model_name}</span></span>
+                  {health.mlModel.name && health.mlModel.name !== 'N/A' && (
+                    <span>Model: <span className="font-semibold">{health.mlModel.name}</span></span>
                   )}
-                  {health.mlModel.features_count && (
-                    <span>Features: <span className="font-semibold">{health.mlModel.features_count}</span></span>
+                  {health.mlModel.r2_score !== null && health.mlModel.r2_score !== undefined && (
+                    <span>R² Score: <span className="font-semibold">{health.mlModel.r2_score.toFixed(4)}</span></span>
                   )}
-                  {health.mlModel.test_r2 && health.mlModel.test_r2 !== 'N/A' && (
-                    <span>R² Score: <span className="font-semibold">{typeof health.mlModel.test_r2 === 'number' ? health.mlModel.test_r2.toFixed(4) : health.mlModel.test_r2}</span></span>
-                  )}
-                  {health.mlModel.test_mae && health.mlModel.test_mae !== 'N/A' && (
-                    <span>MAE: <span className="font-semibold">{typeof health.mlModel.test_mae === 'number' ? health.mlModel.test_mae.toFixed(0) : health.mlModel.test_mae}</span></span>
+                  {health.mlModel.mae !== null && health.mlModel.mae !== undefined && (
+                    <span>MAE: <span className="font-semibold">{health.mlModel.mae.toFixed(0)}</span></span>
                   )}
                 </div>
               </div>

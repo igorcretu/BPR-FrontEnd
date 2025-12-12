@@ -170,23 +170,15 @@ export default function Predict() {
         engine_size: formData.engine_size ? parseFloat(formData.engine_size) : undefined,
       };
 
-      if (selectedModel === 'compare-all') {
-        // Get predictions from all models
-        const response = await api.post('/predict', payload);
-        
-        // For demo purposes, create a car entry first or use multi-model endpoint if available
-        // Here we'll call the regular predict endpoint which uses the default/best model
-        setPrediction(response.data);
-        
-        // Note: In production, you would call a dedicated multi-model endpoint
-        // For now, we show the single model result
-      } else if (selectedModel === 'default') {
-        // Use default model
+      if (selectedModel === 'default') {
+        // Use default model (best performing model)
         const response = await api.post('/predict', payload);
         setPrediction(response.data);
       } else {
-        // Use specific model
-        const response = await api.post('/predict', { ...payload, model_id: selectedModel });
+        // Use specific model - backend expects 'model' parameter with model name
+        const selectedModelData = mlModels.find(m => m.id === selectedModel);
+        const modelName = selectedModelData?.name || selectedModel;
+        const response = await api.post(`/predict?model=${encodeURIComponent(modelName)}`, payload);
         setPrediction(response.data);
       }
     } catch (err: any) {
@@ -531,7 +523,6 @@ export default function Predict() {
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                   >
                     <option value="default">Default (Best Model)</option>
-                    <option value="compare-all">Compare All Models</option>
                     {mlModels.map(model => (
                       <option key={model.id} value={model.id}>
                         {model.name} ({model.model_type})
@@ -571,8 +562,6 @@ export default function Predict() {
                   <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
                   Analyzing...
                 </>
-              ) : selectedModel === 'compare-all' ? (
-                'Compare All Models'
               ) : (
                 'Get Price Prediction'
               )}
@@ -624,12 +613,12 @@ export default function Predict() {
                 <div className="p-4 bg-gray-50 rounded-lg animate-in fade-in duration-1000">
                   <div className="flex items-center justify-between mb-3">
                     <span className="text-sm font-medium text-gray-700">Prediction Confidence</span>
-                    <span className="text-2xl font-bold text-blue-600">{prediction.confidence.toFixed(1)}%</span>
+                    <span className="text-2xl font-bold text-blue-600">{typeof prediction.confidence === 'number' ? prediction.confidence.toFixed(1) : parseFloat(prediction.confidence).toFixed(1)}%</span>
                   </div>
                   <div className="relative h-3 bg-gray-200 rounded-full overflow-hidden">
                     <div 
                       className="absolute inset-y-0 left-0 bg-gradient-to-r from-blue-500 to-green-500 rounded-full transition-all duration-1000"
-                      style={{ width: `${prediction.confidence}%` }}
+                      style={{ width: `${typeof prediction.confidence === 'number' ? prediction.confidence : parseFloat(prediction.confidence)}%` }}
                     />
                   </div>
                   <div className="flex justify-between mt-2 text-xs text-gray-500">
